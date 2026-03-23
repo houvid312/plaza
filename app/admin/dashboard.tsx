@@ -47,6 +47,7 @@ function PendingEventItem({ event }: { event: Event }) {
 }
 
 function ApprovedEventItem({ event }: { event: Event }) {
+  const router = useRouter();
   const { mutateAsync: unpublish, isPending: isUnpublishing } = useUnpublishEvent();
   const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } = useToggleFeatured();
   const [confirming, setConfirming] = useState(false);
@@ -88,6 +89,13 @@ function ApprovedEventItem({ event }: { event: Event }) {
         </View>
         <Text style={styles.itemTitle} numberOfLines={2}>{event.title}</Text>
         <View style={styles.actionRow}>
+          <TouchableOpacity
+            style={styles.editBtn}
+            onPress={() => router.push(`/admin/event/edit/${event.id}`)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.editBtnText}>Editar</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.featuredBtn, event.featured && styles.featuredBtnActive]}
             onPress={handleToggleFeatured}
@@ -143,13 +151,17 @@ function ApprovedEventItem({ event }: { event: Event }) {
 }
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<'pending' | 'approved'>('pending');
+  const [tab, setTab] = useState<'pending' | 'vigentes' | 'pasados'>('pending');
   const { data: pendingEvents, isLoading: loadingPending, refetch: refetchPending } = usePendingEvents();
   const { data: approvedEvents, isLoading: loadingApproved, refetch: refetchApproved } = useAdminApprovedEvents();
   const router = useRouter();
 
+  const today = new Date().toISOString().split('T')[0];
+  const vigentesEvents = (approvedEvents ?? []).filter(e => e.event_date >= today);
+  const pasadosEvents  = (approvedEvents ?? []).filter(e => e.event_date < today);
+
   const isLoading = tab === 'pending' ? loadingPending : loadingApproved;
-  const events = tab === 'pending' ? pendingEvents : approvedEvents;
+  const events = tab === 'pending' ? pendingEvents : tab === 'vigentes' ? vigentesEvents : pasadosEvents;
   const refetch = tab === 'pending' ? refetchPending : refetchApproved;
 
   return (
@@ -184,16 +196,25 @@ export default function AdminDashboard() {
           activeOpacity={0.8}
         >
           <Text style={[styles.tabText, tab === 'pending' && styles.tabTextActive]}>
-            Pendientes {pendingEvents?.length ? `(${pendingEvents.length})` : ''}
+            Pend. {pendingEvents?.length ? `(${pendingEvents.length})` : ''}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, tab === 'approved' && styles.tabActive]}
-          onPress={() => setTab('approved')}
+          style={[styles.tab, tab === 'vigentes' && styles.tabActive]}
+          onPress={() => setTab('vigentes')}
           activeOpacity={0.8}
         >
-          <Text style={[styles.tabText, tab === 'approved' && styles.tabTextActive]}>
-            Aprobados {approvedEvents?.length ? `(${approvedEvents.length})` : ''}
+          <Text style={[styles.tabText, tab === 'vigentes' && styles.tabTextActive]}>
+            Vigentes {vigentesEvents.length ? `(${vigentesEvents.length})` : ''}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, tab === 'pasados' && styles.tabActive]}
+          onPress={() => setTab('pasados')}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.tabText, tab === 'pasados' && styles.tabTextActive]}>
+            Pasados {pasadosEvents.length ? `(${pasadosEvents.length})` : ''}
           </Text>
         </TouchableOpacity>
       </View>
@@ -204,14 +225,16 @@ export default function AdminDashboard() {
         </View>
       ) : events?.length === 0 ? (
         <View style={styles.empty}>
-          <Text style={styles.emptyEmoji}>{tab === 'pending' ? '✅' : '📭'}</Text>
+          <Text style={styles.emptyEmoji}>{tab === 'pending' ? '✅' : tab === 'vigentes' ? '📭' : '🗂️'}</Text>
           <Text style={styles.emptyTitle}>
-            {tab === 'pending' ? 'Todo al día' : 'Sin eventos aprobados'}
+            {tab === 'pending' ? 'Todo al día' : tab === 'vigentes' ? 'Sin eventos vigentes' : 'Sin eventos pasados'}
           </Text>
           <Text style={styles.emptyText}>
             {tab === 'pending'
               ? 'No hay eventos pendientes de revisión.'
-              : 'Aún no hay eventos aprobados.'}
+              : tab === 'vigentes'
+              ? 'No hay eventos aprobados activos.'
+              : 'No hay eventos aprobados anteriores.'}
           </Text>
         </View>
       ) : (
@@ -338,6 +361,15 @@ const styles = StyleSheet.create({
   featuredBtnActive: { backgroundColor: '#F59E0B', borderColor: '#F59E0B' },
   featuredBtnText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
   featuredBtnTextActive: { color: '#fff' },
+  editBtn: {
+    borderWidth: 1.5,
+    borderColor: '#7C3AED',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: 'center',
+  },
+  editBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
   unpublishBtn: {
     borderWidth: 1.5,
     borderColor: '#FCA5A5',

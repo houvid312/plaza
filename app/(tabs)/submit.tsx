@@ -46,8 +46,10 @@ export default function SubmitScreen() {
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState(String(now.getFullYear()));
-  const [time, setTime] = useState('');
-  const [timeEnd, setTimeEnd] = useState('');
+  const [timeHH, setTimeHH] = useState('');
+  const [timeMM, setTimeMM] = useState('');
+  const [timeEndHH, setTimeEndHH] = useState('');
+  const [timeEndMM, setTimeEndMM] = useState('');
   const [municipalityId, setMunicipalityId] = useState<number | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const [location, setLocation] = useState('');
@@ -57,6 +59,8 @@ export default function SubmitScreen() {
 
   const monthRef = useRef<TextInput>(null);
   const yearRef = useRef<TextInput>(null);
+  const timeMMRef = useRef<TextInput>(null);
+  const timeEndMMRef = useRef<TextInput>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(14)).current;
 
@@ -81,20 +85,39 @@ export default function SubmitScreen() {
 
   function resetForm() {
     setTitle(''); setDescription(''); setDay(''); setMonth('');
-    setYear(String(now.getFullYear())); setTime(''); setTimeEnd('');
+    setYear(String(now.getFullYear())); setTimeHH(''); setTimeMM(''); setTimeEndHH(''); setTimeEndMM('');
     setMunicipalityId(null); setLocation(''); setAddress(''); setErrorMsg('');
   }
 
   async function handleSubmit() {
     if (!title.trim()) { setErrorMsg('El título es obligatorio.'); return; }
     if (!date) { setErrorMsg('La fecha es obligatoria.'); return; }
+    const hasStart = timeHH !== '' || timeMM !== '';
+    const hasEnd = timeEndHH !== '' || timeEndMM !== '';
+    if (hasStart && (timeHH === '' || timeMM === '')) { setErrorMsg('Completá la hora de inicio (HH y MM).'); return; }
+    if (hasEnd && (timeEndHH === '' || timeEndMM === '')) { setErrorMsg('Completá la hora de fin (HH y MM).'); return; }
+    if (hasStart) {
+      if (parseInt(timeHH, 10) > 23) { setErrorMsg('La hora de inicio debe estar entre 00 y 23.'); return; }
+      if (parseInt(timeMM, 10) > 59) { setErrorMsg('Los minutos de inicio deben estar entre 00 y 59.'); return; }
+    }
+    if (hasEnd) {
+      if (parseInt(timeEndHH, 10) > 23) { setErrorMsg('La hora de fin debe estar entre 00 y 23.'); return; }
+      if (parseInt(timeEndMM, 10) > 59) { setErrorMsg('Los minutos de fin deben estar entre 00 y 59.'); return; }
+    }
+    if (hasStart && hasEnd) {
+      const startMins = parseInt(timeHH, 10) * 60 + parseInt(timeMM, 10);
+      const endMins = parseInt(timeEndHH, 10) * 60 + parseInt(timeEndMM, 10);
+      if (endMins <= startMins) { setErrorMsg('La hora de fin debe ser posterior a la de inicio.'); return; }
+    }
+    const event_time = hasStart ? `${timeHH.padStart(2,'0')}:${timeMM.padStart(2,'0')}` : '';
+    const event_time_end = hasEnd ? `${timeEndHH.padStart(2,'0')}:${timeEndMM.padStart(2,'0')}` : undefined;
     setErrorMsg('');
     try {
       await submitEvent({
         title, description, category,
         event_date: date,
-        event_time: time,
-        event_time_end: timeEnd,
+        event_time,
+        event_time_end,
         municipality_id: municipalityId ?? undefined,
         location, address,
         submitted_by: user!.id,
@@ -283,14 +306,83 @@ export default function SubmitScreen() {
             </View>
 
             {/* Times */}
-            <View style={styles.row}>
-              <View style={styles.halfField}>
+            <View style={styles.timesRow}>
+              <View style={styles.timeBlock}>
                 <Text style={styles.label}>Hora inicio</Text>
-                <TextInput style={styles.input} value={time} onChangeText={setTime} placeholder="18:00" placeholderTextColor="#C4B5FD" />
+                <View style={styles.timeSegRow}>
+                  <View style={styles.timeSegment}>
+                    <TextInput
+                      style={[styles.timeInput, timeHH && styles.timeInputFilled]}
+                      value={timeHH}
+                      onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); const val = n.length === 2 ? String(Math.min(parseInt(n, 10), 23)).padStart(2, '0') : n; setTimeHH(val); if (val.length === 2) timeMMRef.current?.focus(); }}
+                      keyboardType="number-pad"
+                      maxLength={2}
+                      placeholder="HH"
+                      placeholderTextColor="#C4B5FD"
+                      textAlign="center"
+                      autoCorrect={false}
+                      autoComplete="off"
+                    />
+                    <Text style={styles.timeSegLabel}>Hora</Text>
+                  </View>
+                  <Text style={styles.timeSep}>:</Text>
+                  <View style={styles.timeSegment}>
+                    <TextInput
+                      ref={timeMMRef}
+                      style={[styles.timeInput, timeMM && styles.timeInputFilled]}
+                      value={timeMM}
+                      onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setTimeMM(n.length === 2 ? String(Math.min(parseInt(n, 10), 59)).padStart(2, '0') : n); }}
+                      keyboardType="number-pad"
+                      maxLength={2}
+                      placeholder="MM"
+                      placeholderTextColor="#C4B5FD"
+                      textAlign="center"
+                      autoCorrect={false}
+                      autoComplete="off"
+                    />
+                    <Text style={styles.timeSegLabel}>Min</Text>
+                  </View>
+                </View>
               </View>
-              <View style={styles.halfField}>
+
+              <View style={styles.timeDivider} />
+
+              <View style={styles.timeBlock}>
                 <Text style={styles.label}>Hora fin</Text>
-                <TextInput style={styles.input} value={timeEnd} onChangeText={setTimeEnd} placeholder="20:00" placeholderTextColor="#C4B5FD" />
+                <View style={styles.timeSegRow}>
+                  <View style={styles.timeSegment}>
+                    <TextInput
+                      style={[styles.timeInput, timeEndHH && styles.timeInputFilled]}
+                      value={timeEndHH}
+                      onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); const val = n.length === 2 ? String(Math.min(parseInt(n, 10), 23)).padStart(2, '0') : n; setTimeEndHH(val); if (val.length === 2) timeEndMMRef.current?.focus(); }}
+                      keyboardType="number-pad"
+                      maxLength={2}
+                      placeholder="HH"
+                      placeholderTextColor="#C4B5FD"
+                      textAlign="center"
+                      autoCorrect={false}
+                      autoComplete="off"
+                    />
+                    <Text style={styles.timeSegLabel}>Hora</Text>
+                  </View>
+                  <Text style={styles.timeSep}>:</Text>
+                  <View style={styles.timeSegment}>
+                    <TextInput
+                      ref={timeEndMMRef}
+                      style={[styles.timeInput, timeEndMM && styles.timeInputFilled]}
+                      value={timeEndMM}
+                      onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setTimeEndMM(n.length === 2 ? String(Math.min(parseInt(n, 10), 59)).padStart(2, '0') : n); }}
+                      keyboardType="number-pad"
+                      maxLength={2}
+                      placeholder="MM"
+                      placeholderTextColor="#C4B5FD"
+                      textAlign="center"
+                      autoCorrect={false}
+                      autoComplete="off"
+                    />
+                    <Text style={styles.timeSegLabel}>Min</Text>
+                  </View>
+                </View>
               </View>
             </View>
 
@@ -363,6 +455,17 @@ const styles = StyleSheet.create({
   dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
   dateSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
   dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+
+  // Time segments
+  timesRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  timeBlock: { flex: 1 },
+  timeDivider: { width: 16 },
+  timeSegRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  timeSegment: { alignItems: 'center', flex: 1 },
+  timeInput: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4, fontSize: 17, fontWeight: '700', color: '#0F0A2A', width: '100%', textAlign: 'center' },
+  timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+  timeSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
+  timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
 
   errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
   errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },

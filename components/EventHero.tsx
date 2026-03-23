@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native
 import { useRouter } from 'expo-router';
 import { Event, getTimeStatus, formatTimeRange } from '../types/event';
 import { CATEGORIES, Category } from '../constants/categories';
+import { useMunicipalities } from '../hooks/useEvents';
 
 interface Props {
   event: Event;
@@ -17,6 +18,11 @@ export function EventHero({ event, isToday = false }: Props) {
     bgColor: '#F3F4F6',
     emoji: '📌',
   };
+
+  const { data: municipalities } = useMunicipalities();
+  const muniName = event.municipality_id
+    ? (municipalities ?? []).find(m => m.id === event.municipality_id)?.name ?? null
+    : null;
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const status = isToday ? getTimeStatus(event.event_time, event.event_time_end) : null;
@@ -75,6 +81,11 @@ export function EventHero({ event, isToday = false }: Props) {
               {event.location && (
                 <View style={styles.metaChip}>
                   <Text style={styles.metaText} numberOfLines={1}>📍 {event.location}</Text>
+                </View>
+              )}
+              {muniName && (
+                <View style={styles.metaChip}>
+                  <Text style={styles.metaText} numberOfLines={1}>🏛️ {muniName}</Text>
                 </View>
               )}
             </View>

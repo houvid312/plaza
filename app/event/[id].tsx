@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, Share } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useEvent } from '../../hooks/useEvents';
+import { useEvent, useMunicipalities } from '../../hooks/useEvents';
 import { CATEGORIES, Category } from '../../constants/categories';
 
 export default function EventDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: event, isLoading } = useEvent(Number(id));
+  const { data: municipalities } = useMunicipalities();
 
   if (isLoading) {
     return (
@@ -47,11 +48,16 @@ export default function EventDetailScreen() {
     } catch {}
   }
 
+  const muniName = event.municipality_id
+    ? (municipalities ?? []).find(m => m.id === event.municipality_id)?.name ?? null
+    : null;
+
   const metaRows = [
     { emoji: '📅', label: 'Fecha', value: dateFormatted },
     event.event_time ? { emoji: '🕐', label: 'Hora', value: `${event.event_time} hs` } : null,
     event.location ? { emoji: '📍', label: 'Lugar', value: event.location } : null,
     event.address ? { emoji: '🗺️', label: 'Dirección', value: event.address } : null,
+    muniName ? { emoji: '🏛️', label: 'Municipalidad', value: muniName } : null,
   ].filter(Boolean) as { emoji: string; label: string; value: string }[];
 
   return (

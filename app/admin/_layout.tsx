@@ -11,6 +11,10 @@ export default function AdminLayout() {
         name="event/[id]"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="event/edit/[id]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

@@ -73,7 +73,7 @@ export function useAdminApprovedEvents() {
         .from('events')
         .select('*')
         .eq('status', 'approved')
-        .order('event_date', { ascending: false });
+        .order('created_at', { ascending: false });
       if (error) throw error;
       return (data ?? []) as Event[];
     },
@@ -185,6 +185,36 @@ export function useUnpublishEvent() {
       if (!data || data.length === 0) throw new Error('Sin permiso para actualizar este evento');
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}
+
+export function useUpdateEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      id: number;
+      title: string;
+      description: string | null;
+      category: string;
+      event_date: string;
+      event_time: string | null;
+      event_time_end: string | null;
+      location: string | null;
+      address: string | null;
+    }) => {
+      const { id, ...fields } = data;
+      const { data: result, error } = await supabase
+        .from('events')
+        .update({ ...fields, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select();
+      if (error) throw error;
+      if (!result || result.length === 0) throw new Error('Sin permiso para editar este evento');
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['event', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
   });
 }
 

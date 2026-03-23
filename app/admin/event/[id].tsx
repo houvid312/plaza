@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEvent, useReviewEvent } from '../../../hooks/useEvents';
+import { useEvent, useReviewEvent, useMunicipalities } from '../../../hooks/useEvents';
 import { useAuth } from '../../../context/AuthContext';
 import { CATEGORIES, Category } from '../../../constants/categories';
 
@@ -21,6 +21,7 @@ export default function AdminEventReview() {
   const router = useRouter();
   const { data: event, isLoading } = useEvent(Number(id));
   const { mutateAsync: reviewEvent, isPending } = useReviewEvent();
+  const { data: municipalities } = useMunicipalities();
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectInput, setShowRejectInput] = useState(false);
 
@@ -73,11 +74,16 @@ export default function AdminEventReview() {
     }
   }
 
+  const muniName = event.municipality_id
+    ? (municipalities ?? []).find(m => m.id === event.municipality_id)?.name ?? null
+    : null;
+
   const infoRows = [
     { emoji: '📅', label: 'Fecha', value: event.event_date },
     { emoji: '🕐', label: 'Hora', value: event.event_time ?? '—' },
     { emoji: '📍', label: 'Lugar', value: event.location ?? '—' },
     { emoji: '🗺️', label: 'Dirección', value: event.address ?? '—' },
+    { emoji: '🏛️', label: 'Municipalidad', value: muniName ?? '—' },
   ];
 
   return (

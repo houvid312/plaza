@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native
 import { useRouter } from 'expo-router';
 import { Event, getTimeStatus, formatTimeRange } from '../types/event';
 import { CATEGORIES, Category } from '../constants/categories';
+import { useMunicipalities } from '../hooks/useEvents';
 
 interface Props {
   event: Event;
@@ -18,6 +19,11 @@ export function EventCard({ event, variant = 'default', isToday = false }: Props
     bgColor: '#F3F4F6',
     emoji: '📌',
   };
+
+  const { data: municipalities } = useMunicipalities();
+  const muniName = event.municipality_id
+    ? (municipalities ?? []).find(m => m.id === event.municipality_id)?.name ?? null
+    : null;
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const status = isToday ? getTimeStatus(event.event_time, event.event_time_end) : null;
@@ -79,6 +85,14 @@ export function EventCard({ event, variant = 'default', isToday = false }: Props
                 <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : cat.color }]} />
                 <Text style={[styles.location, isEnded && styles.textEnded]} numberOfLines={1}>
                   {event.location}
+                </Text>
+              </View>
+            )}
+            {muniName && (
+              <View style={styles.locationRow}>
+                <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : '#A78BFA' }]} />
+                <Text style={[styles.location, isEnded && styles.textEnded]} numberOfLines={1}>
+                  {muniName}
                 </Text>
               </View>
             )}
