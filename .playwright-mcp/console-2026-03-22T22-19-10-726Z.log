@@ -1,0 +1,18 @@
+[     982ms] [WARNING] "shadow*" style props are deprecated. Use "boxShadow". @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:10457
+[     992ms] [WARNING] [Layout children]: No route named "admin/dashboard" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[     992ms] [WARNING] [Layout children]: No route named "admin/event/[id]" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[   39759ms] [WARNING] [Layout children]: No route named "admin/dashboard" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[   39759ms] [WARNING] [Layout children]: No route named "admin/event/[id]" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[   40669ms] [WARNING] [Layout children]: No route named "admin/dashboard" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[   40670ms] [WARNING] [Layout children]: No route named "admin/event/[id]" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
+[   40678ms] [WARNING] props.pointerEvents is deprecated. Use style.pointerEvents @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:10457
+[   40690ms] [WARNING] Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:37175
+[   89451ms] SyntaxError: /Users/dagomezgonza/testAppClaude/app/admin/event/[id].tsx: Unexpected token, expected "}" (211:11)
+
+  209 |
+  210 | const styles = StyleSheet.create({
+> 211 |   container: { flex: 1, backgroundColor: '#FAFAFA' },
+      |            ^
+  212 |   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
+  213 |   heroBanner: { padding: 24, paddingTop: 32 },
+  214 |   heroEmoji: { fontSize: 36, marginBottom: 10 },

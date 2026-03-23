@@ -1,0 +1,218 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Event } from '../types/event';
+import { supabase } from '../db/supabase';
+
+export interface Municipality {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export function useMunicipalities() {
+  return useQuery({
+    queryKey: ['municipalities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('municipalities')
+        .select('*')
+        .order('name', { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as Municipality[];
+    },
+    staleTime: Infinity,
+  });
+}
+
+export function useTodayEvents(category?: string, municipalityId?: number) {
+  return useQuery({
+    queryKey: ['events', 'today', category, municipalityId],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      let query = supabase
+        .from('events')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('event_date', today)
+        .order('event_time', { ascending: true });
+      if (category) query = query.eq('category', category);
+      if (municipalityId) query = query.eq('municipality_id', municipalityId);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as Event[];
+    },
+  });
+}
+
+export function useUpcomingEvents(category?: string, municipalityId?: number) {
+  return useQuery({
+    queryKey: ['events', 'upcoming', category, municipalityId],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      let query = supabase
+        .from('events')
+        .select('*')
+        .eq('status', 'approved')
+        .gte('event_date', today)
+        .order('event_date', { ascending: true })
+        .order('event_time', { ascending: true })
+        .limit(20);
+      if (category) query = query.eq('category', category);
+      if (municipalityId) query = query.eq('municipality_id', municipalityId);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as Event[];
+    },
+  });
+}
+
+export function useAdminApprovedEvents() {
+  return useQuery({
+    queryKey: ['events', 'admin-approved'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('status', 'approved')
+        .order('event_date', { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Event[];
+    },
+  });
+}
+
+export function usePendingEvents() {
+  return useQuery({
+    queryKey: ['events', 'pending'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Event[];
+    },
+  });
+}
+
+export function useEvent(id: number) {
+  return useQuery({
+    queryKey: ['event', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) return null;
+      return data as Event;
+    },
+  });
+}
+
+export function useSubmitEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      title: string;
+      description: string;
+      category: string;
+      event_date: string;
+      event_time: string;
+      event_time_end?: string;
+      location: string;
+      address: string;
+      municipality_id?: number;
+      submitted_by?: string;
+    }) => {
+      if (data.submitted_by) {
+        const today = new Date().toISOString().split('T')[0];
+        const { count, error: countError } = await supabase
+          .from('events')
+          .select('id', { count: 'exact' })
+          .eq('submitted_by', data.submitted_by)
+          .gte('created_at', `${today}T00:00:00`);
+        if (countError) throw countError;
+        if (count !== null && count >= 3) {
+          throw new Error('Alcanzaste el límite de 3 publicaciones por día');
+        }
+      }
+      const { error } = await supabase.from('events').insert({
+        title: data.title,
+        description: data.description || null,
+        category: data.category,
+        event_date: data.event_date,
+        event_time: data.event_time || null,
+        event_time_end: data.event_time_end || null,
+        location: data.location || null,
+        address: data.address || null,
+        municipality_id: data.municipality_id ?? null,
+        submitted_by: data.submitted_by ?? null,
+        status: 'pending',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}
+
+export function useToggleFeatured() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, featured }: { id: number; featured: boolean }) => {
+      const { data, error } = await supabase
+        .from('events')
+        .update({ featured, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select();
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error('Sin permiso para actualizar este evento');
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}
+
+export function useUnpublishEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const { data, error } = await supabase
+        .from('events')
+        .update({ status: 'pending', reviewed_by: null, rejection_reason: null, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select();
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error('Sin permiso para actualizar este evento');
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}
+
+export function useReviewEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      status,
+      rejection_reason,
+      reviewed_by,
+    }: {
+      id: number;
+      status: 'approved' | 'rejected';
+      rejection_reason?: string;
+      reviewed_by: string;
+    }) => {
+      const { error } = await supabase
+        .from('events')
+        .update({
+          status,
+          rejection_reason: rejection_reason ?? null,
+          reviewed_by,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}

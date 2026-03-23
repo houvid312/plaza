@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvm ls:*)",
+      "Bash(~/.nvm/versions/node/v20.19.0/bin/npm --prefix /Users/dagomezgonza/testAppClaude install nativewind tailwindcss expo-sqlite expo-secure-store @tanstack/react-query expo-notifications expo-image-picker react-native-reanimated)",
+      "Bash(~/.nvm/versions/node/v20.19.0/bin/npx tsc:*)",
+      "Read(//Users/dagomezgonza/.claude/**)",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_handle_dialog",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:turso.tech)",
+      "WebFetch(domain:neon.tech)",
+      "WebFetch(domain:firebase.google.com)",
+      "WebFetch(domain:appwrite.io)",
+      "WebFetch(domain:neon.com)",
+      "WebSearch",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_type",
+      "mcp__ide__getDiagnostics",
+      "Bash(PRE_COMMIT_ALLOW_NO_CONFIG=1 git add -A)",
+      "Bash(PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m \"Initial commit: Municipalidad civic event app\")"
+    ]
+  },
+  "disabledMcpjsonServers": [
+    "supabase"
+  ]
+}
