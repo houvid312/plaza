@@ -17,9 +17,10 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const submitting = useRef(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   async function handleLogin() {
@@ -110,6 +111,41 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
+        {/* ── Separador ── */}
+        <View style={styles.dividerRow}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>o</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* ── Google ── */}
+        <TouchableOpacity
+          style={styles.googleBtn}
+          onPress={async () => {
+            setGoogleLoading(true);
+            setErrorMsg('');
+            const result = await loginWithGoogle();
+            setGoogleLoading(false);
+            if (result.success) {
+              if (router.canGoBack()) router.back();
+              else router.replace('/(tabs)');
+            } else if (result.error && result.error !== 'Inicio de sesión cancelado.') {
+              setErrorMsg(result.error);
+            }
+          }}
+          disabled={googleLoading || loading}
+          activeOpacity={0.85}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#374151" />
+          ) : (
+            <>
+              <Text style={styles.googleIcon}>G</Text>
+              <Text style={styles.googleBtnText}>Continuar con Google</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => router.replace('/auth/register')}
           style={styles.linkBtn}
@@ -164,4 +200,21 @@ const styles = StyleSheet.create({
   errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
   forgotBtn: { alignSelf: 'flex-end', marginTop: 8 },
   forgotText: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+  dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E7EB' },
+  dividerText: { marginHorizontal: 12, fontSize: 13, color: '#9CA3AF', fontWeight: '600' },
+  googleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    borderRadius: 14,
+    paddingVertical: 14,
+    marginTop: 12,
+    gap: 10,
+  },
+  googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
+  googleBtnText: { fontSize: 15, fontWeight: '600', color: '#374151' },
 });

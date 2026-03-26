@@ -88,10 +88,11 @@ export default function RegisterScreen() {
   });
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const submitting = useRef(false);
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   function touch(field: keyof TouchedFields) {
@@ -292,6 +293,40 @@ export default function RegisterScreen() {
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Crear cuenta</Text>}
         </TouchableOpacity>
 
+        {/* ── Separador ── */}
+        <View style={styles.dividerRow}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>o</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* ── Google ── */}
+        <TouchableOpacity
+          style={styles.googleBtn}
+          onPress={async () => {
+            setGoogleLoading(true);
+            setSubmitError('');
+            const result = await loginWithGoogle();
+            setGoogleLoading(false);
+            if (result.success) {
+              router.replace('/(tabs)');
+            } else if (result.error && result.error !== 'Inicio de sesión cancelado.') {
+              setSubmitError(result.error);
+            }
+          }}
+          disabled={googleLoading || loading}
+          activeOpacity={0.85}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#374151" />
+          ) : (
+            <>
+              <Text style={styles.googleIcon}>G</Text>
+              <Text style={styles.googleBtnText}>Continuar con Google</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => router.replace('/auth/login')} style={styles.linkBtn}>
           <Text style={styles.linkText}>
             ¿Ya tenés cuenta?{' '}
@@ -436,4 +471,21 @@ const styles = StyleSheet.create({
   countryItemName: { flex: 1, fontSize: 15, color: '#111827' },
   countryItemCode: { fontSize: 14, color: '#6B7280', fontWeight: '600' },
   countryItemCheck: { fontSize: 15, color: '#7C3AED', fontWeight: '800' },
+  dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E7EB' },
+  dividerText: { marginHorizontal: 12, fontSize: 13, color: '#9CA3AF', fontWeight: '600' },
+  googleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    borderRadius: 14,
+    paddingVertical: 14,
+    marginTop: 12,
+    gap: 10,
+  },
+  googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
+  googleBtnText: { fontSize: 15, fontWeight: '600', color: '#374151' },
 });
