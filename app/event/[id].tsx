@@ -65,7 +65,7 @@ export default function EventDetailScreen() {
   });
   const dateCapitalized = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1);
 
-  const timeStatus = getTimeStatus(event.event_time, event.event_time_end);
+  const timeStatus = getTimeStatus(event.event_time, event.event_time_end, event.event_date);
   const statusCfg = STATUS_CONFIG[timeStatus];
 
   const timeLabel = event.event_time

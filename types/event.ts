@@ -21,9 +21,14 @@ export interface Event {
 
 export type TimeStatus = 'live' | 'upcoming' | 'ended' | 'unknown';
 
-export function getTimeStatus(event_time: string | null, event_time_end: string | null): TimeStatus {
+export function getTimeStatus(event_time: string | null, event_time_end: string | null, event_date?: string | null): TimeStatus {
   if (!event_time) return 'unknown';
   const colombiaTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+  if (event_date) {
+    const today = colombiaTime.toLocaleDateString('en-CA', { timeZone: 'America/Bogota' }); // YYYY-MM-DD
+    if (event_date > today) return 'upcoming';
+    if (event_date < today) return 'ended';
+  }
   const current = colombiaTime.getHours() * 60 + colombiaTime.getMinutes();
   const [sh, sm] = event_time.split(':').map(Number);
   const start = sh * 60 + sm;
