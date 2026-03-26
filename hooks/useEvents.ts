@@ -44,19 +44,22 @@ export function useTodayEvents(category?: string, municipalityId?: number, paris
   });
 }
 
-export function useUpcomingEvents(category?: string, municipalityId?: number, parish?: string) {
+export function useUpcomingEvents(category?: string, municipalityId?: number, parish?: string, date?: string) {
   return useQuery({
-    queryKey: ['events', 'upcoming', category, municipalityId, parish],
+    queryKey: ['events', 'upcoming', category, municipalityId, parish, date],
     queryFn: async () => {
       const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
         .from('events')
         .select('*')
         .eq('status', 'approved')
-        .gte('event_date', today)
         .order('event_date', { ascending: true })
-        .order('event_time', { ascending: true })
-        .limit(20);
+        .order('event_time', { ascending: true });
+      if (date) {
+        query = query.eq('event_date', date);
+      } else {
+        query = query.gte('event_date', today).limit(600);
+      }
       if (category) query = query.eq('category', category);
       if (municipalityId) query = query.eq('municipality_id', municipalityId);
       if (parish) query = query.eq('parish', parish);

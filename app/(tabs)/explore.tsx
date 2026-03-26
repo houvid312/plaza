@@ -133,7 +133,8 @@ export default function ExploreScreen() {
   const { data: events, isLoading } = useUpcomingEvents(
     selectedCategory === 'all' ? undefined : selectedCategory,
     selectedMunicipality?.id,
-    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
+    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined,
+    selectedDate !== 'all' ? selectedDate : undefined
   );
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -146,9 +147,7 @@ export default function ExploreScreen() {
     ]).start();
   }, []);
 
-  const filteredEvents = selectedDate === 'all'
-    ? (events ?? [])
-    : (events ?? []).filter(e => e.event_date === selectedDate);
+  const filteredEvents = events ?? [];
 
   const grouped = groupByDate(filteredEvents);
   const dates = Object.keys(grouped).sort();
