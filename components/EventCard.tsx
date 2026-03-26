@@ -9,9 +9,10 @@ interface Props {
   event: Event;
   variant?: 'default' | 'compact';
   isToday?: boolean;
+  showDate?: boolean;
 }
 
-export function EventCard({ event, variant = 'default', isToday = false }: Props) {
+export function EventCard({ event, variant = 'default', isToday = false, showDate = false }: Props) {
   const router = useRouter();
   const cat = CATEGORIES[event.category as Category] ?? {
     label: event.category,
@@ -78,13 +79,6 @@ export function EventCard({ event, variant = 'default', isToday = false }: Props
           )}
 
           <View style={styles.footer}>
-            {timeRange ? (
-              <View style={[styles.timeChip, status === 'live' && styles.timeChipLive, isEnded && styles.timeChipEnded]}>
-                <Text style={[styles.timeChipText, status === 'live' && styles.timeChipTextLive, isEnded && styles.timeChipTextEnded]}>
-                  🕐 {timeRange}
-                </Text>
-              </View>
-            ) : null}
             {event.location && (
               <View style={styles.locationRow}>
                 <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : cat.color }]} />
@@ -101,6 +95,23 @@ export function EventCard({ event, variant = 'default', isToday = false }: Props
                 </Text>
               </View>
             )}
+            {(timeRange || (showDate && event.event_date)) ? (
+              <View style={styles.timeRow}>
+                {timeRange ? (
+                  <Text style={[styles.timeInline, status === 'live' && styles.timeInlineLive, isEnded && styles.textEnded]}>
+                    🕐 {timeRange}
+                  </Text>
+                ) : null}
+                {timeRange && showDate && event.event_date ? (
+                  <Text style={[styles.timeSep, isEnded && styles.textEnded]}> · </Text>
+                ) : null}
+                {showDate && event.event_date ? (
+                  <Text style={[styles.dateLabel, isEnded && styles.textEnded]}>
+                    {new Date(event.event_date + 'T00:00:00').toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </Text>
+                ) : null}
+              </View>
+            ) : null}
           </View>
         </Animated.View>
       </TouchableOpacity>
@@ -140,19 +151,12 @@ const styles = StyleSheet.create({
   description: { fontSize: 13, color: '#64748B', lineHeight: 19, marginBottom: 8 },
   textEnded: { color: '#CBD5E1' },
   footer: { gap: 6, marginTop: 4 },
-  timeChip: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#F5F3FF',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  timeChipLive: { backgroundColor: '#FEF2F2' },
-  timeChipEnded: { backgroundColor: '#F8FAFC' },
-  timeChipText: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
-  timeChipTextLive: { color: '#EF4444' },
-  timeChipTextEnded: { color: '#CBD5E1' },
+  timeRow: { flexDirection: 'row', alignItems: 'center' },
+  timeInline: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
+  timeInlineLive: { color: '#EF4444' },
+  timeSep: { fontSize: 12, color: '#CBD5E1' },
   locationRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   locationDot: { width: 5, height: 5, borderRadius: 3, opacity: 0.7 },
   location: { fontSize: 12, color: '#94A3B8', flex: 1 },
+  dateLabel: { fontSize: 11, color: '#B0BAC9', fontWeight: '500', textTransform: 'capitalize' },
 });

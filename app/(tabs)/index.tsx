@@ -17,7 +17,7 @@ import { CategoryPill } from '../../components/CategoryPill';
 import { EventCard } from '../../components/EventCard';
 import { EventHero } from '../../components/EventHero';
 import { ALL_CATEGORIES, Category, PARISHES, Parish } from '../../constants/categories';
-import { useTodayEvents, useMunicipalities, Municipality } from '../../hooks/useEvents';
+import { useTodayEvents, useUpcomingEvents, useMunicipalities, Municipality } from '../../hooks/useEvents';
 import { useAuth } from '../../context/AuthContext';
 import { getTimeStatus } from '../../types/event';
 
@@ -97,6 +97,12 @@ export default function HomeScreen() {
     selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
   );
 
+  const { data: allUpcoming } = useUpcomingEvents(
+    selectedCategory === 'all' ? undefined : selectedCategory,
+    selectedMunicipality?.id,
+    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
+  );
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(14)).current;
 
@@ -122,6 +128,12 @@ export default function HomeScreen() {
     return s === 'upcoming' || s === 'unknown';
   });
   const endedEvents = nonFeatured.filter(e => getTimeStatus(e.event_time, e.event_time_end) === 'ended');
+
+  const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+  const nothingLeft = !isLoading && liveEvents.length === 0 && upcomingEvents.length === 0;
+  const nextDaysEvents = nothingLeft
+    ? (allUpcoming ?? []).filter(e => e.event_date > todayStr).slice(0, 5)
+    : [];
 
   const hasFeatured = featuredEvents.length > 0;
   const heroEvent = hasFeatured ? featuredEvents[0] : null;
@@ -189,11 +201,21 @@ export default function HomeScreen() {
               <ActivityIndicator size="large" color="#7C3AED" />
             </View>
           ) : events?.length === 0 ? (
-            <View style={styles.empty}>
-              <Text style={styles.emptyEmoji}>📭</Text>
-              <Text style={styles.emptyTitle}>Sin eventos hoy</Text>
-              <Text style={styles.emptyText}>No hay eventos programados para hoy en esta categoría.</Text>
-            </View>
+            <>
+              <View style={styles.empty}>
+                <Text style={styles.emptyEmoji}>📭</Text>
+                <Text style={styles.emptyTitle}>Sin eventos hoy</Text>
+                <Text style={styles.emptyText}>No hay eventos programados para hoy en esta categoría.</Text>
+              </View>
+              {nextDaysEvents.length > 0 && (
+                <View style={styles.nextDaysSection}>
+                  <View style={styles.nextDaysBanner}>
+                    <Text style={styles.nextDaysBannerText}>✦ Lo que viene</Text>
+                  </View>
+                  {nextDaysEvents.map(e => <EventCard key={e.id} event={e} showDate />)}
+                </View>
+              )}
+            </>
           ) : (
             <>
               {heroEvent && (
@@ -236,6 +258,15 @@ export default function HomeScreen() {
                     <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ya finalizaron</Text>
                   </View>
                   {endedEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
+                </View>
+              )}
+
+              {nextDaysEvents.length > 0 && (
+                <View style={styles.nextDaysSection}>
+                  <View style={styles.nextDaysBanner}>
+                    <Text style={styles.nextDaysBannerText}>✦ Lo que viene</Text>
+                  </View>
+                  {nextDaysEvents.map(e => <EventCard key={e.id} event={e} showDate />)}
                 </View>
               )}
             </>
@@ -299,6 +330,18 @@ const styles = StyleSheet.create({
   emptyEmoji: { fontSize: 48, marginBottom: 12 },
   emptyTitle: { fontSize: 18, fontWeight: '700', color: '#374151', marginBottom: 6 },
   emptyText: { fontSize: 14, color: '#94A3B8', textAlign: 'center', lineHeight: 20 },
+  nextDaysSection: { marginTop: 12 },
+  nextDaysBanner: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: '#EDE9FE',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nextDaysBannerText: { fontSize: 13, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.3 },
   eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 3 },
   eyebrowChevron: { fontSize: 10, color: '#A78BFA', fontWeight: '700' },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' },
