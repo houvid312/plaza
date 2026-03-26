@@ -157,16 +157,15 @@ export default function ExploreScreen() {
       <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
 
         <View style={styles.header}>
+          <TouchableOpacity onPress={() => setMuniModalOpen(true)} activeOpacity={0.7} style={styles.appTitleRow}>
+            <Text style={styles.appTitleText}>
+              AGENDA
+              {selectedMunicipality ? ` · ${selectedMunicipality.name.toUpperCase()}` : ''}
+            </Text>
+            <Text style={styles.appTitleChevron}>▾</Text>
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>Explorar</Text>
-          <View style={styles.headerSubRow}>
-            <Text style={styles.headerSub}>Próximos eventos</Text>
-            {(municipalities ?? []).length > 0 && (
-              <TouchableOpacity onPress={() => setMuniModalOpen(true)} activeOpacity={0.7} style={styles.muniChip}>
-                <Text style={styles.muniChipText}>{selectedMunicipality ? selectedMunicipality.name : 'Todas'}</Text>
-                <Text style={styles.muniChipChevron}>▾</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <Text style={styles.headerSub}>Próximos eventos</Text>
         </View>
 
         <Modal visible={muniModalOpen} transparent animationType="fade" onRequestClose={() => setMuniModalOpen(false)}>
@@ -248,7 +247,7 @@ export default function ExploreScreen() {
                     </View>
                   </View>
                   {grouped[date].map((event) => (
-                    <EventCard key={event.id} event={event} />
+                    <EventCard key={event.id} event={event} showDate />
                   ))}
                 </View>
               ))}
@@ -266,12 +265,11 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#FAFAF8' },
   animatedWrapper: { flex: 1 },
   header: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 10 },
+  appTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 6 },
+  appTitleText: { fontSize: 11, fontWeight: '700', color: '#7C3AED', letterSpacing: 1.4 },
+  appTitleChevron: { fontSize: 9, color: '#7C3AED', marginTop: 1 },
   headerTitle: { fontSize: 28, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.5 },
-  headerSub: { fontSize: 13, color: '#94A3B8' },
-  headerSubRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 3 },
-  muniChip: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#EDE9FE', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 },
-  muniChipText: { fontSize: 11, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.2 },
-  muniChipChevron: { fontSize: 9, color: '#7C3AED' },
+  headerSub: { fontSize: 13, color: '#94A3B8', marginTop: 2 },
 
   filterWrap: { position: 'relative', marginBottom: 2 },
   filterContent: { paddingHorizontal: 16, paddingVertical: 5 },

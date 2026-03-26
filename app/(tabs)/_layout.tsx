@@ -1,13 +1,16 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
+function TabIcon({ name, focused }: { name: React.ComponentProps<typeof Ionicons>['name']; focused: boolean }) {
   return (
     <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-      <Text style={[styles.iconEmoji, !focused && styles.iconEmojiInactive]}>
-        {emoji}
-      </Text>
+      <Ionicons
+        name={name}
+        size={22}
+        color={focused ? '#7C3AED' : '#94A3B8'}
+      />
     </View>
   );
 }
@@ -22,12 +25,6 @@ const styles = StyleSheet.create({
   },
   iconWrapActive: {
     backgroundColor: '#EDE9FE',
-  },
-  iconEmoji: {
-    fontSize: 18,
-  },
-  iconEmojiInactive: {
-    opacity: 0.4,
   },
 });
 
@@ -66,28 +63,28 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Hoy',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="calendar-outline" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explorar',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🔍" focused={focused} />,
+          title: 'Próximos',
+          tabBarIcon: ({ focused }) => <TabIcon name="compass-outline" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="submit"
         options={{
           title: 'Publicar',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="✦" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="add-circle-outline" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="person-outline" focused={focused} />,
         }}
       />
     </Tabs>
