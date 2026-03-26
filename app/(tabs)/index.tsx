@@ -16,13 +16,68 @@ import { useRouter } from 'expo-router';
 import { CategoryPill } from '../../components/CategoryPill';
 import { EventCard } from '../../components/EventCard';
 import { EventHero } from '../../components/EventHero';
-import { ALL_CATEGORIES, Category } from '../../constants/categories';
+import { ALL_CATEGORIES, Category, PARISHES, Parish } from '../../constants/categories';
 import { useTodayEvents, useMunicipalities, Municipality } from '../../hooks/useEvents';
 import { useAuth } from '../../context/AuthContext';
 import { getTimeStatus } from '../../types/event';
 
+function ParishFilter({ visible, selectedParish, onSelect }: {
+  visible: boolean;
+  selectedParish: Parish | 'all';
+  onSelect: (p: Parish | 'all') => void;
+}) {
+  const heightAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(heightAnim, {
+        toValue: visible ? 1 : 0,
+        duration: 220,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: visible ? 1 : 0,
+        duration: 180,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, [visible]);
+
+  const maxHeight = heightAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 54] });
+
+  return (
+    <Animated.View style={{ height: maxHeight, opacity: opacityAnim, overflow: 'hidden' }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}
+      >
+        <TouchableOpacity
+          style={[styles.parishPill, selectedParish === 'all' && styles.parishPillActive]}
+          onPress={() => onSelect('all')}
+          activeOpacity={0.75}
+        >
+          <Text style={[styles.parishPillText, selectedParish === 'all' && styles.parishPillTextActive]}>Todas</Text>
+        </TouchableOpacity>
+        {PARISHES.map((p) => (
+          <TouchableOpacity
+            key={p}
+            style={[styles.parishPill, selectedParish === p && styles.parishPillActive]}
+            onPress={() => onSelect(p)}
+            activeOpacity={0.75}
+          >
+            <Text style={[styles.parishPillText, selectedParish === p && styles.parishPillTextActive]}>{p}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </Animated.View>
+  );
+}
+
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
+  const [selectedParish, setSelectedParish] = useState<Parish | 'all'>('all');
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const { data: municipalities } = useMunicipalities();
@@ -35,9 +90,11 @@ export default function HomeScreen() {
       if (marinilla) setSelectedMunicipality(marinilla);
     }
   }, [municipalities]);
+
   const { data: events, isLoading, refetch, isRefetching } = useTodayEvents(
     selectedCategory === 'all' ? undefined : selectedCategory,
-    selectedMunicipality?.id
+    selectedMunicipality?.id,
+    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
   );
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -73,68 +130,60 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+
+        {/* Header fijo */}
+        <View style={styles.header}>
+          <View>
+            <TouchableOpacity onPress={() => (municipalities ?? []).length > 0 && setMuniModalOpen(true)} activeOpacity={0.7} style={styles.eyebrowRow}>
+              <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Agenda · ${selectedMunicipality.name}` : 'Agenda'}</Text>
+              {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Qué hacer hoy</Text>
+            <Text style={styles.headerDate}>{dateStr}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.headerAccent}
+            onPress={() => router.push('/(tabs)/profile')}
+            activeOpacity={0.75}
+          >
+            {user ? (
+              <Text style={styles.headerAccentText}>
+                {(user.full_name ?? user.email).charAt(0).toUpperCase()}
+              </Text>
+            ) : (
+              <Text style={styles.headerAccentText}>👤</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Filtro categorías fijo */}
+        <View style={styles.categoriesWrap}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 4 }}
+          >
+            <CategoryPill category="all" selected={selectedCategory === 'all'} onPress={() => { setSelectedCategory('all'); setSelectedParish('all'); }} />
+            {ALL_CATEGORIES.map((cat) => (
+              <CategoryPill key={cat.id} category={cat.id} selected={selectedCategory === cat.id} onPress={() => { setSelectedCategory(cat.id); setSelectedParish('all'); }} />
+            ))}
+          </ScrollView>
+          <View style={styles.categoriesFade} pointerEvents="none" />
+        </View>
+
+        {/* Filtro parroquias con animación de altura */}
+        <ParishFilter
+          visible={selectedCategory === 'religious'}
+          selectedParish={selectedParish}
+          onSelect={setSelectedParish}
+        />
+
+        {/* Lista de eventos scrollable */}
         <ScrollView
-          style={styles.container}
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#7C3AED" />}
         >
-          <View style={styles.header}>
-            <View>
-              <TouchableOpacity onPress={() => (municipalities ?? []).length > 0 && setMuniModalOpen(true)} activeOpacity={0.7} style={styles.eyebrowRow}>
-                <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Agenda · ${selectedMunicipality.name}` : 'Agenda'}</Text>
-                {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>Qué hacer hoy</Text>
-              <Text style={styles.headerDate}>{dateStr}</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.headerAccent}
-              onPress={() => router.push('/(tabs)/profile')}
-              activeOpacity={0.75}
-            >
-              {user ? (
-                <Text style={styles.headerAccentText}>
-                  {(user.full_name ?? user.email).charAt(0).toUpperCase()}
-                </Text>
-              ) : (
-                <Text style={styles.headerAccentText}>👤</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-
-          <Modal visible={muniModalOpen} transparent animationType="fade" onRequestClose={() => setMuniModalOpen(false)}>
-            <Pressable style={styles.modalBackdrop} onPress={() => setMuniModalOpen(false)}>
-              <Pressable style={styles.modalSheet} onPress={() => {}}>
-                <Text style={styles.modalTitle}>Municipalidad</Text>
-                <TouchableOpacity style={styles.modalOption} onPress={() => { setSelectedMunicipality(null); setMuniModalOpen(false); }} activeOpacity={0.75}>
-                  <Text style={[styles.modalOptionText, selectedMunicipality === null && styles.modalOptionTextActive]}>Todas</Text>
-                  {selectedMunicipality === null && <Text style={styles.modalCheckmark}>✓</Text>}
-                </TouchableOpacity>
-                {(municipalities ?? []).map(m => (
-                  <TouchableOpacity key={m.id} style={styles.modalOption} onPress={() => { setSelectedMunicipality(m); setMuniModalOpen(false); }} activeOpacity={0.75}>
-                    <Text style={[styles.modalOptionText, selectedMunicipality?.id === m.id && styles.modalOptionTextActive]}>{m.name}</Text>
-                    {selectedMunicipality?.id === m.id && <Text style={styles.modalCheckmark}>✓</Text>}
-                  </TouchableOpacity>
-                ))}
-              </Pressable>
-            </Pressable>
-          </Modal>
-
-          <View style={styles.categoriesWrap}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.categories}
-              contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 4 }}
-            >
-              <CategoryPill category="all" selected={selectedCategory === 'all'} onPress={() => setSelectedCategory('all')} />
-              {ALL_CATEGORIES.map((cat) => (
-                <CategoryPill key={cat.id} category={cat.id} selected={selectedCategory === cat.id} onPress={() => setSelectedCategory(cat.id)} />
-              ))}
-            </ScrollView>
-            <View style={styles.categoriesFade} pointerEvents="none" />
-          </View>
-
           {isLoading ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color="#7C3AED" />
@@ -194,7 +243,26 @@ export default function HomeScreen() {
 
           <View style={{ height: 90 }} />
         </ScrollView>
+
       </Animated.View>
+
+      <Modal visible={muniModalOpen} transparent animationType="fade" onRequestClose={() => setMuniModalOpen(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setMuniModalOpen(false)}>
+          <Pressable style={styles.modalSheet} onPress={() => {}}>
+            <Text style={styles.modalTitle}>Municipalidad</Text>
+            <TouchableOpacity style={styles.modalOption} onPress={() => { setSelectedMunicipality(null); setMuniModalOpen(false); }} activeOpacity={0.75}>
+              <Text style={[styles.modalOptionText, selectedMunicipality === null && styles.modalOptionTextActive]}>Todas</Text>
+              {selectedMunicipality === null && <Text style={styles.modalCheckmark}>✓</Text>}
+            </TouchableOpacity>
+            {(municipalities ?? []).map(m => (
+              <TouchableOpacity key={m.id} style={styles.modalOption} onPress={() => { setSelectedMunicipality(m); setMuniModalOpen(false); }} activeOpacity={0.75}>
+                <Text style={[styles.modalOptionText, selectedMunicipality?.id === m.id && styles.modalOptionTextActive]}>{m.name}</Text>
+                {selectedMunicipality?.id === m.id && <Text style={styles.modalCheckmark}>✓</Text>}
+              </TouchableOpacity>
+            ))}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -202,7 +270,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#FAFAF8' },
   animatedWrapper: { flex: 1 },
-  container: { flex: 1 },
   header: {
     paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16,
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
@@ -212,17 +279,17 @@ const styles = StyleSheet.create({
   headerDate: { fontSize: 13, color: '#94A3B8', marginTop: 3 },
   headerAccent: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#EDE9FE', marginTop: 10, alignItems: 'center', justifyContent: 'center' },
   headerAccentText: { fontSize: 15, fontWeight: '800', color: '#7C3AED' },
-  categoriesWrap: { position: 'relative', marginBottom: 8 },
-  categories: {},
+  categoriesWrap: { position: 'relative', marginBottom: 4 },
   categoriesFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 36, backgroundColor: '#FAFAF8' },
+  parishPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: '#D97706', backgroundColor: '#fff', marginRight: 8 },
+  parishPillActive: { backgroundColor: '#B45309', borderColor: '#B45309' },
+  parishPillText: { fontSize: 12, fontWeight: '600', color: '#B45309' },
+  parishPillTextActive: { color: '#fff' },
   section: { marginBottom: 4 },
   sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginBottom: 12, marginTop: 16 },
   sectionAccent: { width: 3, height: 16, borderRadius: 2 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
-  sectionTitle: {
-    fontSize: 14, fontWeight: '700', color: '#374151',
-    letterSpacing: 0.1,
-  },
+  sectionTitle: { fontSize: 14, fontWeight: '700', color: '#374151', letterSpacing: 0.1 },
   sectionTitleLive: { color: '#EF4444' },
   sectionTitleEnded: { color: '#94A3B8' },
   countBadge: { backgroundColor: '#EDE9FE', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },

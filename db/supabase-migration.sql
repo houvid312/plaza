@@ -30,6 +30,12 @@ CREATE TABLE IF NOT EXISTS events (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ============================================================
+-- Migración: agregar columna parish a events
+-- Ejecutar si ya tenés la tabla events creada
+-- ============================================================
+ALTER TABLE events ADD COLUMN IF NOT EXISTS parish TEXT;
+
 -- 3. Habilitar Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;

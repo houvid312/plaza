@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useSubmitEvent, useMunicipalities } from '../../hooks/useEvents';
 import { useAuth } from '../../context/AuthContext';
-import { ALL_CATEGORIES, Category } from '../../constants/categories';
+import { ALL_CATEGORIES, Category, PARISHES } from '../../constants/categories';
 import { useRouter } from 'expo-router';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
@@ -43,6 +43,7 @@ export default function SubmitScreen() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<Category>('cultural');
+  const [selectedParish, setSelectedParish] = useState<string | null>(null);
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState(String(now.getFullYear()));
@@ -86,7 +87,7 @@ export default function SubmitScreen() {
   function resetForm() {
     setTitle(''); setDescription(''); setDay(''); setMonth('');
     setYear(String(now.getFullYear())); setTimeHH(''); setTimeMM(''); setTimeEndHH(''); setTimeEndMM('');
-    setMunicipalityId(null); setLocation(''); setAddress(''); setErrorMsg('');
+    setMunicipalityId(null); setSelectedParish(null); setLocation(''); setAddress(''); setErrorMsg('');
   }
 
   async function handleSubmit() {
@@ -119,6 +120,7 @@ export default function SubmitScreen() {
         event_time,
         event_time_end,
         municipality_id: municipalityId ?? undefined,
+        parish: category === 'religious' && selectedParish ? selectedParish : undefined,
         location, address,
         submitted_by: user!.id,
       });
@@ -189,7 +191,7 @@ export default function SubmitScreen() {
               {ALL_CATEGORIES.map((cat) => (
                 <TouchableOpacity
                   key={cat.id}
-                  onPress={() => setCategory(cat.id)}
+                  onPress={() => { setCategory(cat.id); setSelectedParish(null); }}
                   style={[styles.catOption, category === cat.id && { backgroundColor: cat.color, borderColor: cat.color }]}
                   activeOpacity={0.75}
                 >
@@ -198,6 +200,25 @@ export default function SubmitScreen() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+
+            {/* Parish (only for religious) */}
+            {category === 'religious' && (
+              <>
+                <Text style={styles.label}>Parroquia</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryRow} contentContainerStyle={{ paddingRight: 16 }}>
+                  {PARISHES.map((p) => (
+                    <TouchableOpacity
+                      key={p}
+                      onPress={() => setSelectedParish(selectedParish === p ? null : p)}
+                      style={[styles.parishOption, selectedParish === p && styles.parishOptionActive]}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={[styles.parishOptionText, selectedParish === p && styles.parishOptionTextActive]}>⛪ {p}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            )}
 
             {/* Municipality */}
             <Text style={styles.label}>Municipalidad</Text>
@@ -428,6 +449,10 @@ const styles = StyleSheet.create({
   catOption: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: '#EEEBF8', backgroundColor: '#fff', marginRight: 8 },
   catEmoji: { fontSize: 13 },
   catLabel: { fontSize: 12, fontWeight: '600' },
+  parishOption: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: '#D97706', backgroundColor: '#fff', marginRight: 8 },
+  parishOptionActive: { backgroundColor: '#B45309', borderColor: '#B45309' },
+  parishOptionText: { fontSize: 12, fontWeight: '600', color: '#B45309' },
+  parishOptionTextActive: { color: '#fff' },
 
   // Municipality dropdown
   dropdownTrigger: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

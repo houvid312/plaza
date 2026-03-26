@@ -23,9 +23,9 @@ export function useMunicipalities() {
   });
 }
 
-export function useTodayEvents(category?: string, municipalityId?: number) {
+export function useTodayEvents(category?: string, municipalityId?: number, parish?: string) {
   return useQuery({
-    queryKey: ['events', 'today', category, municipalityId],
+    queryKey: ['events', 'today', category, municipalityId, parish],
     queryFn: async () => {
       const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
@@ -36,6 +36,7 @@ export function useTodayEvents(category?: string, municipalityId?: number) {
         .order('event_time', { ascending: true });
       if (category) query = query.eq('category', category);
       if (municipalityId) query = query.eq('municipality_id', municipalityId);
+      if (parish) query = query.eq('parish', parish);
       const { data, error } = await query;
       if (error) throw error;
       return (data ?? []) as Event[];
@@ -43,9 +44,9 @@ export function useTodayEvents(category?: string, municipalityId?: number) {
   });
 }
 
-export function useUpcomingEvents(category?: string, municipalityId?: number) {
+export function useUpcomingEvents(category?: string, municipalityId?: number, parish?: string) {
   return useQuery({
-    queryKey: ['events', 'upcoming', category, municipalityId],
+    queryKey: ['events', 'upcoming', category, municipalityId, parish],
     queryFn: async () => {
       const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
@@ -58,6 +59,7 @@ export function useUpcomingEvents(category?: string, municipalityId?: number) {
         .limit(20);
       if (category) query = query.eq('category', category);
       if (municipalityId) query = query.eq('municipality_id', municipalityId);
+      if (parish) query = query.eq('parish', parish);
       const { data, error } = await query;
       if (error) throw error;
       return (data ?? []) as Event[];
@@ -123,6 +125,7 @@ export function useSubmitEvent() {
       location: string;
       address: string;
       municipality_id?: number;
+      parish?: string;
       submitted_by?: string;
     }) => {
       if (data.submitted_by) {
@@ -147,6 +150,7 @@ export function useSubmitEvent() {
         location: data.location || null,
         address: data.address || null,
         municipality_id: data.municipality_id ?? null,
+        parish: data.parish ?? null,
         submitted_by: data.submitted_by ?? null,
         status: 'pending',
       });

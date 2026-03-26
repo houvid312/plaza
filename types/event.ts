@@ -12,6 +12,7 @@ export interface Event {
   status: 'pending' | 'approved' | 'rejected';
   rejection_reason: string | null;
   municipality_id: number | null;
+  parish: string | null;
   submitted_by: string | null;
   reviewed_by: string | null;
   featured: boolean;
