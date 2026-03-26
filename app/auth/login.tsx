@@ -17,10 +17,9 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const submitting = useRef(false);
-  const { login, loginWithGoogle } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
   async function handleLogin() {
@@ -111,14 +110,12 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        {/* ── Separador ── */}
-        <View style={styles.dividerRow}>
+        {/* GOOGLE AUTH — comentado hasta completar config en Supabase (ver CLAUDE.md) */}
+        {/* <View style={styles.dividerRow}>
           <View style={styles.dividerLine} />
           <Text style={styles.dividerText}>o</Text>
           <View style={styles.dividerLine} />
         </View>
-
-        {/* ── Google ── */}
         <TouchableOpacity
           style={styles.googleBtn}
           onPress={async () => {
@@ -144,7 +141,7 @@ export default function LoginScreen() {
               <Text style={styles.googleBtnText}>Continuar con Google</Text>
             </>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity
           onPress={() => router.replace('/auth/register')}

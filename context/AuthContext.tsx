@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../db/supabase';
-import { signInWithGoogle } from '../utils/googleAuth';
+// GOOGLE AUTH — pendiente de configurar en Supabase Dashboard (ver CLAUDE.md)
+// import { signInWithGoogle } from '../utils/googleAuth';
 
 interface User {
   id: string;
@@ -14,7 +15,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
+  // loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -73,9 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }
 
-  async function loginWithGoogle() {
-    return signInWithGoogle();
-  }
+  // async function loginWithGoogle() {
+  //   return signInWithGoogle();
+  // }
 
   async function login(email: string, password: string) {
     const { error } = await supabase.auth.signInWithPassword({
@@ -110,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, loginWithGoogle, register, resetPassword, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );

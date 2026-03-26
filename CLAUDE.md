@@ -58,3 +58,36 @@ NativeWind v4 (Tailwind utility classes in JSX). Config targets `app/**` and `co
 
 - Email: `admin@municipalidad.com`
 - Password: `admin123`
+
+## Trabajo pendiente
+
+### Google Sign-In (implementado, pendiente de activar)
+
+El código está **completo pero comentado** hasta completar la configuración externa. Para activarlo:
+
+1. **Descomentar** en:
+   - `context/AuthContext.tsx` — import y función `loginWithGoogle`
+   - `app/auth/login.tsx` — bloque del botón Google
+   - `app/auth/register.tsx` — bloque del botón Google
+
+2. **Configurar en Google Cloud Console** — crear OAuth 2.0 Client ID (tipo Web) con redirect URI:
+   ```
+   https://vgayruuuclcxpmlcwtxl.supabase.co/auth/v1/callback
+   ```
+
+3. **Configurar en Supabase Dashboard**:
+   - Authentication > Providers > Google → activar, pegar Client ID y Secret
+   - Authentication > URL Configuration → agregar a Redirect URLs:
+     ```
+     testappclaude://auth/callback
+     https://agendamarinilla.com/auth/callback
+     ```
+
+4. **Ejecutar en Supabase SQL Editor**:
+   ```sql
+   ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+   -- (el trigger handle_new_user ya está actualizado en supabase-migration.sql)
+   ```
+
+El helper OAuth está en `utils/googleAuth.ts` (PKCE con `expo-crypto` + `expo-web-browser`).
+La foto de perfil de Google ya se muestra en `app/(tabs)/profile.tsx` cuando `user.avatar_url` tiene valor.
