@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native
 import { useRouter } from 'expo-router';
 import { Event, getTimeStatus, formatTimeRange } from '../types/event';
 import { CATEGORIES, Category } from '../constants/categories';
-import { useMunicipalities } from '../hooks/useEvents';
+import { useMunicipalities, useIsFavorite, useToggleFavorite } from '../hooks/useEvents';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 interface Props {
   event: Event;
@@ -14,6 +16,8 @@ interface Props {
 
 export function EventCard({ event, variant = 'default', isToday = false, showDate = false }: Props) {
   const router = useRouter();
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const cat = CATEGORIES[event.category as Category] ?? {
     label: event.category,
     color: '#6B7280',
@@ -25,6 +29,9 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
   const muniName = event.municipality_id
     ? (municipalities ?? []).find(m => m.id === event.municipality_id)?.name ?? null
     : null;
+
+  const { data: isFav } = useIsFavorite(event.id);
+  const { mutate: toggleFav, isPending: isTogglingFav } = useToggleFavorite();
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const status = isToday ? getTimeStatus(event.event_time, event.event_time_end) : null;
@@ -62,6 +69,30 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
               {status === 'ended' && (
                 <Text style={styles.endedBadge}>Finalizado</Text>
               )}
+              <TouchableOpacity
+                onPress={() => {
+                  if (!user) {
+                    showToast({
+                      message: '¡Guardá lo que te gusta!',
+                      sub: 'Uníte a la comunidad para no perderte nada 🎉',
+                      duration: 6000,
+                      actions: [
+                        { label: 'Iniciar sesión', onPress: () => router.push('/auth/login') },
+                        { label: 'Crear cuenta', onPress: () => router.push('/auth/register') },
+                      ],
+                    });
+                    return;
+                  }
+                  toggleFav({ eventId: event.id, isFav: !!isFav });
+                }}
+                disabled={isTogglingFav}
+                hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.heartIcon, isFav && styles.heartIconActive, !user && styles.heartIconGuest]}>
+                  {isFav ? '♥' : '♡'}
+                </Text>
+              </TouchableOpacity>
               {status !== 'ended' && (
                 <Text style={[styles.chevron, isEnded && styles.chevronEnded]}>›</Text>
               )}
@@ -142,7 +173,10 @@ const styles = StyleSheet.create({
   liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF2F2', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
   liveText: { fontSize: 11, fontWeight: '700', color: '#EF4444' },
-  topRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  topRowRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  heartIcon: { fontSize: 18, color: '#F43F5E' },
+  heartIconActive: { color: '#F43F5E' },
+  heartIconGuest: { color: '#CBD5E1' },
   chevron: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', lineHeight: 22 },
   chevronEnded: { color: '#E2E8F0' },
   endedBadge: { fontSize: 11, fontWeight: '600', color: '#94A3B8' },

@@ -16,6 +16,7 @@ import { EventCard } from '../../components/EventCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { ALL_CATEGORIES, Category, PARISHES, Parish } from '../../constants/categories';
 import { Event } from '../../types/event';
+import { useAuth } from '../../context/AuthContext';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
 
@@ -116,18 +117,29 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ExploreScreen() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
-  const [selectedParish, setSelectedParish] = useState<Parish | 'all'>('all');
+  const { user } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>(
+    user?.preferences?.category ?? 'all'
+  );
+  const [selectedParish, setSelectedParish] = useState<Parish | 'all'>(
+    user?.preferences?.parish ?? 'all'
+  );
   const [selectedDate, setSelectedDate] = useState<string>('all');
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const { data: municipalities } = useMunicipalities();
 
   useEffect(() => {
-    if (municipalities && selectedMunicipality === null) {
-      const marinilla = municipalities.find(m => m.slug === 'marinilla');
-      if (marinilla) setSelectedMunicipality(marinilla);
+    if (!municipalities) return;
+    if (selectedMunicipality !== null) return;
+
+    const prefId = user?.preferences?.municipalityId;
+    if (prefId != null) {
+      const match = municipalities.find(m => m.id === prefId);
+      if (match) { setSelectedMunicipality(match); return; }
     }
+    const marinilla = municipalities.find(m => m.slug === 'marinilla');
+    if (marinilla) setSelectedMunicipality(marinilla);
   }, [municipalities]);
 
   const { data: events, isLoading } = useUpcomingEvents(

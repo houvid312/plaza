@@ -253,3 +253,57 @@ export function useReviewEvent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
   });
 }
+
+export function useFavorites() {
+  return useQuery({
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return [];
+      const { data, error } = await supabase
+        .from('favorites')
+        .select('event_id, created_at, events(*)')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return ((data ?? []).map((f: any) => f.events).filter(Boolean)) as Event[];
+    },
+  });
+}
+
+export function useIsFavorite(eventId: number) {
+  return useQuery({
+    queryKey: ['favorites', 'check', eventId],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return false;
+      const { data } = await supabase
+        .from('favorites')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('event_id', eventId)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+}
+
+export function useToggleFavorite() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ eventId, isFav }: { eventId: number; isFav: boolean }) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('No autenticado');
+      if (isFav) {
+        await supabase.from('favorites').delete()
+          .eq('user_id', session.user.id).eq('event_id', eventId);
+      } else {
+        await supabase.from('favorites').insert({ user_id: session.user.id, event_id: eventId });
+      }
+    },
+    onSuccess: (_data, { eventId }) => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'check', eventId] });
+    },
+  });
+}
