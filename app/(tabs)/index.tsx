@@ -51,9 +51,10 @@ export default function HomeScreen() {
   }, []);
 
   const today = new Date();
-  const dateStr = today.toLocaleDateString('es-AR', {
+  const rawDate = today.toLocaleDateString('es-AR', {
     weekday: 'long', day: 'numeric', month: 'long',
   });
+  const dateStr = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
   const featuredEvents = events?.filter(e => e.featured) ?? [];
   const nonFeatured = events?.filter(e => !e.featured) ?? [];
@@ -148,7 +149,10 @@ export default function HomeScreen() {
             <>
               {heroEvent && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Destacado</Text>
+                  <View style={styles.sectionTitleRow}>
+                    <View style={[styles.sectionAccent, { backgroundColor: '#7C3AED' }]} />
+                    <Text style={styles.sectionTitle}>Destacado</Text>
+                  </View>
                   <EventHero event={heroEvent} isToday />
                   {extraFeatured.map(e => <EventCard key={e.id} event={e} isToday />)}
                 </View>
@@ -159,6 +163,7 @@ export default function HomeScreen() {
                   <View style={styles.sectionTitleRow}>
                     <View style={styles.liveDot} />
                     <Text style={[styles.sectionTitle, styles.sectionTitleLive]}>En curso ahora</Text>
+                    <View style={styles.countBadge}><Text style={styles.countBadgeText}>{liveEvents.length}</Text></View>
                   </View>
                   {liveEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
                 </View>
@@ -166,14 +171,21 @@ export default function HomeScreen() {
 
               {upcomingEvents.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Próximamente</Text>
+                  <View style={styles.sectionTitleRow}>
+                    <View style={[styles.sectionAccent, { backgroundColor: '#A78BFA' }]} />
+                    <Text style={styles.sectionTitle}>Próximamente</Text>
+                    <View style={styles.countBadge}><Text style={styles.countBadgeText}>{upcomingEvents.length}</Text></View>
+                  </View>
                   {upcomingEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
                 </View>
               )}
 
               {endedEvents.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ya finalizaron</Text>
+                  <View style={styles.sectionTitleRow}>
+                    <View style={[styles.sectionAccent, { backgroundColor: '#CBD5E1' }]} />
+                    <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ya finalizaron</Text>
+                  </View>
                   {endedEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
                 </View>
               )}
@@ -197,22 +209,24 @@ const styles = StyleSheet.create({
   },
   headerEyebrow: { fontSize: 11, color: '#A78BFA', fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
   headerTitle: { fontSize: 28, fontWeight: '800', color: '#0F0A2A', lineHeight: 34, letterSpacing: -0.5 },
-  headerDate: { fontSize: 13, color: '#94A3B8', marginTop: 3, textTransform: 'capitalize' },
+  headerDate: { fontSize: 13, color: '#94A3B8', marginTop: 3 },
   headerAccent: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#EDE9FE', marginTop: 10, alignItems: 'center', justifyContent: 'center' },
   headerAccentText: { fontSize: 15, fontWeight: '800', color: '#7C3AED' },
   categoriesWrap: { position: 'relative', marginBottom: 8 },
   categories: {},
   categoriesFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 36, backgroundColor: '#FAFAF8' },
   section: { marginBottom: 4 },
-  sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 7, marginHorizontal: 20, marginBottom: 12, marginTop: 8 },
+  sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginBottom: 12, marginTop: 16 },
+  sectionAccent: { width: 3, height: 16, borderRadius: 2 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
   sectionTitle: {
-    fontSize: 12, fontWeight: '700', color: '#A8B4C4',
-    marginHorizontal: 20, marginBottom: 10, marginTop: 12,
-    letterSpacing: 0.3,
+    fontSize: 14, fontWeight: '700', color: '#374151',
+    letterSpacing: 0.1,
   },
-  sectionTitleLive: { color: '#EF4444', marginHorizontal: 0, marginBottom: 0, marginTop: 0 },
-  sectionTitleEnded: { color: '#CBD5E1' },
+  sectionTitleLive: { color: '#EF4444' },
+  sectionTitleEnded: { color: '#94A3B8' },
+  countBadge: { backgroundColor: '#EDE9FE', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
+  countBadgeText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
   centered: { paddingVertical: 60, alignItems: 'center' },
   empty: { alignItems: 'center', paddingVertical: 60, paddingHorizontal: 40 },
   emptyEmoji: { fontSize: 48, marginBottom: 12 },

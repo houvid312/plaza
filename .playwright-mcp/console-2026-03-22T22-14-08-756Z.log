@@ -1,9 +1,0 @@
-[     987ms] [WARNING] "shadow*" style props are deprecated. Use "boxShadow". @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:10457
-[     998ms] [WARNING] [Layout children]: No route named "admin/dashboard" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
-[     998ms] [WARNING] [Layout children]: No route named "admin/event/[id]" exists in nested children: [+not-found, (tabs), admin, auth/login, auth/register, event/[id]] @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:72909
-[    1006ms] [WARNING] props.pointerEvents is deprecated. Use style.pointerEvents @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:10457
-[   15652ms] [ERROR] The action 'GO_BACK' was not handled by any navigator.
-
-Is there any screen to go back to?
-
-This is a development-only warning and won't be shown in production. @ http://localhost:8081/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.routerRoot=app:880

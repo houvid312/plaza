@@ -51,15 +51,20 @@ export function EventCard({ event, variant = 'default', isToday = false }: Props
               <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
               <Text style={[styles.categoryLabel, { color: cat.color }]}>{cat.label}</Text>
             </View>
-            {status === 'live' && (
-              <View style={styles.liveBadge}>
-                <View style={styles.liveDot} />
-                <Text style={styles.liveText}>En curso</Text>
-              </View>
-            )}
-            {status === 'ended' && (
-              <Text style={styles.endedBadge}>Finalizado</Text>
-            )}
+            <View style={styles.topRowRight}>
+              {status === 'live' && (
+                <View style={styles.liveBadge}>
+                  <View style={styles.liveDot} />
+                  <Text style={styles.liveText}>En curso</Text>
+                </View>
+              )}
+              {status === 'ended' && (
+                <Text style={styles.endedBadge}>Finalizado</Text>
+              )}
+              {status !== 'ended' && (
+                <Text style={[styles.chevron, isEnded && styles.chevronEnded]}>›</Text>
+              )}
+            </View>
           </View>
 
           <Text style={[styles.title, isEnded && styles.titleEnded]} numberOfLines={2}>
@@ -126,6 +131,9 @@ const styles = StyleSheet.create({
   liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF2F2', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
   liveText: { fontSize: 11, fontWeight: '700', color: '#EF4444' },
+  topRowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  chevron: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', lineHeight: 22 },
+  chevronEnded: { color: '#E2E8F0' },
   endedBadge: { fontSize: 11, fontWeight: '600', color: '#94A3B8' },
   title: { fontSize: 15, fontWeight: '700', color: '#0F0A2A', marginBottom: 5, lineHeight: 21 },
   titleEnded: { color: '#94A3B8' },

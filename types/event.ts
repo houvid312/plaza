@@ -22,8 +22,8 @@ export type TimeStatus = 'live' | 'upcoming' | 'ended' | 'unknown';
 
 export function getTimeStatus(event_time: string | null, event_time_end: string | null): TimeStatus {
   if (!event_time) return 'unknown';
-  const now = new Date();
-  const current = now.getHours() * 60 + now.getMinutes();
+  const colombiaTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+  const current = colombiaTime.getHours() * 60 + colombiaTime.getMinutes();
   const [sh, sm] = event_time.split(':').map(Number);
   const start = sh * 60 + sm;
   if (current < start) return 'upcoming';

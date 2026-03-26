@@ -27,7 +27,7 @@ export function useTodayEvents(category?: string, municipalityId?: number) {
   return useQuery({
     queryKey: ['events', 'today', category, municipalityId],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
         .from('events')
         .select('*')
@@ -47,7 +47,7 @@ export function useUpcomingEvents(category?: string, municipalityId?: number) {
   return useQuery({
     queryKey: ['events', 'upcoming', category, municipalityId],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
         .from('events')
         .select('*')
@@ -126,7 +126,7 @@ export function useSubmitEvent() {
       submitted_by?: string;
     }) => {
       if (data.submitted_by) {
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
         const { count, error: countError } = await supabase
           .from('events')
           .select('id', { count: 'exact' })
