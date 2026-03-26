@@ -105,6 +105,25 @@ ALTER TABLE events ADD COLUMN IF NOT EXISTS municipality_id BIGINT REFERENCES mu
 ALTER TABLE events ADD COLUMN IF NOT EXISTS event_time_end TEXT;
 ALTER TABLE events ADD COLUMN IF NOT EXISTS featured BOOLEAN NOT NULL DEFAULT false;
 
+-- 9. Preferencias de filtro del usuario
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS pref_category TEXT NOT NULL DEFAULT 'all';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS pref_municipality_id BIGINT REFERENCES municipalities(id) ON DELETE SET NULL;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS pref_parish TEXT NOT NULL DEFAULT 'all';
+
+-- 10. Tabla de favoritos
+CREATE TABLE IF NOT EXISTS favorites (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  event_id BIGINT REFERENCES events(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, event_id)
+);
+
+ALTER TABLE favorites ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "favorites_select" ON favorites FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "favorites_insert" ON favorites FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "favorites_delete" ON favorites FOR DELETE USING (auth.uid() = user_id);
+
 -- 8. Datos de ejemplo (eventos)
 INSERT INTO events (title, description, category, event_date, event_time, location, address, status) VALUES
 ('Feria de Artesanías', 'Exposición y venta de artesanías locales en la plaza central. Más de 40 artesanos participantes con productos únicos hechos a mano.', 'cultural', CURRENT_DATE, '10:00', 'Plaza Central', 'Av. Principal 100', 'approved'),

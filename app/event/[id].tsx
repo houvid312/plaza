@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, Share } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useEvent, useMunicipalities } from '../../hooks/useEvents';
+import { useEvent, useMunicipalities, useIsFavorite, useToggleFavorite } from '../../hooks/useEvents';
 import { CATEGORIES, Category } from '../../constants/categories';
 import { getTimeStatus } from '../../types/event';
+import { useAuth } from '../../context/AuthContext';
 
 const STATUS_CONFIG = {
   live:     { label: '● En curso',     bg: '#FEE2E2', color: '#DC2626' },
@@ -33,6 +34,9 @@ export default function EventDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: event, isLoading } = useEvent(Number(id));
   const { data: municipalities } = useMunicipalities();
+  const { user } = useAuth();
+  const { data: isFav } = useIsFavorite(Number(id));
+  const { mutate: toggleFav, isPending: isTogglingFav } = useToggleFavorite();
 
   if (isLoading) {
     return (
@@ -158,9 +162,27 @@ export default function EventDetailScreen() {
         )}
       </View>
 
-      <TouchableOpacity style={styles.shareBtn} onPress={handleShare} activeOpacity={0.8}>
-        <Text style={styles.shareBtnText}>Compartir evento</Text>
-      </TouchableOpacity>
+      <View style={styles.actionRow}>
+        {user && (
+          <TouchableOpacity
+            style={[styles.favBtn, isFav && styles.favBtnActive]}
+            onPress={() => toggleFav({ eventId: event.id, isFav: !!isFav })}
+            activeOpacity={0.75}
+            disabled={isTogglingFav}
+          >
+            <Text style={[styles.favBtnText, isFav && styles.favBtnTextActive]}>
+              {isFav ? '♥  Guardado' : '♡  Guardar'}
+            </Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[styles.shareBtn, user && styles.shareBtnCompact]}
+          onPress={handleShare}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.shareBtnText}>Compartir</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={{ height: 40 }} />
     </ScrollView>
@@ -233,15 +255,39 @@ const styles = StyleSheet.create({
   descriptionSection: { marginBottom: 16 },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: '#111827', marginBottom: 10 },
   description: { fontSize: 15, color: '#4B5563', lineHeight: 24 },
-  shareBtn: {
+  actionRow: {
+    flexDirection: 'row',
     marginHorizontal: 20,
     marginTop: 4,
+    gap: 10,
+  },
+  favBtn: {
+    flex: 1,
+    backgroundColor: '#FFF1F2',
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FECDD3',
+  },
+  favBtnActive: {
+    backgroundColor: '#F43F5E',
+    borderColor: '#F43F5E',
+  },
+  favBtnText: { color: '#F43F5E', fontWeight: '700', fontSize: 15 },
+  favBtnTextActive: { color: '#fff' },
+  shareBtn: {
+    flex: 1,
+    marginHorizontal: 0,
     backgroundColor: '#F5F3FF',
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#DDD6FE',
+  },
+  shareBtnCompact: {
+    flex: 1,
   },
   shareBtnText: { color: '#7C3AED', fontWeight: '700', fontSize: 15 },
 });

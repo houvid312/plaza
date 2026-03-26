@@ -76,19 +76,29 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
 }
 
 export default function HomeScreen() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
-  const [selectedParish, setSelectedParish] = useState<Parish | 'all'>('all');
+  const { user } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>(
+    user?.preferences?.category ?? 'all'
+  );
+  const [selectedParish, setSelectedParish] = useState<Parish | 'all'>(
+    user?.preferences?.parish ?? 'all'
+  );
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const { data: municipalities } = useMunicipalities();
-  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (municipalities && selectedMunicipality === null) {
-      const marinilla = municipalities.find(m => m.slug === 'marinilla');
-      if (marinilla) setSelectedMunicipality(marinilla);
+    if (!municipalities) return;
+    if (selectedMunicipality !== null) return;
+
+    const prefId = user?.preferences?.municipalityId;
+    if (prefId != null) {
+      const match = municipalities.find(m => m.id === prefId);
+      if (match) { setSelectedMunicipality(match); return; }
     }
+    const marinilla = municipalities.find(m => m.slug === 'marinilla');
+    if (marinilla) setSelectedMunicipality(marinilla);
   }, [municipalities]);
 
   const { data: events, isLoading, refetch, isRefetching } = useTodayEvents(

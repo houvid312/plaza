@@ -88,11 +88,10 @@ export default function RegisterScreen() {
   });
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const submitting = useRef(false);
-  const { register, loginWithGoogle } = useAuth();
+  const { register } = useAuth();
   const router = useRouter();
 
   function touch(field: keyof TouchedFields) {
@@ -293,14 +292,12 @@ export default function RegisterScreen() {
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Crear cuenta</Text>}
         </TouchableOpacity>
 
-        {/* ── Separador ── */}
-        <View style={styles.dividerRow}>
+        {/* GOOGLE AUTH — comentado hasta completar config en Supabase (ver CLAUDE.md) */}
+        {/* <View style={styles.dividerRow}>
           <View style={styles.dividerLine} />
           <Text style={styles.dividerText}>o</Text>
           <View style={styles.dividerLine} />
         </View>
-
-        {/* ── Google ── */}
         <TouchableOpacity
           style={styles.googleBtn}
           onPress={async () => {
@@ -325,7 +322,7 @@ export default function RegisterScreen() {
               <Text style={styles.googleBtnText}>Continuar con Google</Text>
             </>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity onPress={() => router.replace('/auth/login')} style={styles.linkBtn}>
           <Text style={styles.linkText}>
