@@ -55,10 +55,10 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.iconContainer}>
-          <Text style={styles.icon}>🏛️</Text>
+          <Text style={styles.icon}>👋</Text>
         </View>
-        <Text style={styles.title}>Bienvenido</Text>
-        <Text style={styles.subtitle}>Ingresá con tu cuenta municipal</Text>
+        <Text style={styles.title}>¡Qué bueno verte!</Text>
+        <Text style={styles.subtitle}>Ingresá y seguí disfrutando lo que hay en el pueblo</Text>
 
         <Text style={styles.label}>Email</Text>
         <TextInput

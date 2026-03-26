@@ -136,11 +136,12 @@ export default function SubmitScreen() {
         <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.authWall}>
             <View style={styles.authIconBox}>
-              <Text style={styles.authIcon}>📋</Text>
+              <Text style={styles.authIconBig}>🎊</Text>
+              <Text style={styles.authIconAccent}>📣</Text>
             </View>
-            <Text style={styles.authTitle}>Publicar evento</Text>
+            <Text style={styles.authTitle}>¿Sabés de algo bacano?</Text>
             <Text style={styles.authSubtitle}>
-              Necesitás una cuenta para proponer eventos en Agenda.
+              Abrí tu cuenta y contale a todo el pueblo lo que está pasando. ¡Que se enteren todos!
             </Text>
             <TouchableOpacity style={styles.authPrimaryBtn} onPress={() => router.push('/auth/register')} activeOpacity={0.85}>
               <Text style={styles.authPrimaryText}>Crear cuenta</Text>
@@ -500,7 +501,9 @@ const styles = StyleSheet.create({
 
   // Auth wall
   authWall: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 36, gap: 12 },
-  authIconBox: { width: 72, height: 72, borderRadius: 24, backgroundColor: '#EDE9FE', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  authIconBox: { width: 90, height: 90, borderRadius: 28, backgroundColor: '#EDE9FE', alignItems: 'center', justifyContent: 'center', marginBottom: 8, position: 'relative' },
+  authIconBig: { fontSize: 40 },
+  authIconAccent: { fontSize: 22, position: 'absolute', bottom: 6, right: 6 },
   authIcon: { fontSize: 32 },
   authTitle: { fontSize: 24, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.4, textAlign: 'center' },
   authSubtitle: { fontSize: 14, color: '#94A3B8', textAlign: 'center', lineHeight: 21, marginBottom: 8 },

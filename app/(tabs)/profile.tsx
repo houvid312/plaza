@@ -67,11 +67,12 @@ export default function ProfileScreen() {
           ]}
         >
           <View style={styles.guestIconWrap}>
-            <Text style={styles.guestEmoji}>👤</Text>
+            <Text style={styles.guestEmoji}>🤝</Text>
+            <Text style={styles.guestEmojiAccent}>✨</Text>
           </View>
-          <Text style={styles.guestTitle}>¡Hola!</Text>
+          <Text style={styles.guestTitle}>¡Bienvenido!</Text>
           <Text style={styles.guestText}>
-            Iniciá sesión para publicar eventos y acceder a tu perfil.
+            Uníte a la comunidad y estate al tanto de todo lo que mueve el pueblo. ¡Acá te esperamos!
           </Text>
           <TouchableOpacity
             style={styles.loginBtn}
@@ -240,15 +241,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   guestIconWrap: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
+    width: 90,
+    height: 90,
+    borderRadius: 28,
     backgroundColor: '#EDE9FE',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    position: 'relative',
   },
   guestEmoji: { fontSize: 40 },
+  guestEmojiAccent: { fontSize: 20, position: 'absolute', bottom: 6, right: 6 },
   guestTitle: {
     fontSize: 26,
     fontWeight: '800',
