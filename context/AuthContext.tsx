@@ -12,7 +12,8 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; error?: string }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -67,13 +68,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   }
 
-  async function register(name: string, email: string, password: string) {
+  async function register(name: string, email: string, password: string, phone?: string) {
     const { error } = await supabase.auth.signUp({
       email: email.toLowerCase().trim(),
       password,
-      options: { data: { full_name: name.trim() } },
+      options: { data: { full_name: name.trim(), phone: phone?.trim() ?? '' } },
     });
     if (error) return { success: false, error: error.message };
+    return { success: true };
+  }
+
+  async function resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email.toLowerCase().trim(),
+      { redirectTo: 'agendaapp://auth/reset-password' },
+    );
+    if (error) return { success: false, error: 'No se pudo enviar el email de recuperación.' };
     return { success: true };
   }
 
@@ -82,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );
