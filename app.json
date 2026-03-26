@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Plaza",
-    "slug": "plaza",
+    "name": "Agenda",
+    "slug": "agenda",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

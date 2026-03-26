@@ -138,7 +138,7 @@ export default function SubmitScreen() {
             </View>
             <Text style={styles.authTitle}>Publicar evento</Text>
             <Text style={styles.authSubtitle}>
-              Necesitás una cuenta para proponer eventos en Plaza.
+              Necesitás una cuenta para proponer eventos en Agenda.
             </Text>
             <TouchableOpacity style={styles.authPrimaryBtn} onPress={() => router.push('/auth/register')} activeOpacity={0.85}>
               <Text style={styles.authPrimaryText}>Crear cuenta</Text>

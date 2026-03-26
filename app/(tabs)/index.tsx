@@ -81,7 +81,7 @@ export default function HomeScreen() {
           <View style={styles.header}>
             <View>
               <TouchableOpacity onPress={() => (municipalities ?? []).length > 0 && setMuniModalOpen(true)} activeOpacity={0.7} style={styles.eyebrowRow}>
-                <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Plaza · ${selectedMunicipality.name}` : 'Plaza'}</Text>
+                <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Agenda · ${selectedMunicipality.name}` : 'Agenda'}</Text>
                 {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Qué hacer hoy</Text>
