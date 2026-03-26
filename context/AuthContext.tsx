@@ -1,17 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../db/supabase';
+import { signInWithGoogle } from '../utils/googleAuth';
 
 interface User {
   id: string;
   full_name: string;
   email: string;
   role: 'user' | 'admin';
+  avatar_url?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -26,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        loadProfile(session.user.id, session.user.email ?? '');
+        loadProfile(session.user.id, session.user.email ?? '', session.user.user_metadata);
       } else {
         setIsLoading(false);
       }
@@ -34,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        loadProfile(session.user.id, session.user.email ?? '');
+        loadProfile(session.user.id, session.user.email ?? '', session.user.user_metadata);
       } else {
         setUser(null);
         setIsLoading(false);
@@ -44,19 +47,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  async function loadProfile(userId: string, email: string) {
+  async function loadProfile(userId: string, email: string, metaData?: Record<string, any>) {
     const { data } = await supabase
       .from('profiles')
-      .select('full_name, role')
+      .select('full_name, role, avatar_url')
       .eq('id', userId)
       .single();
+
+    // For OAuth users: use Google avatar if profile doesn't have one yet
+    const googleAvatar = metaData?.picture ?? metaData?.avatar_url;
+    const avatarUrl = data?.avatar_url || googleAvatar || '';
+
+    // If we got a Google avatar but profile doesn't have it, save it
+    if (googleAvatar && !data?.avatar_url) {
+      supabase.from('profiles').update({ avatar_url: googleAvatar }).eq('id', userId).then();
+    }
+
     setUser({
       id: userId,
       email,
-      full_name: data?.full_name ?? '',
+      full_name: data?.full_name ?? metaData?.full_name ?? metaData?.name ?? '',
       role: (data?.role ?? 'user') as 'user' | 'admin',
+      avatar_url: avatarUrl,
     });
     setIsLoading(false);
+  }
+
+  async function loginWithGoogle() {
+    return signInWithGoogle();
   }
 
   async function login(email: string, password: string) {
@@ -92,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, resetPassword, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, loginWithGoogle, register, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );
