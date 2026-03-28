@@ -149,6 +149,8 @@ export default function HomeScreen() {
   const heroEvent = hasFeatured ? featuredEvents[0] : null;
   const extraFeatured = featuredEvents.slice(1);
 
+  const fewEvents = !isLoading && events && events.length > 0 && (liveEvents.length + upcomingEvents.length) <= 3;
+
   return (
     <SafeAreaView style={styles.safe}>
       <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
@@ -282,6 +284,17 @@ export default function HomeScreen() {
             </>
           )}
 
+          {fewEvents && (
+            <TouchableOpacity
+              style={styles.exploreBtn}
+              onPress={() => router.push('/(tabs)/explore')}
+              activeOpacity={0.75}
+            >
+              <Text style={styles.exploreBtnText}>Ver más eventos</Text>
+              <Text style={styles.exploreBtnArrow}>→</Text>
+            </TouchableOpacity>
+          )}
+
           <View style={{ height: 90 }} />
         </ScrollView>
 
@@ -361,4 +374,19 @@ const styles = StyleSheet.create({
   modalOptionText: { fontSize: 15, color: '#374151', fontWeight: '500' },
   modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
   modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+  exploreBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginHorizontal: 20,
+    marginTop: 24,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#DDD6FE',
+    backgroundColor: '#FAFAF8',
+  },
+  exploreBtnText: { fontSize: 14, fontWeight: '600', color: '#7C3AED', letterSpacing: 0.2 },
+  exploreBtnArrow: { fontSize: 14, color: '#A78BFA' },
 });
