@@ -1,10 +1,10 @@
 import '../global.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, Text } from 'react-native';
-import { AuthProvider } from '../context/AuthContext';
+import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 
 const queryClient = new QueryClient();
@@ -24,11 +24,23 @@ function CloseAuthButton() {
 
 const AUTH_HEADER_LEFT = () => <CloseAuthButton />;
 
+function PasswordRecoveryHandler() {
+  const { isPasswordRecovery } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (isPasswordRecovery) {
+      router.replace('/auth/reset-password');
+    }
+  }, [isPasswordRecovery]);
+  return null;
+}
+
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ToastProvider>
+        <PasswordRecoveryHandler />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
@@ -72,6 +84,17 @@ export default function RootLayout() {
               headerTintColor: '#7C3AED',
               headerTitleAlign: 'center',
               headerLeft: AUTH_HEADER_LEFT,
+            }}
+          />
+          <Stack.Screen
+            name="auth/reset-password"
+            options={{
+              presentation: 'card',
+              headerShown: true,
+              headerTitle: 'Nueva Contraseña',
+              headerTintColor: '#7C3AED',
+              headerTitleAlign: 'center',
+              headerBackVisible: false,
             }}
           />
         </Stack>

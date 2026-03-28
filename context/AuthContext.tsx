@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { supabase } from '../db/supabase';
 import { Category, Parish } from '../constants/categories';
 // GOOGLE AUTH — pendiente de configurar en Supabase Dashboard (ver CLAUDE.md)
@@ -28,10 +29,12 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isPasswordRecovery: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   // loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+  updatePassword: (password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updatePreferences: (prefs: UserPreferences) => Promise<{ success: boolean; error?: string }>;
 }
@@ -41,6 +44,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,10 +55,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        setIsLoading(false);
+      } else if (session?.user) {
+        setIsPasswordRecovery(false);
         loadProfile(session.user.id, session.user.email ?? '', session.user.user_metadata);
       } else {
+        setIsPasswordRecovery(false);
         setUser(null);
         setIsLoading(false);
       }
@@ -120,11 +129,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function resetPassword(email: string) {
+    const redirectTo = Platform.OS === 'web' && typeof window !== 'undefined'
+      ? `${window.location.origin}/auth/reset-password`
+      : 'agendaapp://auth/reset-password';
     const { error } = await supabase.auth.resetPasswordForEmail(
       email.toLowerCase().trim(),
-      { redirectTo: 'agendaapp://auth/reset-password' },
+      { redirectTo },
     );
     if (error) return { success: false, error: 'No se pudo enviar el email de recuperación.' };
+    return { success: true };
+  }
+
+  async function updatePassword(password: string) {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) return { success: false, error: error.message };
+    setIsPasswordRecovery(false);
     return { success: true };
   }
 
@@ -148,7 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, resetPassword, logout, updatePreferences }}>
+    <AuthContext.Provider value={{ user, isLoading, isPasswordRecovery, login, register, resetPassword, updatePassword, logout, updatePreferences }}>
       {children}
     </AuthContext.Provider>
   );
