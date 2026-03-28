@@ -4,7 +4,7 @@ export const CATEGORIES: Record<Category, { label: string; color: string; bgColo
   religious:   { label: 'Religioso',  color: '#B45309', bgColor: '#FEF3C7', emoji: '⛪' },
   cultural:    { label: 'Cultural',   color: '#7C3AED', bgColor: '#EDE9FE', emoji: '🏛️' },
   social:      { label: 'Social',     color: '#F59E0B', bgColor: '#FEF3C7', emoji: '🤝' },
-  artistic:    { label: 'Artístico',  color: '#EC4899', bgColor: '#FCE7F3', emoji: '🎨' },
+  artistic:    { label: 'Artístico',  color: '#0F766E', bgColor: '#CCFBF1', emoji: '🎨' },
   sport:       { label: 'Deportivo',  color: '#10B981', bgColor: '#D1FAE5', emoji: '⚽' },
   educational: { label: 'Educativo',  color: '#3B82F6', bgColor: '#DBEAFE', emoji: '📚' },
 };

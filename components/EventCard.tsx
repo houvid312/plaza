@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Event, getTimeStatus, formatTimeRange } from '../types/event';
 import { CATEGORIES, Category } from '../constants/categories';
@@ -89,9 +89,12 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
                 hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                 activeOpacity={0.7}
               >
-                <Text style={[styles.heartIcon, isFav && styles.heartIconActive, !user && styles.heartIconGuest]}>
-                  {isFav ? '♥' : '♡'}
-                </Text>
+                {isTogglingFav
+                  ? <ActivityIndicator size="small" color="#F43F5E" />
+                  : <Text style={[styles.heartIcon, isFav && styles.heartIconActive, !user && styles.heartIconGuest]}>
+                      {isFav ? '♥' : '♡'}
+                    </Text>
+                }
               </TouchableOpacity>
               {status !== 'ended' && (
                 <Text style={[styles.chevron, isEnded && styles.chevronEnded]}>›</Text>
