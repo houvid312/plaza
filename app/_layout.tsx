@@ -1,5 +1,6 @@
 import '../global.css';
 import React, { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Stack, useRouter } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
@@ -99,6 +100,7 @@ export default function RootLayout() {
           />
         </Stack>
         <StatusBar style="auto" />
+        <Analytics />
         </ToastProvider>
       </AuthProvider>
     </QueryClientProvider>
