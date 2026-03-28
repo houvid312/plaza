@@ -170,9 +170,12 @@ export default function EventDetailScreen() {
             activeOpacity={0.75}
             disabled={isTogglingFav}
           >
-            <Text style={[styles.favBtnText, isFav && styles.favBtnTextActive]}>
-              {isFav ? '♥  Guardado' : '♡  Guardar'}
-            </Text>
+            {isTogglingFav
+              ? <ActivityIndicator size="small" color={isFav ? '#fff' : '#F43F5E'} />
+              : <Text style={[styles.favBtnText, isFav && styles.favBtnTextActive]}>
+                  {isFav ? '♥  Guardado' : '♡  Guardar'}
+                </Text>
+            }
           </TouchableOpacity>
         )}
         <TouchableOpacity
