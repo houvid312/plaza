@@ -88,7 +88,6 @@ export default function RegisterScreen() {
   });
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const submitting = useRef(false);
   const { register } = useAuth();
@@ -130,34 +129,10 @@ export default function RegisterScreen() {
     setLoading(false);
     submitting.current = false;
     if (result.success) {
-      setConfirmed(true);
+      router.replace('/(tabs)');
     } else {
       setSubmitError(result.error ?? 'No se pudo crear la cuenta.');
     }
-  }
-
-  // ── Confirmed ────────────────────────────────────────────────────────────────
-  if (confirmed) {
-    return (
-      <View style={styles.confirmContainer}>
-        <View style={styles.confirmIconBox}>
-          <Text style={styles.confirmIcon}>✉️</Text>
-        </View>
-        <Text style={styles.confirmTitle}>Revisá tu correo</Text>
-        <Text style={styles.confirmText}>
-          Te enviamos un email a{' '}
-          <Text style={styles.confirmEmail}>{email}</Text>
-          {' '}para confirmar tu cuenta. Una vez confirmado podés iniciar sesión.
-        </Text>
-        <TouchableOpacity
-          style={[styles.btn, styles.confirmBtn]}
-          onPress={() => router.replace('/auth/login')}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.btnText}>Ir a iniciar sesión</Text>
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   // ── Form ─────────────────────────────────────────────────────────────────────
@@ -431,20 +406,6 @@ const styles = StyleSheet.create({
   linkHighlight: { color: '#7C3AED', fontWeight: '700' },
   errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
   errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
-  // Confirm
-  confirmContainer: {
-    flex: 1, backgroundColor: '#FAFAFA', alignItems: 'center',
-    justifyContent: 'center', padding: 36, gap: 12,
-  },
-  confirmIconBox: {
-    width: 80, height: 80, borderRadius: 28, backgroundColor: '#EDE9FE',
-    alignItems: 'center', justifyContent: 'center', marginBottom: 8,
-  },
-  confirmIcon: { fontSize: 36 },
-  confirmTitle: { fontSize: 24, fontWeight: '800', color: '#0F0A2A', textAlign: 'center' },
-  confirmText: { fontSize: 14, color: '#64748B', textAlign: 'center', lineHeight: 22, marginBottom: 8 },
-  confirmEmail: { fontWeight: '700', color: '#7C3AED' },
-  confirmBtn: { width: '100%', marginTop: 8 },
   // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
   modalSheet: {
