@@ -150,6 +150,7 @@ export default function EventDetailScreen() {
       : null,
     event.location ? { emoji: '📍', label: 'Lugar', value: event.location, extra: null } : null,
     event.address  ? { emoji: '🗺️', label: 'Dirección', value: event.address, extra: null } : null,
+    event.category !== 'religious' ? { emoji: '🎟️', label: 'Entrada', value: event.price ?? 'Entrada libre', extra: null } : null,
     muniName       ? { emoji: '🏛️', label: 'Municipalidad', value: muniName, extra: null } : null,
   ].filter(Boolean) as { emoji: string; label: string; value: string; extra: string | null }[];
 

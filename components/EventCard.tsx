@@ -90,6 +90,9 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
     locationDot: { width: 5, height: 5, borderRadius: 3, opacity: 0.7 },
     location: { fontSize: 12, color: colors.textFaint, flex: 1 },
     dateLabel: { fontSize: 11, color: colors.textFaint, fontWeight: '500', textTransform: 'capitalize' },
+    priceText: { fontSize: 11, fontWeight: '600' },
+    priceTextFree: { color: '#7C3AED' },
+    priceTextPaid: { color: '#D97706' },
   }), [colors]);
 
   return (
@@ -168,14 +171,33 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
                 </Text>
               </View>
             )}
-            {muniName && (
-              <View style={styles.locationRow}>
-                <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : '#A78BFA' }]} />
-                <Text style={[styles.location, isEnded && styles.textEnded]} numberOfLines={1}>
-                  {muniName}
+            {event.category !== 'religious' && (() => {
+              const priceVal = event.price ?? 'Entrada libre';
+              const isFree = priceVal.toLowerCase() === 'entrada libre';
+              const priceNode = (
+                <Text style={[styles.priceText, isFree ? styles.priceTextFree : styles.priceTextPaid, isEnded && styles.textEnded]}>
+                  🎟 {priceVal}
                 </Text>
-              </View>
-            )}
+              );
+              if (muniName) {
+                return (
+                  <View style={[styles.locationRow, { justifyContent: 'space-between' }]}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                      <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : '#A78BFA' }]} />
+                      <Text style={[styles.location, isEnded && styles.textEnded]} numberOfLines={1}>
+                        {muniName}
+                      </Text>
+                    </View>
+                    {priceNode}
+                  </View>
+                );
+              }
+              return (
+                <View style={{ alignItems: 'flex-end' }}>
+                  {priceNode}
+                </View>
+              );
+            })()}
             {(timeRange || (showDate && event.event_date)) ? (
               <View style={styles.timeRow}>
                 {timeRange ? (
