@@ -1,26 +1,50 @@
 import { ScrollViewStyleReset } from 'expo-router/html';
 
-// This file is web-only and used to configure the root HTML for every
-// web page during static rendering.
-// The contents of this function only run in Node.js environments and
-// do not have access to the DOM or browser APIs.
 export default function Root({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-        {/* 
-          Disable body scrolling on web. This makes ScrollView components work closer to how they do on native. 
-          However, body scrolling is often nice to have for mobile web. If you want to enable it, remove this line.
-        */}
-        <ScrollViewStyleReset />
+        {/* SEO primario */}
+        <title>Agenda Marinilla — Eventos culturales, religiosos y sociales</title>
+        <meta name="description" content="Descubrí todos los eventos de Marinilla y el Oriente Antioqueño: festivales, actividades culturales, sociales, deportivas y religiosas. Enterate de lo que pasa en tu municipio." />
+        <meta name="keywords" content="agenda marinilla, eventos marinilla, oriente antioqueño, que hacer en marinilla, festivales, cultura, marinilla antioquia" />
+        <link rel="canonical" href="https://agendamarinilla.com" />
+        <link rel="sitemap" type="application/xml" href="https://agendamarinilla.com/sitemap.xml" />
 
-        {/* Using raw CSS styles as an escape-hatch to ensure the background color never flickers in dark-mode. */}
+        {/* Open Graph (Facebook, WhatsApp, etc.) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://agendamarinilla.com" />
+        <meta property="og:title" content="Agenda Marinilla — Eventos culturales, religiosos y sociales" />
+        <meta property="og:description" content="Descubrí todos los eventos de Marinilla y el Oriente Antioqueño: festivales, actividades culturales, sociales, deportivas y religiosas." />
+        <meta property="og:locale" content="es_CO" />
+        <meta property="og:site_name" content="Agenda Marinilla" />
+
+        {/* Twitter / X */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Agenda Marinilla — Eventos culturales, religiosos y sociales" />
+        <meta name="twitter:description" content="Descubrí todos los eventos de Marinilla y el Oriente Antioqueño." />
+
+        {/* Datos estructurados para Google */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Agenda Marinilla",
+          "url": "https://agendamarinilla.com",
+          "description": "Eventos culturales, religiosos, sociales y deportivos de Marinilla y el Oriente Antioqueño",
+          "inLanguage": "es-CO",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://agendamarinilla.com",
+            "query-input": "required name=search_term_string"
+          }
+        })}} />
+
+        <ScrollViewStyleReset />
         <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
-        {/* Add any additional <head> elements that you want globally available on web... */}
       </head>
       <body>{children}</body>
     </html>

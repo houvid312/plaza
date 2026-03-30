@@ -16,7 +16,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!_expo|assets|favicon.ico).*)",
+      "source": "/((?!_expo|assets|favicon.ico|sitemap.xml|robots.txt).*)",
       "destination": "/index.html"
     }
   ]
