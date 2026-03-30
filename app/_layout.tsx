@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity, Text } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
+import { ThemeProvider, useTheme } from '../context/ThemeContext';
 
 const queryClient = new QueryClient();
 
@@ -36,73 +37,90 @@ function PasswordRecoveryHandler() {
   return null;
 }
 
+function AppNavigator() {
+  const { isDark, colors } = useTheme();
+  const themedHeader = {
+    headerStyle: { backgroundColor: colors.surface },
+    headerTintColor: '#7C3AED',
+    headerTitleStyle: { color: colors.text },
+  };
+
+  return (
+    <>
+      <PasswordRecoveryHandler />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="event/[id]"
+          options={{
+            ...themedHeader,
+            presentation: 'card',
+            headerShown: true,
+            headerTitle: 'Evento',
+            headerBackTitle: 'Volver',
+          }}
+        />
+        <Stack.Screen
+          name="auth/login"
+          options={{
+            ...themedHeader,
+            presentation: 'modal',
+            headerShown: true,
+            headerTitle: 'Iniciar Sesión',
+            headerTitleAlign: 'center',
+            headerLeft: AUTH_HEADER_LEFT,
+          }}
+        />
+        <Stack.Screen
+          name="auth/register"
+          options={{
+            ...themedHeader,
+            presentation: 'modal',
+            headerShown: true,
+            headerTitle: 'Crear Cuenta',
+            headerTitleAlign: 'center',
+            headerLeft: AUTH_HEADER_LEFT,
+          }}
+        />
+        <Stack.Screen
+          name="auth/forgot-password"
+          options={{
+            ...themedHeader,
+            presentation: 'modal',
+            headerShown: true,
+            headerTitle: 'Recuperar Contraseña',
+            headerTitleAlign: 'center',
+            headerLeft: AUTH_HEADER_LEFT,
+          }}
+        />
+        <Stack.Screen
+          name="auth/reset-password"
+          options={{
+            ...themedHeader,
+            presentation: 'card',
+            headerShown: true,
+            headerTitle: 'Nueva Contraseña',
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+          }}
+        />
+      </Stack>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <Analytics />
+    </>
+  );
+}
+
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ToastProvider>
-        <PasswordRecoveryHandler />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen
-            name="event/[id]"
-            options={{
-              presentation: 'card',
-              headerShown: true,
-              headerTitle: 'Evento',
-              headerBackTitle: 'Volver',
-              headerTintColor: '#7C3AED',
-            }}
-          />
-          <Stack.Screen
-            name="auth/login"
-            options={{
-              presentation: 'modal',
-              headerShown: true,
-              headerTitle: 'Iniciar Sesión',
-              headerTintColor: '#7C3AED',
-              headerTitleAlign: 'center',
-              headerLeft: AUTH_HEADER_LEFT,
-            }}
-          />
-          <Stack.Screen
-            name="auth/register"
-            options={{
-              presentation: 'modal',
-              headerShown: true,
-              headerTitle: 'Crear Cuenta',
-              headerTintColor: '#7C3AED',
-              headerTitleAlign: 'center',
-              headerLeft: AUTH_HEADER_LEFT,
-            }}
-          />
-          <Stack.Screen
-            name="auth/forgot-password"
-            options={{
-              presentation: 'modal',
-              headerShown: true,
-              headerTitle: 'Recuperar Contraseña',
-              headerTintColor: '#7C3AED',
-              headerTitleAlign: 'center',
-              headerLeft: AUTH_HEADER_LEFT,
-            }}
-          />
-          <Stack.Screen
-            name="auth/reset-password"
-            options={{
-              presentation: 'card',
-              headerShown: true,
-              headerTitle: 'Nueva Contraseña',
-              headerTintColor: '#7C3AED',
-              headerTitleAlign: 'center',
-              headerBackVisible: false,
-            }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
-        <Analytics />
-        </ToastProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <AppNavigator />
+          </ToastProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

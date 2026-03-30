@@ -290,6 +290,24 @@ export function useIsFavorite(eventId: number) {
   });
 }
 
+export function useMyEvents(userId: string | undefined) {
+  return useQuery({
+    queryKey: ['events', 'mine', userId],
+    queryFn: async () => {
+      if (!userId) return [];
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('submitted_by', userId)
+        .order('created_at', { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return (data ?? []) as Event[];
+    },
+    enabled: !!userId,
+  });
+}
+
 export function useToggleFavorite() {
   const queryClient = useQueryClient();
   return useMutation({

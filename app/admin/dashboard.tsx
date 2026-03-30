@@ -15,6 +15,8 @@ import { usePendingEvents, useAdminApprovedEvents, useUnpublishEvent, useToggleF
 import { CATEGORIES, ALL_CATEGORIES, Category } from '../../constants/categories';
 import { useRouter } from 'expo-router';
 import { Event } from '../../types/event';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeColors } from '../../context/ThemeContext';
 
 const MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
@@ -38,9 +40,109 @@ function addDays(dateStr: string, days: number): string {
   return d.toISOString().split('T')[0];
 }
 
+function makeStyles(colors: ThemeColors) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.bg },
+    header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10 },
+    backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12 },
+    backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
+    backLabel: { fontSize: 14, color: '#7C3AED', fontWeight: '600' },
+    headerCenter: { flex: 1, alignItems: 'center' },
+    headerTitle: { fontSize: 17, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
+    countBadge: {
+      backgroundColor: '#FEF3C7', minWidth: 28, height: 28, paddingHorizontal: 8,
+      borderRadius: 14, alignItems: 'center', justifyContent: 'center',
+    },
+    countBadgePlaceholder: { width: 28 },
+    countText: { color: '#F59E0B', fontWeight: '800', fontSize: 13 },
+    tabs: {
+      flexDirection: 'row', marginHorizontal: 16, marginBottom: 8,
+      backgroundColor: colors.surfacePrimary, borderRadius: 12, padding: 4,
+    },
+    tab: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 10, paddingHorizontal: 4 },
+    tabActive: {
+      backgroundColor: colors.surface,
+      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
+    },
+    tabText: { fontSize: 11, fontWeight: '600', color: colors.textFaint },
+    tabTextActive: { color: '#7C3AED' },
+    searchContainer: { paddingHorizontal: 16, marginBottom: 8 },
+    searchBox: {
+      flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
+      borderWidth: 1.5, borderColor: colors.borderPrimary, borderRadius: 12,
+      paddingHorizontal: 12, paddingVertical: 10, gap: 8,
+    },
+    searchIcon: { fontSize: 14 },
+    searchInput: { flex: 1, fontSize: 14, color: colors.text, padding: 0 },
+    filtersSection: { marginBottom: 4 },
+    quickFilterRow: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 6, marginBottom: 8 },
+    categoryScrollContent: { paddingHorizontal: 16, paddingBottom: 2, flexDirection: 'row', alignItems: 'center' },
+    chip: {
+      paddingHorizontal: 11, paddingVertical: 6, borderRadius: 20,
+      borderWidth: 1.5, borderColor: colors.borderPrimary, backgroundColor: colors.surface,
+      marginRight: 6, marginBottom: 2,
+    },
+    chipTextActive: { color: '#fff' },
+    chipText: { fontSize: 12, fontWeight: '600', color: colors.textMuted },
+    statsRow: {
+      flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+      paddingHorizontal: 16, paddingTop: 6, paddingBottom: 2,
+    },
+    statsText: { fontSize: 12, color: colors.textFaint, fontWeight: '500' },
+    clearText: { fontSize: 12, color: '#7C3AED', fontWeight: '700' },
+    sectionHeader: {
+      flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
+      paddingTop: 14, paddingBottom: 6, gap: 8,
+    },
+    sectionHeaderText: { fontSize: 13, fontWeight: '700', color: colors.textSub },
+    sectionCount: { backgroundColor: colors.surfacePrimary, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2 },
+    sectionCountText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
+    emptyEmoji: { fontSize: 48, marginBottom: 12 },
+    emptyTitle: { fontSize: 18, fontWeight: '700', color: colors.textSub, marginBottom: 6 },
+    emptyText: { fontSize: 14, color: colors.textFaint, textAlign: 'center', marginBottom: 16 },
+    clearFiltersBtn: { backgroundColor: '#7C3AED', borderRadius: 12, paddingVertical: 10, paddingHorizontal: 20 },
+    clearFiltersBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+    item: {
+      flexDirection: 'row', backgroundColor: colors.surface, marginHorizontal: 16, marginBottom: 8,
+      borderRadius: 16, overflow: 'hidden',
+      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2,
+      borderWidth: 1, borderColor: colors.border,
+    },
+    itemContent: { flex: 1, padding: 14 },
+    itemEdge: { width: 4 },
+    itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+    catBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+    catText: { fontSize: 11, fontWeight: '700' },
+    date: { fontSize: 11, color: colors.textFaint, fontWeight: '500' },
+    itemTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 8, lineHeight: 20 },
+    itemFeatured: { borderColor: '#FDE68A', borderWidth: 1.5 },
+    pendingFooter: { flexDirection: 'row', alignItems: 'center' },
+    actionRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    editBtn: { flex: 1, borderWidth: 1.5, borderColor: '#7C3AED', borderRadius: 10, paddingVertical: 7, alignItems: 'center' },
+    editBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
+    featuredBtn: { flex: 1.4, borderWidth: 1.5, borderColor: '#FCD34D', borderRadius: 10, paddingVertical: 7, alignItems: 'center', minWidth: 36 },
+    featuredBtnActive: { backgroundColor: '#F59E0B', borderColor: '#F59E0B' },
+    featuredBtnText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
+    featuredBtnTextActive: { color: '#fff' },
+    unpublishBtn: { borderWidth: 1.5, borderColor: '#FCA5A5', borderRadius: 10, paddingVertical: 7, paddingHorizontal: 10, alignItems: 'center', justifyContent: 'center' },
+    unpublishBtnText: { fontSize: 14 },
+    confirmBox: { gap: 6 },
+    confirmText: { fontSize: 12, fontWeight: '600', color: colors.textSub },
+    confirmRow: { flexDirection: 'row', gap: 6 },
+    confirmYes: { flex: 1, backgroundColor: '#EF4444', borderRadius: 10, paddingVertical: 8, alignItems: 'center' },
+    confirmYesText: { fontSize: 13, fontWeight: '700', color: '#fff' },
+    confirmNo: { flex: 1, borderWidth: 1.5, borderColor: colors.borderMedium, borderRadius: 10, paddingVertical: 8, alignItems: 'center' },
+    confirmNoText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
+  });
+}
+
 // ─── Pending Item ─────────────────────────────────────────────────────────────
 function PendingEventItem({ event }: { event: Event }) {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const cat = CATEGORIES[event.category as Category] ?? {
     label: event.category, color: '#6B7280', bgColor: '#F3F4F6', emoji: '📌',
   };
@@ -63,7 +165,7 @@ function PendingEventItem({ event }: { event: Event }) {
         </View>
         <Text style={styles.itemTitle} numberOfLines={2}>{event.title}</Text>
         <View style={styles.pendingFooter}>
-          <Text style={[styles.reviewBtn, { color: cat.color }]}>Revisar →</Text>
+          <Text style={[{ fontSize: 13, fontWeight: '700' }, { color: cat.color }]}>Revisar →</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -73,6 +175,8 @@ function PendingEventItem({ event }: { event: Event }) {
 // ─── Approved Item ────────────────────────────────────────────────────────────
 function ApprovedEventItem({ event }: { event: Event }) {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { mutateAsync: unpublish, isPending: isUnpublishing } = useUnpublishEvent();
   const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } = useToggleFeatured();
   const [confirming, setConfirming] = useState(false);
@@ -114,18 +218,12 @@ function ApprovedEventItem({ event }: { event: Event }) {
 
         {!confirming ? (
           <View style={styles.actionRow}>
-            <TouchableOpacity
-              style={styles.editBtn}
-              onPress={() => router.push(`/admin/event/edit/${event.id}`)}
-              activeOpacity={0.8}
-            >
+            <TouchableOpacity style={styles.editBtn} onPress={() => router.push(`/admin/event/edit/${event.id}`)} activeOpacity={0.8}>
               <Text style={styles.editBtnText}>✏️ Editar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.featuredBtn, event.featured && styles.featuredBtnActive]}
-              onPress={handleToggleFeatured}
-              disabled={isTogglingFeatured}
-              activeOpacity={0.8}
+              onPress={handleToggleFeatured} disabled={isTogglingFeatured} activeOpacity={0.8}
             >
               {isTogglingFeatured ? (
                 <ActivityIndicator size="small" color={event.featured ? '#fff' : '#F59E0B'} />
@@ -135,11 +233,7 @@ function ApprovedEventItem({ event }: { event: Event }) {
                 </Text>
               )}
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.unpublishBtn}
-              onPress={() => setConfirming(true)}
-              activeOpacity={0.8}
-            >
+            <TouchableOpacity style={styles.unpublishBtn} onPress={() => setConfirming(true)} activeOpacity={0.8}>
               <Text style={styles.unpublishBtnText}>🗑️</Text>
             </TouchableOpacity>
           </View>
@@ -147,24 +241,14 @@ function ApprovedEventItem({ event }: { event: Event }) {
           <View style={styles.confirmBox}>
             <Text style={styles.confirmText}>¿Quitar este evento?</Text>
             <View style={styles.confirmRow}>
-              <TouchableOpacity
-                style={styles.confirmYes}
-                onPress={handleUnpublish}
-                disabled={isUnpublishing}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity style={styles.confirmYes} onPress={handleUnpublish} disabled={isUnpublishing} activeOpacity={0.8}>
                 {isUnpublishing ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
                   <Text style={styles.confirmYesText}>Sí, quitar</Text>
                 )}
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.confirmNo}
-                onPress={() => setConfirming(false)}
-                disabled={isUnpublishing}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity style={styles.confirmNo} onPress={() => setConfirming(false)} disabled={isUnpublishing} activeOpacity={0.8}>
                 <Text style={styles.confirmNoText}>No</Text>
               </TouchableOpacity>
             </View>
@@ -177,6 +261,8 @@ function ApprovedEventItem({ event }: { event: Event }) {
 
 // ─── Date Section Header ──────────────────────────────────────────────────────
 function DateHeader({ date, count, today }: { date: string; count: number; today: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{formatDateHeader(date, today)}</Text>
@@ -188,18 +274,14 @@ function DateHeader({ date, count, today }: { date: string; count: number; today
 }
 
 // ─── Filter Chip ──────────────────────────────────────────────────────────────
-type ChipProps = {
-  label: string;
-  active: boolean;
-  onPress: () => void;
-  activeColor?: string;
-};
+type ChipProps = { label: string; active: boolean; onPress: () => void; activeColor?: string; };
 function FilterChip({ label, active, onPress, activeColor = '#7C3AED' }: ChipProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <TouchableOpacity
       style={[styles.chip, active && { backgroundColor: activeColor, borderColor: activeColor }]}
-      onPress={onPress}
-      activeOpacity={0.8}
+      onPress={onPress} activeOpacity={0.8}
     >
       <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
     </TouchableOpacity>
@@ -208,10 +290,7 @@ function FilterChip({ label, active, onPress, activeColor = '#7C3AED' }: ChipPro
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 type DateFilter = 'all' | 'today' | 'tomorrow' | 'this-week';
-
-type ListItem =
-  | { type: 'header'; date: string; count: number }
-  | { type: 'event'; event: Event };
+type ListItem = | { type: 'header'; date: string; count: number } | { type: 'event'; event: Event };
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<'pending' | 'vigentes' | 'pasados'>('pending');
@@ -219,6 +298,8 @@ export default function AdminDashboard() {
   const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const [featuredOnly, setFeaturedOnly] = useState(false);
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const { data: pendingEvents, isLoading: loadingPending, refetch: refetchPending } = usePendingEvents();
   const { data: approvedEvents, isLoading: loadingApproved, refetch: refetchApproved } = useAdminApprovedEvents();
@@ -271,10 +352,7 @@ export default function AdminDashboard() {
   const hasActiveFilters = search.trim() !== '' || categoryFilter !== 'all' || dateFilter !== 'all' || featuredOnly;
 
   function resetFilters() {
-    setSearch('');
-    setCategoryFilter('all');
-    setDateFilter('all');
-    setFeaturedOnly(false);
+    setSearch(''); setCategoryFilter('all'); setDateFilter('all'); setFeaturedOnly(false);
   }
 
   function switchTab(t: typeof tab) {
@@ -343,7 +421,6 @@ export default function AdminDashboard() {
       {/* Compact filters */}
       {!isLoading && rawEvents.length > 0 && (
         <View style={styles.filtersSection}>
-          {/* Row 1: Quick filters — featured + date */}
           {tab !== 'pending' && (
             <View style={styles.quickFilterRow}>
               <FilterChip
@@ -365,7 +442,6 @@ export default function AdminDashboard() {
             </View>
           )}
 
-          {/* Row 2: Category filter — horizontal scroll */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
             <FilterChip label="Todos" active={categoryFilter === 'all'} onPress={() => setCategoryFilter('all')} />
             {ALL_CATEGORIES.map(cat => (
@@ -379,7 +455,6 @@ export default function AdminDashboard() {
             ))}
           </ScrollView>
 
-          {/* Compact stats + clear */}
           <View style={styles.statsRow}>
             <Text style={styles.statsText}>
               {filteredEvents.length !== rawEvents.length
@@ -435,106 +510,3 @@ export default function AdminDashboard() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FAFAF8' },
-
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10 },
-  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12 },
-  backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
-  backLabel: { fontSize: 14, color: '#7C3AED', fontWeight: '600' },
-  headerCenter: { flex: 1, alignItems: 'center' },
-  headerTitle: { fontSize: 17, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.3 },
-  countBadge: { backgroundColor: '#FEF3C7', minWidth: 28, height: 28, paddingHorizontal: 8, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  countBadgePlaceholder: { width: 28 },
-  countText: { color: '#F59E0B', fontWeight: '800', fontSize: 13 },
-
-  tabs: { flexDirection: 'row', marginHorizontal: 16, marginBottom: 8, backgroundColor: '#F0EDFD', borderRadius: 12, padding: 4 },
-  tab: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 10, paddingHorizontal: 4 },
-  tabActive: { backgroundColor: '#fff', shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
-  tabText: { fontSize: 11, fontWeight: '600', color: '#94A3B8' },
-  tabTextActive: { color: '#7C3AED' },
-
-  searchContainer: { paddingHorizontal: 16, marginBottom: 8 },
-  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, gap: 8 },
-  searchIcon: { fontSize: 14 },
-  searchInput: { flex: 1, fontSize: 14, color: '#0F0A2A', padding: 0 },
-
-  filtersSection: { marginBottom: 4 },
-
-  quickFilterRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    gap: 6,
-    marginBottom: 8,
-  },
-
-  categoryScrollContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  chip: {
-    paddingHorizontal: 11,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: '#EDE9FE',
-    backgroundColor: '#fff',
-    marginRight: 6,
-    marginBottom: 2,
-  },
-  chipTextActive: { color: '#fff' },
-  chipText: { fontSize: 12, fontWeight: '600', color: '#64748B' },
-
-  statsRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 6, paddingBottom: 2 },
-  statsText: { fontSize: 12, color: '#94A3B8', fontWeight: '500' },
-  clearText: { fontSize: 12, color: '#7C3AED', fontWeight: '700' },
-
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 14, paddingBottom: 6, gap: 8 },
-  sectionHeaderText: { fontSize: 13, fontWeight: '700', color: '#374151' },
-  sectionCount: { backgroundColor: '#F0EDFD', borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2 },
-  sectionCountText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
-
-  centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
-  emptyEmoji: { fontSize: 48, marginBottom: 12 },
-  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#374151', marginBottom: 6 },
-  emptyText: { fontSize: 14, color: '#94A3B8', textAlign: 'center', marginBottom: 16 },
-  clearFiltersBtn: { backgroundColor: '#7C3AED', borderRadius: 12, paddingVertical: 10, paddingHorizontal: 20 },
-  clearFiltersBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
-
-  item: { flexDirection: 'row', backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 8, borderRadius: 16, overflow: 'hidden', shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2, borderWidth: 1, borderColor: '#F3F0FD' },
-  itemContent: { flex: 1, padding: 14 },
-  itemEdge: { width: 4 },
-  itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  catBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
-  catText: { fontSize: 11, fontWeight: '700' },
-  date: { fontSize: 11, color: '#94A3B8', fontWeight: '500' },
-  itemTitle: { fontSize: 14, fontWeight: '700', color: '#0F0A2A', marginBottom: 8, lineHeight: 20 },
-  itemFeatured: { borderColor: '#FDE68A', borderWidth: 1.5 },
-
-  pendingFooter: { flexDirection: 'row', alignItems: 'center' },
-  reviewBtn: { fontSize: 13, fontWeight: '700' },
-
-  actionRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  editBtn: { flex: 1, borderWidth: 1.5, borderColor: '#7C3AED', borderRadius: 10, paddingVertical: 7, alignItems: 'center' },
-  editBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
-  featuredBtn: { flex: 1.4, borderWidth: 1.5, borderColor: '#FCD34D', borderRadius: 10, paddingVertical: 7, alignItems: 'center', minWidth: 36 },
-  featuredBtnActive: { backgroundColor: '#F59E0B', borderColor: '#F59E0B' },
-  featuredBtnText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
-  featuredBtnTextActive: { color: '#fff' },
-  unpublishBtn: { borderWidth: 1.5, borderColor: '#FCA5A5', borderRadius: 10, paddingVertical: 7, paddingHorizontal: 10, alignItems: 'center', justifyContent: 'center' },
-  unpublishBtnText: { fontSize: 14 },
-
-  confirmBox: { gap: 6 },
-  confirmText: { fontSize: 12, fontWeight: '600', color: '#374151' },
-  confirmRow: { flexDirection: 'row', gap: 6 },
-  confirmYes: { flex: 1, backgroundColor: '#EF4444', borderRadius: 10, paddingVertical: 8, alignItems: 'center' },
-  confirmYesText: { fontSize: 13, fontWeight: '700', color: '#fff' },
-  confirmNo: { flex: 1, borderWidth: 1.5, borderColor: '#D1D5DB', borderRadius: 10, paddingVertical: 8, alignItems: 'center' },
-  confirmNoText: { fontSize: 13, fontWeight: '600', color: '#6B7280' },
-});

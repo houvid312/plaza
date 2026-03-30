@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../context/ThemeContext';
 
 // ── Country codes ──────────────────────────────────────────────────────────────
 
@@ -92,6 +93,7 @@ export default function RegisterScreen() {
   const submitting = useRef(false);
   const { register } = useAuth();
   const router = useRouter();
+  const { colors } = useTheme();
 
   function touch(field: keyof TouchedFields) {
     setTouched(prev => ({ ...prev, [field]: true }));
@@ -102,6 +104,75 @@ export default function RegisterScreen() {
   const passwordError = touched.password ? validatePassword(password)  : '';
   const nameError     = touched.name && !name.trim() ? 'El nombre es requerido.' : '';
   const strength      = passwordStrength(password);
+
+  const styles = useMemo(() => StyleSheet.create({
+    container: { flexGrow: 1, padding: 24, paddingTop: 40, backgroundColor: colors.bgAlt },
+    title: { fontSize: 26, fontWeight: '800', color: colors.text, marginBottom: 4 },
+    subtitle: { fontSize: 14, color: colors.textFaint, marginBottom: 32 },
+    label: { fontSize: 13, fontWeight: '700', color: colors.textSub, marginBottom: 6, marginTop: 16 },
+    input: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
+    },
+    inputError: { borderColor: '#EF4444', backgroundColor: '#FFF5F5' },
+    inputValid: { borderColor: '#10B981', backgroundColor: '#F0FDF4' },
+    fieldError: { fontSize: 12, color: '#EF4444', marginTop: 4, marginLeft: 2 },
+    fieldValid: { fontSize: 12, color: '#10B981', marginTop: 4, marginLeft: 2, fontWeight: '600' },
+    phoneRow: { flexDirection: 'row', gap: 8 },
+    countryBtn: {
+      flexDirection: 'row', alignItems: 'center', gap: 4,
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 12, paddingHorizontal: 12, paddingVertical: 13,
+    },
+    countryBtnValid: { borderColor: '#10B981', backgroundColor: '#F0FDF4' },
+    countryBtnError: { borderColor: '#EF4444', backgroundColor: '#FFF5F5' },
+    countryFlag: { fontSize: 18 },
+    countryCode: { fontSize: 14, fontWeight: '700', color: colors.textSub },
+    countryChevron: { fontSize: 10, color: colors.textFaint, marginLeft: 2 },
+    phoneInput: {
+      flex: 1, backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
+    },
+    strengthContainer: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 },
+    strengthBars: { flexDirection: 'row', gap: 4, flex: 1 },
+    strengthBar: { flex: 1, height: 4, borderRadius: 4, backgroundColor: colors.inputBorder },
+    strengthLabel: { fontSize: 12, fontWeight: '700', minWidth: 44, textAlign: 'right' },
+    passwordHint: { backgroundColor: colors.surfacePrimaryLight, borderRadius: 10, padding: 10, marginTop: 10 },
+    passwordHintText: { fontSize: 12, color: '#6D28D9', lineHeight: 18 },
+    btn: { backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+    btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+    linkBtn: { alignItems: 'center', marginTop: 16 },
+    linkText: { fontSize: 14, color: colors.textMuted },
+    linkHighlight: { color: '#7C3AED', fontWeight: '700' },
+    errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
+    errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
+    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+    modalSheet: {
+      backgroundColor: colors.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24,
+      paddingTop: 12, paddingBottom: 32, maxHeight: '70%',
+    },
+    modalHandle: {
+      width: 40, height: 4, backgroundColor: colors.borderMedium, borderRadius: 4,
+      alignSelf: 'center', marginBottom: 16,
+    },
+    modalTitle: { fontSize: 16, fontWeight: '800', color: colors.text, paddingHorizontal: 20, marginBottom: 8 },
+    countryItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 14, gap: 12 },
+    countryItemSelected: { backgroundColor: colors.surfacePrimaryLight },
+    countryItemFlag: { fontSize: 22 },
+    countryItemName: { flex: 1, fontSize: 15, color: colors.text },
+    countryItemCode: { fontSize: 14, color: colors.textMuted, fontWeight: '600' },
+    countryItemCheck: { fontSize: 15, color: '#7C3AED', fontWeight: '800' },
+    dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: colors.inputBorder },
+    dividerText: { marginHorizontal: 12, fontSize: 13, color: colors.textFaint, fontWeight: '600' },
+    googleBtn: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 14, paddingVertical: 14, marginTop: 12, gap: 10,
+    },
+    googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
+    googleBtnText: { fontSize: 15, fontWeight: '600', color: colors.textSub },
+  }), [colors]);
 
   function inputStyle(error: string, value: string, isTouched: boolean) {
     if (!isTouched || !value.trim()) return styles.input;
@@ -138,7 +209,7 @@ export default function RegisterScreen() {
   // ── Form ─────────────────────────────────────────────────────────────────────
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: colors.bgAlt }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
@@ -358,92 +429,3 @@ function strengthTextColor(level: number) {
   return { color: '#10B981' };
 }
 
-const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 24, paddingTop: 40, backgroundColor: '#FAFAFA' },
-  title: { fontSize: 26, fontWeight: '800', color: '#111827', marginBottom: 4 },
-  subtitle: { fontSize: 14, color: '#9CA3AF', marginBottom: 32 },
-  label: { fontSize: 13, fontWeight: '700', color: '#374151', marginBottom: 6, marginTop: 16 },
-  input: {
-    backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#E5E7EB',
-    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: '#111827',
-  },
-  inputError: { borderColor: '#EF4444', backgroundColor: '#FFF5F5' },
-  inputValid: { borderColor: '#10B981', backgroundColor: '#F0FDF4' },
-  fieldError: { fontSize: 12, color: '#EF4444', marginTop: 4, marginLeft: 2 },
-  fieldValid: { fontSize: 12, color: '#10B981', marginTop: 4, marginLeft: 2, fontWeight: '600' },
-  // Phone row
-  phoneRow: { flexDirection: 'row', gap: 8 },
-  countryBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#E5E7EB',
-    borderRadius: 12, paddingHorizontal: 12, paddingVertical: 13,
-  },
-  countryBtnValid: { borderColor: '#10B981', backgroundColor: '#F0FDF4' },
-  countryBtnError: { borderColor: '#EF4444', backgroundColor: '#FFF5F5' },
-  countryFlag: { fontSize: 18 },
-  countryCode: { fontSize: 14, fontWeight: '700', color: '#374151' },
-  countryChevron: { fontSize: 10, color: '#9CA3AF', marginLeft: 2 },
-  phoneInput: {
-    flex: 1, backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#E5E7EB',
-    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: '#111827',
-  },
-  // Strength
-  strengthContainer: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 },
-  strengthBars: { flexDirection: 'row', gap: 4, flex: 1 },
-  strengthBar: { flex: 1, height: 4, borderRadius: 4, backgroundColor: '#E5E7EB' },
-  strengthLabel: { fontSize: 12, fontWeight: '700', minWidth: 44, textAlign: 'right' },
-  // Password hint
-  passwordHint: { backgroundColor: '#F5F3FF', borderRadius: 10, padding: 10, marginTop: 10 },
-  passwordHintText: { fontSize: 12, color: '#6D28D9', lineHeight: 18 },
-  // Buttons
-  btn: {
-    backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15,
-    alignItems: 'center', marginTop: 24,
-  },
-  btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-  linkBtn: { alignItems: 'center', marginTop: 16 },
-  linkText: { fontSize: 14, color: '#6B7280' },
-  linkHighlight: { color: '#7C3AED', fontWeight: '700' },
-  errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
-  errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
-  // Modal
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
-  modalSheet: {
-    backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24,
-    paddingTop: 12, paddingBottom: 32, maxHeight: '70%',
-  },
-  modalHandle: {
-    width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 4,
-    alignSelf: 'center', marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 16, fontWeight: '800', color: '#111827',
-    paddingHorizontal: 20, marginBottom: 8,
-  },
-  countryItem: {
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20,
-    paddingVertical: 14, gap: 12,
-  },
-  countryItemSelected: { backgroundColor: '#F5F3FF' },
-  countryItemFlag: { fontSize: 22 },
-  countryItemName: { flex: 1, fontSize: 15, color: '#111827' },
-  countryItemCode: { fontSize: 14, color: '#6B7280', fontWeight: '600' },
-  countryItemCheck: { fontSize: 15, color: '#7C3AED', fontWeight: '800' },
-  dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E7EB' },
-  dividerText: { marginHorizontal: 12, fontSize: 13, color: '#9CA3AF', fontWeight: '600' },
-  googleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    borderRadius: 14,
-    paddingVertical: 14,
-    marginTop: 12,
-    gap: 10,
-  },
-  googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
-  googleBtnText: { fontSize: 15, fontWeight: '600', color: '#374151' },
-});
