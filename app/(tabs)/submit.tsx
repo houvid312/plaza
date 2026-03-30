@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,11 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import { useSubmitEvent, useMunicipalities } from '../../hooks/useEvents';
+import { useSubmitEvent, useMunicipalities, useMyEvents } from '../../hooks/useEvents';
 import { useAuth } from '../../context/AuthContext';
-import { ALL_CATEGORIES, Category, PARISHES } from '../../constants/categories';
+import { ALL_CATEGORIES, CATEGORIES, Category, PARISHES } from '../../constants/categories';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../context/ThemeContext';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
 function addDays(d: Date, n: number) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
@@ -37,8 +38,10 @@ const QUICK_DATES = [
 export default function SubmitScreen() {
   const { user } = useAuth();
   const router = useRouter();
+  const { colors } = useTheme();
   const { mutateAsync: submitEvent, isPending } = useSubmitEvent();
   const { data: municipalities } = useMunicipalities();
+  const { data: myEvents } = useMyEvents(user?.id);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -56,7 +59,7 @@ export default function SubmitScreen() {
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [activeTab, setActiveTab] = useState<'publish' | 'mine'>('publish');
 
   const monthRef = useRef<TextInput>(null);
   const yearRef = useRef<TextInput>(null);
@@ -124,11 +127,166 @@ export default function SubmitScreen() {
         location, address,
         submitted_by: user!.id,
       });
-      setSubmitted(true);
+      resetForm();
+      setActiveTab('mine');
     } catch (e: unknown) {
       setErrorMsg(e instanceof Error ? e.message : 'No se pudo enviar el evento.');
     }
   }
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.bg },
+    animatedWrapper: { flex: 1 },
+    header: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 },
+    headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.5 },
+    headerSub: { fontSize: 13, color: colors.textFaint, marginTop: 4, lineHeight: 18 },
+    form: { paddingHorizontal: 20 },
+    label: { fontSize: 13, fontWeight: '600', color: colors.textMuted, marginBottom: 7, marginTop: 16 },
+    input: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
+    },
+    textarea: { minHeight: 100, paddingTop: 13 },
+    categoryRow: { marginBottom: 4 },
+    catOption: {
+      flexDirection: 'row', alignItems: 'center', gap: 5,
+      paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+      borderWidth: 1.5, borderColor: colors.border, backgroundColor: colors.surface, marginRight: 8,
+    },
+    catEmoji: { fontSize: 13 },
+    catLabel: { fontSize: 12, fontWeight: '600' },
+    parishOption: {
+      paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+      borderWidth: 1.5, borderColor: '#D97706', backgroundColor: colors.surface, marginRight: 8,
+    },
+    parishOptionActive: { backgroundColor: '#B45309', borderColor: '#B45309' },
+    parishOptionText: { fontSize: 12, fontWeight: '600', color: '#B45309' },
+    parishOptionTextActive: { color: '#fff' },
+    dropdownTrigger: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13,
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    },
+    dropdownPlaceholder: { fontSize: 15, color: '#C4B5FD' },
+    dropdownValueText: { fontSize: 15, color: colors.text, fontWeight: '500' },
+    dropdownChevron: { fontSize: 14, color: '#A78BFA' },
+    modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+    modalSheet: {
+      backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
+      paddingHorizontal: 20, paddingTop: 20, paddingBottom: 36,
+    },
+    modalTitle: {
+      fontSize: 13, fontWeight: '700', color: colors.textFaint,
+      textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12,
+    },
+    modalOption: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+      paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
+    },
+    modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
+    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    quickDates: { flexDirection: 'row', gap: 8, marginBottom: 12, flexWrap: 'wrap' },
+    quickBtn: {
+      paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
+      borderWidth: 1.5, borderColor: colors.borderPrimary, backgroundColor: colors.surface,
+    },
+    quickBtnActive: { backgroundColor: '#7C3AED', borderColor: '#7C3AED' },
+    quickBtnText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
+    quickBtnTextActive: { color: '#fff' },
+    dateRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    dateSegment: { alignItems: 'center', flex: 1 },
+    dateSegmentWide: { alignItems: 'center', flex: 1.6 },
+    dateInput: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingVertical: 13, paddingHorizontal: 8,
+      fontSize: 17, fontWeight: '700', color: colors.text, width: '100%',
+    },
+    dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    dateSegLabel: {
+      fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4,
+      textTransform: 'uppercase', letterSpacing: 0.4,
+    },
+    dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    timesRow: { flexDirection: 'row', alignItems: 'flex-start' },
+    timeBlock: { flex: 1 },
+    timeDivider: { width: 16 },
+    timeSegRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    timeSegment: { alignItems: 'center', flex: 1 },
+    timeInput: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4,
+      fontSize: 17, fontWeight: '700', color: colors.text, width: '100%', textAlign: 'center',
+    },
+    timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    timeSegLabel: {
+      fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4,
+      textTransform: 'uppercase', letterSpacing: 0.4,
+    },
+    timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
+    errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
+    submitBtn: {
+      backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 17, alignItems: 'center',
+      marginTop: 28, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
+    },
+    submitBtnDisabled: { opacity: 0.7 },
+    submitText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
+    authWall: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 36, gap: 12 },
+    authIconBox: {
+      width: 90, height: 90, borderRadius: 28, backgroundColor: colors.surfacePrimary,
+      alignItems: 'center', justifyContent: 'center', marginBottom: 8, position: 'relative',
+    },
+    authIconBig: { fontSize: 40 },
+    authIconAccent: { fontSize: 22, position: 'absolute', bottom: 6, right: 6 },
+    authIcon: { fontSize: 32 },
+    authTitle: { fontSize: 24, fontWeight: '800', color: colors.text, letterSpacing: -0.4, textAlign: 'center' },
+    authSubtitle: { fontSize: 14, color: colors.textFaint, textAlign: 'center', lineHeight: 21, marginBottom: 8 },
+    authPrimaryBtn: {
+      width: '100%', backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 16, alignItems: 'center',
+      shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
+    },
+    authPrimaryText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+    authSecondaryBtn: {
+      width: '100%', borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 16, paddingVertical: 15, alignItems: 'center',
+    },
+    authSecondaryText: { color: '#7C3AED', fontWeight: '700', fontSize: 15 },
+    tabRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
+    tabBtn: {
+      paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20,
+      borderWidth: 1.5, borderColor: colors.borderPrimary, backgroundColor: colors.surface,
+    },
+    tabBtnActive: { backgroundColor: '#7C3AED', borderColor: '#7C3AED' },
+    tabBtnText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
+    tabBtnTextActive: { color: '#fff' },
+    emptyState: { alignItems: 'center', paddingTop: 60, gap: 10 },
+    emptyStateIcon: { fontSize: 40 },
+    emptyStateText: { fontSize: 15, color: colors.textFaint, textAlign: 'center' },
+    myEventsSection: { paddingHorizontal: 20, paddingTop: 16 },
+    myEventCard: {
+      backgroundColor: colors.surface, borderRadius: 14, padding: 14,
+      marginBottom: 10, borderWidth: 1.5, borderColor: colors.borderLight,
+    },
+    myEventTitle: { fontSize: 15, fontWeight: '700', color: colors.text, lineHeight: 20, marginBottom: 8 },
+    myEventFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+    statusBadge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, flexShrink: 0 },
+    statusBadgePending: { backgroundColor: '#FEF3C7' },
+    statusBadgeApproved: { backgroundColor: '#D1FAE5' },
+    statusBadgeRejected: { backgroundColor: '#FEE2E2' },
+    statusText: { fontSize: 11, fontWeight: '700' },
+    statusTextPending: { color: '#92400E' },
+    statusTextApproved: { color: '#065F46' },
+    statusTextRejected: { color: '#991B1B' },
+    myEventDate: { fontSize: 12, color: colors.textFaint, flex: 1 },
+    myEventRejection: {
+      marginTop: 8, backgroundColor: '#FEF2F2', borderRadius: 8,
+      paddingHorizontal: 10, paddingVertical: 7,
+    },
+    myEventRejectionText: { fontSize: 12, color: '#DC2626', lineHeight: 17 },
+    myEventsEmpty: { fontSize: 13, color: colors.textFaint, textAlign: 'center', paddingVertical: 16 },
+  }), [colors]);
 
   if (!user) {
     return (
@@ -155,35 +313,81 @@ export default function SubmitScreen() {
     );
   }
 
-  if (submitted) {
-    return (
-      <SafeAreaView style={styles.safe}>
-        <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          <View style={styles.authWall}>
-            <View style={styles.authIconBox}>
-              <Text style={styles.authIcon}>🎉</Text>
-            </View>
-            <Text style={styles.authTitle}>¡Enviado!</Text>
-            <Text style={styles.authSubtitle}>
-              Tu evento fue enviado y está pendiente de aprobación por el equipo municipal.
-            </Text>
-            <TouchableOpacity style={styles.authPrimaryBtn} onPress={() => { setSubmitted(false); resetForm(); }} activeOpacity={0.85}>
-              <Text style={styles.authPrimaryText}>Publicar otro evento</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.safe}>
       <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Publicar evento</Text>
-            <Text style={styles.headerSub}>Tu evento será revisado por el equipo municipal</Text>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Publicar evento</Text>
+          <View style={styles.tabRow}>
+            <TouchableOpacity
+              style={[styles.tabBtn, activeTab === 'publish' && styles.tabBtnActive]}
+              onPress={() => { setActiveTab('publish'); resetForm(); }}
+              activeOpacity={0.75}
+            >
+              <Text style={[styles.tabBtnText, activeTab === 'publish' && styles.tabBtnTextActive]}>Nuevo evento</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tabBtn, activeTab === 'mine' && styles.tabBtnActive]}
+              onPress={() => setActiveTab('mine')}
+              activeOpacity={0.75}
+            >
+              <Text style={[styles.tabBtnText, activeTab === 'mine' && styles.tabBtnTextActive]}>
+                Mis publicaciones{myEvents && myEvents.length > 0 ? ` (${myEvents.length})` : ''}
+              </Text>
+            </TouchableOpacity>
           </View>
+        </View>
+
+        {activeTab === 'mine' ? (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {!myEvents || myEvents.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateIcon}>📭</Text>
+                <Text style={styles.emptyStateText}>Todavía no publicaste ningún evento</Text>
+              </View>
+            ) : (
+              <View style={styles.myEventsSection}>
+                {myEvents.map(ev => {
+                  const [yyyy, mm, dd] = ev.event_date.split('-');
+                  const dateLabel = `${dd}/${mm}/${yyyy}`;
+                  const catInfo = CATEGORIES[ev.category as keyof typeof CATEGORIES];
+                  return (
+                    <View key={ev.id} style={styles.myEventCard}>
+                      <Text style={styles.myEventTitle} numberOfLines={2}>{ev.title}</Text>
+                      <View style={styles.myEventFooter}>
+                        <Text style={styles.myEventDate}>
+                          {catInfo ? `${catInfo.emoji} ${catInfo.label}` : ev.category} · {dateLabel}
+                        </Text>
+                        <View style={[
+                          styles.statusBadge,
+                          ev.status === 'pending' && styles.statusBadgePending,
+                          ev.status === 'approved' && styles.statusBadgeApproved,
+                          ev.status === 'rejected' && styles.statusBadgeRejected,
+                        ]}>
+                          <Text style={[
+                            styles.statusText,
+                            ev.status === 'pending' && styles.statusTextPending,
+                            ev.status === 'approved' && styles.statusTextApproved,
+                            ev.status === 'rejected' && styles.statusTextRejected,
+                          ]}>
+                            {ev.status === 'pending' ? '⏳ Pendiente' : ev.status === 'approved' ? '✅ Aprobado' : '❌ Rechazado'}
+                          </Text>
+                        </View>
+                      </View>
+                      {ev.status === 'rejected' && ev.rejection_reason && (
+                        <View style={styles.myEventRejection}>
+                          <Text style={styles.myEventRejectionText}>Motivo: {ev.rejection_reason}</Text>
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+                <View style={{ height: 90 }} />
+              </View>
+            )}
+          </ScrollView>
+        ) : (
+        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
 
           <View style={styles.form}>
             {/* Category */}
@@ -197,7 +401,7 @@ export default function SubmitScreen() {
                   activeOpacity={0.75}
                 >
                   <Text style={styles.catEmoji}>{cat.emoji}</Text>
-                  <Text style={[styles.catLabel, { color: category === cat.id ? '#fff' : '#4B5563' }]}>{cat.label}</Text>
+                  <Text style={[styles.catLabel, { color: category === cat.id ? '#fff' : colors.textMuted }]}>{cat.label}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -287,11 +491,7 @@ export default function SubmitScreen() {
                   style={[styles.dateInput, day && styles.dateInputFilled]}
                   value={day}
                   onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setDay(n); if (n.length === 2) monthRef.current?.focus(); }}
-                  keyboardType="number-pad"
-                  maxLength={2}
-                  placeholder="DD"
-                  placeholderTextColor="#C4B5FD"
-                  textAlign="center"
+                  keyboardType="number-pad" maxLength={2} placeholder="DD" placeholderTextColor="#C4B5FD" textAlign="center"
                 />
                 <Text style={styles.dateSegLabel}>Día</Text>
               </View>
@@ -302,11 +502,7 @@ export default function SubmitScreen() {
                   style={[styles.dateInput, month && styles.dateInputFilled]}
                   value={month}
                   onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setMonth(n); if (n.length === 2) yearRef.current?.focus(); }}
-                  keyboardType="number-pad"
-                  maxLength={2}
-                  placeholder="MM"
-                  placeholderTextColor="#C4B5FD"
-                  textAlign="center"
+                  keyboardType="number-pad" maxLength={2} placeholder="MM" placeholderTextColor="#C4B5FD" textAlign="center"
                 />
                 <Text style={styles.dateSegLabel}>Mes</Text>
               </View>
@@ -317,11 +513,7 @@ export default function SubmitScreen() {
                   style={[styles.dateInput, year.length === 4 && styles.dateInputFilled]}
                   value={year}
                   onChangeText={v => setYear(v.replace(/\D/g, '').slice(0, 4))}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  placeholder="AAAA"
-                  placeholderTextColor="#C4B5FD"
-                  textAlign="center"
+                  keyboardType="number-pad" maxLength={4} placeholder="AAAA" placeholderTextColor="#C4B5FD" textAlign="center"
                 />
                 <Text style={styles.dateSegLabel}>Año</Text>
               </View>
@@ -337,13 +529,7 @@ export default function SubmitScreen() {
                       style={[styles.timeInput, timeHH && styles.timeInputFilled]}
                       value={timeHH}
                       onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); const val = n.length === 2 ? String(Math.min(parseInt(n, 10), 23)).padStart(2, '0') : n; setTimeHH(val); if (val.length === 2) timeMMRef.current?.focus(); }}
-                      keyboardType="number-pad"
-                      maxLength={2}
-                      placeholder="HH"
-                      placeholderTextColor="#C4B5FD"
-                      textAlign="center"
-                      autoCorrect={false}
-                      autoComplete="off"
+                      keyboardType="number-pad" maxLength={2} placeholder="HH" placeholderTextColor="#C4B5FD" textAlign="center" autoCorrect={false} autoComplete="off"
                     />
                     <Text style={styles.timeSegLabel}>Hora</Text>
                   </View>
@@ -354,13 +540,7 @@ export default function SubmitScreen() {
                       style={[styles.timeInput, timeMM && styles.timeInputFilled]}
                       value={timeMM}
                       onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setTimeMM(n.length === 2 ? String(Math.min(parseInt(n, 10), 59)).padStart(2, '0') : n); }}
-                      keyboardType="number-pad"
-                      maxLength={2}
-                      placeholder="MM"
-                      placeholderTextColor="#C4B5FD"
-                      textAlign="center"
-                      autoCorrect={false}
-                      autoComplete="off"
+                      keyboardType="number-pad" maxLength={2} placeholder="MM" placeholderTextColor="#C4B5FD" textAlign="center" autoCorrect={false} autoComplete="off"
                     />
                     <Text style={styles.timeSegLabel}>Min</Text>
                   </View>
@@ -377,13 +557,7 @@ export default function SubmitScreen() {
                       style={[styles.timeInput, timeEndHH && styles.timeInputFilled]}
                       value={timeEndHH}
                       onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); const val = n.length === 2 ? String(Math.min(parseInt(n, 10), 23)).padStart(2, '0') : n; setTimeEndHH(val); if (val.length === 2) timeEndMMRef.current?.focus(); }}
-                      keyboardType="number-pad"
-                      maxLength={2}
-                      placeholder="HH"
-                      placeholderTextColor="#C4B5FD"
-                      textAlign="center"
-                      autoCorrect={false}
-                      autoComplete="off"
+                      keyboardType="number-pad" maxLength={2} placeholder="HH" placeholderTextColor="#C4B5FD" textAlign="center" autoCorrect={false} autoComplete="off"
                     />
                     <Text style={styles.timeSegLabel}>Hora</Text>
                   </View>
@@ -394,13 +568,7 @@ export default function SubmitScreen() {
                       style={[styles.timeInput, timeEndMM && styles.timeInputFilled]}
                       value={timeEndMM}
                       onChangeText={v => { const n = v.replace(/\D/g, '').slice(0, 2); setTimeEndMM(n.length === 2 ? String(Math.min(parseInt(n, 10), 59)).padStart(2, '0') : n); }}
-                      keyboardType="number-pad"
-                      maxLength={2}
-                      placeholder="MM"
-                      placeholderTextColor="#C4B5FD"
-                      textAlign="center"
-                      autoCorrect={false}
-                      autoComplete="off"
+                      keyboardType="number-pad" maxLength={2} placeholder="MM" placeholderTextColor="#C4B5FD" textAlign="center" autoCorrect={false} autoComplete="off"
                     />
                     <Text style={styles.timeSegLabel}>Min</Text>
                   </View>
@@ -429,86 +597,8 @@ export default function SubmitScreen() {
 
           <View style={{ height: 90 }} />
         </ScrollView>
+        )}
       </Animated.View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FAFAF8' },
-  animatedWrapper: { flex: 1 },
-  header: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 },
-  headerTitle: { fontSize: 28, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.5 },
-  headerSub: { fontSize: 13, color: '#94A3B8', marginTop: 4, lineHeight: 18 },
-  form: { paddingHorizontal: 20 },
-  label: { fontSize: 13, fontWeight: '600', color: '#64748B', marginBottom: 7, marginTop: 16 },
-  input: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: '#0F0A2A' },
-  textarea: { minHeight: 100, paddingTop: 13 },
-  row: { flexDirection: 'row', gap: 12 },
-  halfField: { flex: 1 },
-  categoryRow: { marginBottom: 4 },
-  catOption: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: '#EEEBF8', backgroundColor: '#fff', marginRight: 8 },
-  catEmoji: { fontSize: 13 },
-  catLabel: { fontSize: 12, fontWeight: '600' },
-  parishOption: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: '#D97706', backgroundColor: '#fff', marginRight: 8 },
-  parishOptionActive: { backgroundColor: '#B45309', borderColor: '#B45309' },
-  parishOptionText: { fontSize: 12, fontWeight: '600', color: '#B45309' },
-  parishOptionTextActive: { color: '#fff' },
-
-  // Municipality dropdown
-  dropdownTrigger: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  dropdownPlaceholder: { fontSize: 15, color: '#C4B5FD' },
-  dropdownValueText: { fontSize: 15, color: '#0F0A2A', fontWeight: '500' },
-  dropdownChevron: { fontSize: 14, color: '#A78BFA' },
-  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' },
-  modalSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 36 },
-  modalTitle: { fontSize: 13, fontWeight: '700', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12 },
-  modalOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  modalOptionText: { fontSize: 15, color: '#374151', fontWeight: '500' },
-  modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-  modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
-
-  // Date picker
-  quickDates: { flexDirection: 'row', gap: 8, marginBottom: 12, flexWrap: 'wrap' },
-  quickBtn: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: '#EDE9FE', backgroundColor: '#fff' },
-  quickBtnActive: { backgroundColor: '#7C3AED', borderColor: '#7C3AED' },
-  quickBtnText: { fontSize: 13, fontWeight: '600', color: '#64748B' },
-  quickBtnTextActive: { color: '#fff' },
-  dateRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  dateSegment: { alignItems: 'center', flex: 1 },
-  dateSegmentWide: { alignItems: 'center', flex: 1.6 },
-  dateInput: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingVertical: 13, paddingHorizontal: 8, fontSize: 17, fontWeight: '700', color: '#0F0A2A', width: '100%' },
-  dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
-  dateSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-  dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
-
-  // Time segments
-  timesRow: { flexDirection: 'row', alignItems: 'flex-start' },
-  timeBlock: { flex: 1 },
-  timeDivider: { width: 16 },
-  timeSegRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  timeSegment: { alignItems: 'center', flex: 1 },
-  timeInput: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4, fontSize: 17, fontWeight: '700', color: '#0F0A2A', width: '100%', textAlign: 'center' },
-  timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
-  timeSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-  timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
-
-  errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
-  errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
-  submitBtn: { backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 17, alignItems: 'center', marginTop: 28, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6 },
-  submitBtnDisabled: { opacity: 0.7 },
-  submitText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
-
-  // Auth wall
-  authWall: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 36, gap: 12 },
-  authIconBox: { width: 90, height: 90, borderRadius: 28, backgroundColor: '#EDE9FE', alignItems: 'center', justifyContent: 'center', marginBottom: 8, position: 'relative' },
-  authIconBig: { fontSize: 40 },
-  authIconAccent: { fontSize: 22, position: 'absolute', bottom: 6, right: 6 },
-  authIcon: { fontSize: 32 },
-  authTitle: { fontSize: 24, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.4, textAlign: 'center' },
-  authSubtitle: { fontSize: 14, color: '#94A3B8', textAlign: 'center', lineHeight: 21, marginBottom: 8 },
-  authPrimaryBtn: { width: '100%', backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 16, alignItems: 'center', shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6 },
-  authPrimaryText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-  authSecondaryBtn: { width: '100%', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 16, paddingVertical: 15, alignItems: 'center' },
-  authSecondaryText: { color: '#7C3AED', fontWeight: '700', fontSize: 15 },
-});
