@@ -129,6 +129,7 @@ export function useSubmitEvent() {
       event_time_end?: string;
       location: string;
       address: string;
+      price?: string;
       municipality_id?: number;
       parish?: string;
       submitted_by?: string;
@@ -154,6 +155,7 @@ export function useSubmitEvent() {
         event_time_end: data.event_time_end || null,
         location: data.location || null,
         address: data.address || null,
+        price: data.price || 'Entrada libre',
         municipality_id: data.municipality_id ?? null,
         parish: data.parish ?? null,
         submitted_by: data.submitted_by ?? null,

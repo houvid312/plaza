@@ -88,6 +88,11 @@ export function EventHero({ event, isToday = false }: Props) {
                   <Text style={styles.metaText} numberOfLines={1}>🏛️ {muniName}</Text>
                 </View>
               )}
+              {event.category !== 'religious' && (
+                <View style={styles.metaChip}>
+                  <Text style={styles.metaText}>🎟 {event.price ?? 'Entrada libre'}</Text>
+                </View>
+              )}
             </View>
             <View style={styles.cta}>
               <Text style={[styles.ctaText, { color: cat.color }]}>Ver →</Text>

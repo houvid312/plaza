@@ -9,6 +9,7 @@ export interface Event {
   location: string | null;
   address: string | null;
   image_uri: string | null;
+  price: string | null;
   status: 'pending' | 'approved' | 'rejected';
   rejection_reason: string | null;
   municipality_id: number | null;

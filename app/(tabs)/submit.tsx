@@ -58,6 +58,7 @@ export default function SubmitScreen() {
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
+  const [price, setPrice] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [activeTab, setActiveTab] = useState<'publish' | 'mine'>('publish');
 
@@ -90,11 +91,12 @@ export default function SubmitScreen() {
   function resetForm() {
     setTitle(''); setDescription(''); setDay(''); setMonth('');
     setYear(String(now.getFullYear())); setTimeHH(''); setTimeMM(''); setTimeEndHH(''); setTimeEndMM('');
-    setMunicipalityId(null); setSelectedParish(null); setLocation(''); setAddress(''); setErrorMsg('');
+    setMunicipalityId(null); setSelectedParish(null); setLocation(''); setAddress(''); setPrice(''); setErrorMsg('');
   }
 
   async function handleSubmit() {
     if (!title.trim()) { setErrorMsg('El título es obligatorio.'); return; }
+    if (!description.trim()) { setErrorMsg('La descripción es obligatoria.'); return; }
     if (!date) { setErrorMsg('La fecha es obligatoria.'); return; }
     const hasStart = timeHH !== '' || timeMM !== '';
     const hasEnd = timeEndHH !== '' || timeEndMM !== '';
@@ -122,6 +124,7 @@ export default function SubmitScreen() {
         event_date: date,
         event_time,
         event_time_end,
+        price: price.trim() || undefined,
         municipality_id: municipalityId ?? undefined,
         parish: category === 'religious' && selectedParish ? selectedParish : undefined,
         location, address,
@@ -466,8 +469,16 @@ export default function SubmitScreen() {
             <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Ej: Feria de Artesanías" placeholderTextColor="#C4B5FD" />
 
             {/* Description */}
-            <Text style={styles.label}>Descripción</Text>
+            <Text style={styles.label}>Descripción *</Text>
             <TextInput style={[styles.input, styles.textarea]} value={description} onChangeText={setDescription} placeholder="Describe el evento..." placeholderTextColor="#C4B5FD" multiline numberOfLines={4} textAlignVertical="top" />
+
+            {/* Price */}
+            {category !== 'religious' && (
+              <>
+                <Text style={styles.label}>Valor / Entrada</Text>
+                <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="Entrada libre" placeholderTextColor="#C4B5FD" />
+              </>
+            )}
 
             {/* Date picker */}
             <Text style={styles.label}>Fecha *</Text>
