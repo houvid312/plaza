@@ -118,13 +118,34 @@ function formatDate(dateStr: string): string {
 
 export default function ExploreScreen() {
   const { user } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>(
-    user?.preferences?.category ?? 'all'
+  const [selectedCategories, setSelectedCategories] = useState<Set<Category>>(
+    user?.preferences?.category ? new Set([user.preferences.category as Category]) : new Set()
   );
   const [selectedParish, setSelectedParish] = useState<Parish | 'all'>(
     user?.preferences?.parish ?? 'all'
   );
-  const [selectedDate, setSelectedDate] = useState<string>('all');
+  const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
+
+  function toggleCategory(cat: Category) {
+    setSelectedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(cat)) { next.delete(cat); } else { next.add(cat); }
+      if (!next.has('religious')) setSelectedParish('all');
+      return next;
+    });
+  }
+
+  function toggleDate(date: string) {
+    setSelectedDates(prev => {
+      const next = new Set(prev);
+      if (next.has(date)) { next.delete(date); } else { next.add(date); }
+      return next;
+    });
+  }
+
+  const hasReligious = selectedCategories.has('religious');
+  const activeCats = selectedCategories.size > 0 ? Array.from(selectedCategories) : undefined;
+  const activeDates = selectedDates.size > 0 ? Array.from(selectedDates).sort() : undefined;
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const { data: municipalities } = useMunicipalities();
@@ -142,12 +163,17 @@ export default function ExploreScreen() {
     if (marinilla) setSelectedMunicipality(marinilla);
   }, [municipalities]);
 
-  const { data: events, isLoading } = useUpcomingEvents(
-    selectedCategory === 'all' ? undefined : selectedCategory,
+  const { data: rawEvents, isLoading } = useUpcomingEvents(
+    activeCats,
     selectedMunicipality?.id,
-    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined,
-    selectedDate !== 'all' ? selectedDate : undefined
+    undefined, // parroquia filtrada en cliente
+    activeDates
   );
+
+  // Parroquia en cliente: solo filtra religiosos, el resto pasa siempre
+  const events = rawEvents && selectedParish !== 'all'
+    ? rawEvents.filter(e => e.category !== 'religious' || e.parish === selectedParish)
+    : rawEvents;
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(14)).current;
@@ -201,33 +227,41 @@ export default function ExploreScreen() {
         {/* Category filter */}
         <View style={styles.filterWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContent}>
-            <CategoryPill category="all" selected={selectedCategory === 'all'} onPress={() => { setSelectedCategory('all'); setSelectedParish('all'); }} />
+            <CategoryPill category="all" selected={selectedCategories.size === 0} onPress={() => { setSelectedCategories(new Set()); setSelectedParish('all'); }} />
             {ALL_CATEGORIES.map((cat) => (
-              <CategoryPill key={cat.id} category={cat.id} selected={selectedCategory === cat.id} onPress={() => { setSelectedCategory(cat.id); setSelectedParish('all'); }} />
+              <CategoryPill key={cat.id} category={cat.id} selected={selectedCategories.has(cat.id)} onPress={() => toggleCategory(cat.id)} />
             ))}
           </ScrollView>
           <View style={styles.filterFade} pointerEvents="none" />
         </View>
 
-        {/* Parish sub-filter */}
+        {/* Filtro parroquias: visible cuando religious está seleccionado (o Todos) */}
         <ParishFilter
-          visible={selectedCategory === 'religious'}
+          visible={hasReligious}
           selectedParish={selectedParish}
           onSelect={setSelectedParish}
           styles={styles}
         />
 
-        {/* Date filter */}
+        {/* Date filter — multi-select */}
         <View style={styles.filterWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContent}>
-            {DATE_PILLS.map((pill) => (
+            {/* "Todos" limpia la selección */}
+            <TouchableOpacity
+              style={[styles.datePill, selectedDates.size === 0 && styles.datePillActive]}
+              onPress={() => setSelectedDates(new Set())}
+              activeOpacity={0.75}
+            >
+              <Text style={[styles.datePillText, selectedDates.size === 0 && styles.datePillTextActive]}>Todos</Text>
+            </TouchableOpacity>
+            {DATE_PILLS.slice(1).map((pill) => (
               <TouchableOpacity
                 key={pill.value}
-                style={[styles.datePill, selectedDate === pill.value && styles.datePillActive]}
-                onPress={() => setSelectedDate(pill.value)}
+                style={[styles.datePill, selectedDates.has(pill.value) && styles.datePillActive]}
+                onPress={() => toggleDate(pill.value)}
                 activeOpacity={0.75}
               >
-                <Text style={[styles.datePillText, selectedDate === pill.value && styles.datePillTextActive]}>
+                <Text style={[styles.datePillText, selectedDates.has(pill.value) && styles.datePillTextActive]}>
                   {pill.label}
                 </Text>
               </TouchableOpacity>

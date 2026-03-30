@@ -79,12 +79,26 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>(
-    user?.preferences?.category ?? 'all'
+  const [selectedCategories, setSelectedCategories] = useState<Set<Category>>(
+    user?.preferences?.category ? new Set([user.preferences.category as Category]) : new Set()
   );
   const [selectedParish, setSelectedParish] = useState<Parish | 'all'>(
     user?.preferences?.parish ?? 'all'
   );
+
+  function toggleCategory(cat: Category) {
+    setSelectedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(cat)) { next.delete(cat); } else { next.add(cat); }
+      if (!next.has('religious')) setSelectedParish('all');
+      return next;
+    });
+  }
+
+  function clearCategories() {
+    setSelectedCategories(new Set());
+    setSelectedParish('all');
+  }
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
@@ -104,17 +118,24 @@ export default function HomeScreen() {
     if (marinilla) setSelectedMunicipality(marinilla);
   }, [municipalities]);
 
-  const { data: events, isLoading, refetch, isRefetching } = useTodayEvents(
-    selectedCategory === 'all' ? undefined : selectedCategory,
+  const activeCats = selectedCategories.size > 0 ? Array.from(selectedCategories) : undefined;
+  const hasReligious = selectedCategories.has('religious');
+
+  // Parroquia se filtra en cliente: los eventos no-religiosos pasan siempre,
+  // solo los religiosos se filtran por parroquia. Así convive con otras categorías.
+  const { data: rawEvents, isLoading, refetch, isRefetching } = useTodayEvents(
+    activeCats,
     selectedMunicipality?.id,
-    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
   );
 
   const { data: allUpcoming } = useUpcomingEvents(
-    selectedCategory === 'all' ? undefined : selectedCategory,
+    activeCats,
     selectedMunicipality?.id,
-    selectedCategory === 'religious' && selectedParish !== 'all' ? selectedParish : undefined
   );
+
+  const events = rawEvents && selectedParish !== 'all'
+    ? rawEvents.filter(e => e.category !== 'religious' || e.parish === selectedParish)
+    : rawEvents;
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(14)).current;
@@ -132,15 +153,24 @@ export default function HomeScreen() {
   });
   const dateStr = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
-  const featuredEvents = events?.filter(e => e.featured) ?? [];
-  const nonFeatured = events?.filter(e => !e.featured) ?? [];
+  // Featured solo si no han terminado
+  const featuredEvents = events?.filter(e => {
+    if (!e.featured) return false;
+    return getTimeStatus(e.event_time, e.event_time_end, e.event_date) !== 'ended';
+  }) ?? [];
 
-  const liveEvents = nonFeatured.filter(e => getTimeStatus(e.event_time, e.event_time_end) === 'live');
-  const upcomingEvents = nonFeatured.filter(e => {
-    const s = getTimeStatus(e.event_time, e.event_time_end);
+  // Pool de no-destacados + destacados que ya terminaron
+  const nonFeaturedPool = events?.filter(e => {
+    if (!e.featured) return true;
+    return getTimeStatus(e.event_time, e.event_time_end, e.event_date) === 'ended';
+  }) ?? [];
+
+  const liveEvents = nonFeaturedPool.filter(e => getTimeStatus(e.event_time, e.event_time_end, e.event_date) === 'live');
+  const upcomingEvents = nonFeaturedPool.filter(e => {
+    const s = getTimeStatus(e.event_time, e.event_time_end, e.event_date);
     return s === 'upcoming' || s === 'unknown';
   });
-  const endedEvents = nonFeatured.filter(e => getTimeStatus(e.event_time, e.event_time_end) === 'ended');
+  const endedEvents = nonFeaturedPool.filter(e => getTimeStatus(e.event_time, e.event_time_end, e.event_date) === 'ended');
 
   const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
   const nothingLeft = !isLoading && liveEvents.length === 0 && upcomingEvents.length === 0;
@@ -204,17 +234,17 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 4 }}
           >
-            <CategoryPill category="all" selected={selectedCategory === 'all'} onPress={() => { setSelectedCategory('all'); setSelectedParish('all'); }} />
+            <CategoryPill category="all" selected={selectedCategories.size === 0} onPress={clearCategories} />
             {ALL_CATEGORIES.map((cat) => (
-              <CategoryPill key={cat.id} category={cat.id} selected={selectedCategory === cat.id} onPress={() => { setSelectedCategory(cat.id); setSelectedParish('all'); }} />
+              <CategoryPill key={cat.id} category={cat.id} selected={selectedCategories.has(cat.id)} onPress={() => toggleCategory(cat.id)} />
             ))}
           </ScrollView>
           <View style={styles.categoriesFade} pointerEvents="none" />
         </View>
 
-        {/* Filtro parroquias con animación de altura */}
+        {/* Filtro parroquias: visible cuando religious está seleccionado (o Todos) */}
         <ParishFilter
-          visible={selectedCategory === 'religious'}
+          visible={hasReligious}
           selectedParish={selectedParish}
           onSelect={setSelectedParish}
         />
