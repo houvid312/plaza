@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Event, getTimeStatus, formatTimeRange } from '../types/event';
@@ -6,6 +6,7 @@ import { CATEGORIES, Category } from '../constants/categories';
 import { useMunicipalities, useIsFavorite, useToggleFavorite } from '../hooks/useEvents';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface Props {
   event: Event;
@@ -18,6 +19,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
   const router = useRouter();
   const { user } = useAuth();
   const { showToast } = useToast();
+  const { colors } = useTheme();
   const cat = CATEGORIES[event.category as Category] ?? {
     label: event.category,
     color: '#6B7280',
@@ -44,6 +46,51 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
   function handlePressOut() {
     Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: false, speed: 22, bounciness: 8 }).start();
   }
+
+  const styles = useMemo(() => StyleSheet.create({
+    wrapper: { marginHorizontal: 16, marginBottom: 10 },
+    wrapperCompact: { marginHorizontal: 8 },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: 18,
+      padding: 16,
+      shadowColor: '#6D28D9',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.07,
+      shadowRadius: 14,
+      elevation: 3,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    cardEnded: { backgroundColor: colors.bgAlt, borderColor: colors.borderLight, shadowOpacity: 0.02 },
+    topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 9 },
+    categoryTag: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, gap: 4 },
+    categoryEmoji: { fontSize: 11 },
+    categoryLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
+    liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF2F2', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+    liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
+    liveText: { fontSize: 11, fontWeight: '700', color: '#EF4444' },
+    topRowRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+    heartIcon: { fontSize: 18, color: '#F43F5E' },
+    heartIconActive: { color: '#F43F5E' },
+    heartIconGuest: { color: colors.borderMedium },
+    chevron: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', lineHeight: 22 },
+    chevronEnded: { color: colors.borderLight },
+    endedBadge: { fontSize: 11, fontWeight: '600', color: colors.textFaint },
+    title: { fontSize: 15, fontWeight: '700', color: colors.text, marginBottom: 5, lineHeight: 21 },
+    titleEnded: { color: colors.textFaint },
+    description: { fontSize: 13, color: colors.textMuted, lineHeight: 19, marginBottom: 8 },
+    textEnded: { color: colors.borderMedium },
+    footer: { gap: 6, marginTop: 4 },
+    timeRow: { flexDirection: 'row', alignItems: 'center' },
+    timeInline: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
+    timeInlineLive: { color: '#EF4444' },
+    timeSep: { fontSize: 12, color: colors.borderMedium },
+    locationRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    locationDot: { width: 5, height: 5, borderRadius: 3, opacity: 0.7 },
+    location: { fontSize: 12, color: colors.textFaint, flex: 1 },
+    dateLabel: { fontSize: 11, color: colors.textFaint, fontWeight: '500', textTransform: 'capitalize' },
+  }), [colors]);
 
   return (
     <View style={[styles.wrapper, variant === 'compact' && styles.wrapperCompact]}>
@@ -152,48 +199,3 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: { marginHorizontal: 16, marginBottom: 10 },
-  wrapperCompact: { marginHorizontal: 8 },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 16,
-    shadowColor: '#6D28D9',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 14,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: '#F3F0FD',
-  },
-  cardEnded: { backgroundColor: '#FAFAFA', borderColor: '#F1F5F9', shadowOpacity: 0.02 },
-  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 9 },
-  categoryTag: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, gap: 4 },
-  categoryEmoji: { fontSize: 11 },
-  categoryLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
-  liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FEF2F2', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
-  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
-  liveText: { fontSize: 11, fontWeight: '700', color: '#EF4444' },
-  topRowRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  heartIcon: { fontSize: 18, color: '#F43F5E' },
-  heartIconActive: { color: '#F43F5E' },
-  heartIconGuest: { color: '#CBD5E1' },
-  chevron: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', lineHeight: 22 },
-  chevronEnded: { color: '#E2E8F0' },
-  endedBadge: { fontSize: 11, fontWeight: '600', color: '#94A3B8' },
-  title: { fontSize: 15, fontWeight: '700', color: '#0F0A2A', marginBottom: 5, lineHeight: 21 },
-  titleEnded: { color: '#94A3B8' },
-  description: { fontSize: 13, color: '#64748B', lineHeight: 19, marginBottom: 8 },
-  textEnded: { color: '#CBD5E1' },
-  footer: { gap: 6, marginTop: 4 },
-  timeRow: { flexDirection: 'row', alignItems: 'center' },
-  timeInline: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
-  timeInlineLive: { color: '#EF4444' },
-  timeSep: { fontSize: 12, color: '#CBD5E1' },
-  locationRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  locationDot: { width: 5, height: 5, borderRadius: 3, opacity: 0.7 },
-  location: { fontSize: 12, color: '#94A3B8', flex: 1 },
-  dateLabel: { fontSize: 11, color: '#B0BAC9', fontWeight: '500', textTransform: 'capitalize' },
-});

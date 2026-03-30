@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useTheme } from './ThemeContext';
 
 interface ToastAction {
   label: string;
@@ -27,6 +28,7 @@ const ToastContext = createContext<ToastContextType | null>(null);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ToastOptions | null>(null);
+  const { colors } = useTheme();
   const translateY = useRef(new Animated.Value(100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -61,16 +63,16 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           style={[styles.container, { transform: [{ translateY }], opacity }]}
           pointerEvents="box-none"
         >
-          <View style={styles.toast}>
+          <View style={[styles.toast, { backgroundColor: colors.surface }]}>
             <View style={styles.accent} />
             <View style={styles.body}>
               <View style={styles.topRow}>
-                <View style={styles.iconWrap}>
+                <View style={[styles.iconWrap, { backgroundColor: colors.surfacePrimaryLight }]}>
                   <Text style={styles.iconText}>💜</Text>
                 </View>
                 <View style={styles.textBlock}>
-                  <Text style={styles.message}>{toast.message}</Text>
-                  {toast.sub && <Text style={styles.sub}>{toast.sub}</Text>}
+                  <Text style={[styles.message, { color: colors.text }]}>{toast.message}</Text>
+                  {toast.sub && <Text style={[styles.sub, { color: colors.textFaint }]}>{toast.sub}</Text>}
                 </View>
               </View>
               {toast.actions && toast.actions.length > 0 && (
@@ -84,7 +86,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                         action.onPress();
                       }}
                       activeOpacity={0.8}
-                      style={i === 0 ? styles.actionBtnPrimary : styles.actionBtnSecondary}
+                      style={i === 0 ? styles.actionBtnPrimary : [styles.actionBtnSecondary, { backgroundColor: colors.surfacePrimaryLight, borderColor: colors.borderPrimary }]}
                     >
                       <Text style={i === 0 ? styles.actionTextPrimary : styles.actionTextSecondary}>
                         {action.label}
@@ -116,7 +118,6 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   toast: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#6D28D9',
@@ -144,7 +145,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 10,
-    backgroundColor: '#F5F3FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -155,13 +155,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   message: {
-    color: '#0F0A2A',
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 19,
   },
   sub: {
-    color: '#94A3B8',
     fontSize: 12,
     fontWeight: '500',
     marginTop: 1,
@@ -180,12 +178,10 @@ const styles = StyleSheet.create({
   },
   actionBtnSecondary: {
     flex: 1,
-    backgroundColor: '#F5F3FF',
     paddingVertical: 10,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#DDD6FE',
   },
   actionTextPrimary: {
     color: '#fff',

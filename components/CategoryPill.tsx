@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
 import { CATEGORIES, Category } from '../constants/categories';
+import { useTheme } from '../context/ThemeContext';
 
 interface Props {
   category: Category | 'all';
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function CategoryPill({ category, selected, onPress }: Props) {
+  const { colors } = useTheme();
   const isAll = category === 'all';
   const cat = isAll ? null : CATEGORIES[category];
   const color = cat?.color ?? '#7C3AED';
@@ -36,12 +38,12 @@ export function CategoryPill({ category, selected, onPress }: Props) {
           styles.pill,
           selected
             ? { backgroundColor: color, borderColor: color }
-            : { backgroundColor: '#fff', borderColor: '#EEEBF8' },
+            : { backgroundColor: colors.surface, borderColor: colors.borderPrimaryLight },
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
         <Text style={styles.emoji}>{emoji}</Text>
-        <Text style={[styles.label, { color: selected ? '#fff' : '#4B5563' }]}>
+        <Text style={[styles.label, { color: selected ? '#fff' : colors.textSub }]}>
           {label}
         </Text>
       </Animated.View>

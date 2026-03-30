@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -22,12 +22,14 @@ import { ALL_CATEGORIES, Category, PARISHES, Parish } from '../../constants/cate
 import { useTodayEvents, useUpcomingEvents, useMunicipalities, Municipality } from '../../hooks/useEvents';
 import { useAuth } from '../../context/AuthContext';
 import { getTimeStatus } from '../../types/event';
+import { useTheme } from '../../context/ThemeContext';
 
 function ParishFilter({ visible, selectedParish, onSelect }: {
   visible: boolean;
   selectedParish: Parish | 'all';
   onSelect: (p: Parish | 'all') => void;
 }) {
+  const { colors } = useTheme();
   const heightAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -48,6 +50,14 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
 
   const maxHeight = heightAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 54] });
 
+  const pillStyle = useMemo(() => ({
+    base: {
+      paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20,
+      borderWidth: 1.5, borderColor: '#D97706', backgroundColor: colors.surface, marginRight: 8,
+    } as const,
+    active: { backgroundColor: '#B45309', borderColor: '#B45309' } as const,
+  }), [colors]);
+
   return (
     <Animated.View style={{ height: maxHeight, opacity: opacityAnim, overflow: 'hidden' }}>
       <ScrollView
@@ -56,20 +66,20 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}
       >
         <TouchableOpacity
-          style={[styles.parishPill, selectedParish === 'all' && styles.parishPillActive]}
+          style={[pillStyle.base, selectedParish === 'all' && pillStyle.active]}
           onPress={() => onSelect('all')}
           activeOpacity={0.75}
         >
-          <Text style={[styles.parishPillText, selectedParish === 'all' && styles.parishPillTextActive]}>Todas</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', color: selectedParish === 'all' ? '#fff' : '#B45309' }}>Todas</Text>
         </TouchableOpacity>
         {PARISHES.map((p) => (
           <TouchableOpacity
             key={p}
-            style={[styles.parishPill, selectedParish === p && styles.parishPillActive]}
+            style={[pillStyle.base, selectedParish === p && pillStyle.active]}
             onPress={() => onSelect(p)}
             activeOpacity={0.75}
           >
-            <Text style={[styles.parishPillText, selectedParish === p && styles.parishPillTextActive]}>{p}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: selectedParish === p ? '#fff' : '#B45309' }}>{p}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -79,6 +89,7 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const { colors, isDark, toggleTheme } = useTheme();
   const [selectedCategories, setSelectedCategories] = useState<Set<Category>>(
     user?.preferences?.category ? new Set([user.preferences.category as Category]) : new Set()
   );
@@ -121,8 +132,6 @@ export default function HomeScreen() {
   const activeCats = selectedCategories.size > 0 ? Array.from(selectedCategories) : undefined;
   const hasReligious = selectedCategories.has('religious');
 
-  // Parroquia se filtra en cliente: los eventos no-religiosos pasan siempre,
-  // solo los religiosos se filtran por parroquia. Así convive con otras categorías.
   const { data: rawEvents, isLoading, refetch, isRefetching } = useTodayEvents(
     activeCats,
     selectedMunicipality?.id,
@@ -147,19 +156,27 @@ export default function HomeScreen() {
     ]).start();
   }, []);
 
+  const thumbAnim = useRef(new Animated.Value(isDark ? 14 : 0)).current;
+  useEffect(() => {
+    Animated.spring(thumbAnim, {
+      toValue: isDark ? 14 : 0,
+      useNativeDriver: true,
+      speed: 22,
+      bounciness: 5,
+    }).start();
+  }, [isDark]);
+
   const today = new Date();
   const rawDate = today.toLocaleDateString('es-AR', {
     weekday: 'long', day: 'numeric', month: 'long',
   });
   const dateStr = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
-  // Featured solo si no han terminado
   const featuredEvents = events?.filter(e => {
     if (!e.featured) return false;
     return getTimeStatus(e.event_time, e.event_time_end, e.event_date) !== 'ended';
   }) ?? [];
 
-  // Pool de no-destacados + destacados que ya terminaron
   const nonFeaturedPool = events?.filter(e => {
     if (!e.featured) return true;
     return getTimeStatus(e.event_time, e.event_time_end, e.event_date) === 'ended';
@@ -189,13 +206,146 @@ export default function HomeScreen() {
     setContactModalOpen(true);
   }
 
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.bg },
+    animatedWrapper: { flex: 1 },
+    header: {
+      paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16,
+      flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
+    },
+    headerEyebrow: { fontSize: 11, color: '#A78BFA', fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
+    headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text, lineHeight: 34, letterSpacing: -0.5 },
+    headerDate: { fontSize: 13, color: colors.textFaint, marginTop: 3 },
+    headerRight: { alignItems: 'flex-end', gap: 7, paddingLeft: 10 },
+    headerRightRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+    contactBtn: {
+      paddingHorizontal: 12, paddingVertical: 7, borderRadius: 19,
+      backgroundColor: colors.surfacePrimaryLight,
+      borderWidth: 1.5, borderColor: colors.borderPrimary,
+    },
+    contactBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.2 },
+    headerIconBtn: {
+      width: 36, height: 36, borderRadius: 18,
+      backgroundColor: colors.surfacePrimary, alignItems: 'center', justifyContent: 'center',
+    },
+    headerAccentText: { fontSize: 14, fontWeight: '800', color: '#7C3AED' },
+    themeSwitch: {
+      backgroundColor: colors.surfacePrimary,
+      borderRadius: 18,
+      paddingHorizontal: 10, paddingVertical: 7,
+      borderWidth: 1, borderColor: colors.borderPrimary,
+      alignItems: 'center', justifyContent: 'center',
+    },
+    themeSwitchTrack: {
+      width: 34, height: 20, borderRadius: 10,
+      backgroundColor: colors.borderMedium,
+      justifyContent: 'center',
+      paddingHorizontal: 2,
+    },
+    themeSwitchTrackOn: { backgroundColor: '#7C3AED' },
+    themeSwitchThumb: {
+      width: 16, height: 16, borderRadius: 8,
+      backgroundColor: '#fff',
+      alignItems: 'center', justifyContent: 'center',
+      alignSelf: 'flex-start',
+      shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.15, shadowRadius: 2, elevation: 2,
+    },
+    contactSheet: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: 24, borderTopRightRadius: 24,
+      paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
+    },
+    contactHandle: {
+      width: 36, height: 4, borderRadius: 2,
+      backgroundColor: colors.borderMedium,
+      alignSelf: 'center', marginBottom: 20,
+    },
+    contactSheetTitle: { fontSize: 20, fontWeight: '800', color: colors.text, marginBottom: 4 },
+    contactSheetSubtitle: { fontSize: 13, color: colors.textFaint, marginBottom: 20 },
+    contactCard: {
+      flexDirection: 'row', alignItems: 'center',
+      backgroundColor: colors.bg, borderRadius: 16, padding: 14, marginBottom: 10,
+      borderWidth: 1, borderColor: colors.borderLight, gap: 12,
+    },
+    contactCardIcon: { width: 46, height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+    contactCardEmoji: { fontSize: 22 },
+    contactCardBody: { flex: 1 },
+    contactCardLabel: { fontSize: 11, fontWeight: '600', color: colors.textFaint, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
+    contactCardValue: { fontSize: 14, fontWeight: '700', color: colors.text },
+    contactCardArrow: { fontSize: 22, color: '#C4B5FD', fontWeight: '300' },
+    contactCloseBtn: {
+      marginTop: 16, paddingVertical: 14, borderRadius: 14,
+      backgroundColor: colors.surfacePrimaryLight, alignItems: 'center',
+      borderWidth: 1.5, borderColor: colors.borderPrimary,
+    },
+    contactCloseBtnText: { fontSize: 15, fontWeight: '700', color: '#7C3AED' },
+    categoriesWrap: { position: 'relative', marginBottom: 4 },
+    categoriesFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 36, backgroundColor: colors.bg },
+    section: { marginBottom: 4 },
+    sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginBottom: 12, marginTop: 16 },
+    sectionAccent: { width: 3, height: 16, borderRadius: 2 },
+    liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
+    sectionTitle: { fontSize: 14, fontWeight: '700', color: colors.textSub, letterSpacing: 0.1 },
+    sectionTitleLive: { color: '#EF4444' },
+    sectionTitleEnded: { color: colors.textFaint },
+    countBadge: { backgroundColor: colors.surfacePrimary, paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
+    countBadgeText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    centered: { paddingVertical: 60, alignItems: 'center' },
+    empty: { alignItems: 'center', paddingVertical: 60, paddingHorizontal: 40 },
+    emptyEmoji: { fontSize: 48, marginBottom: 12 },
+    emptyTitle: { fontSize: 18, fontWeight: '700', color: colors.textSub, marginBottom: 6 },
+    emptyText: { fontSize: 14, color: colors.textFaint, textAlign: 'center', lineHeight: 20 },
+    nextDaysSection: { marginTop: 12 },
+    nextDaysBanner: {
+      marginHorizontal: 16, marginBottom: 12, paddingHorizontal: 14, paddingVertical: 10,
+      backgroundColor: colors.surfacePrimary, borderRadius: 12,
+      flexDirection: 'row', alignItems: 'center',
+    },
+    nextDaysBannerText: { fontSize: 13, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.3 },
+    eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 3 },
+    eyebrowChevron: { fontSize: 10, color: '#A78BFA', fontWeight: '700' },
+    modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+    modalSheet: {
+      backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
+      paddingHorizontal: 20, paddingTop: 20, paddingBottom: 36,
+    },
+    modalTitle: {
+      fontSize: 13, fontWeight: '700', color: colors.textFaint,
+      textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12,
+    },
+    modalOption: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+      paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
+    },
+    modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
+    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    exploreBtn: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+      marginHorizontal: 20, marginTop: 24, paddingVertical: 14, borderRadius: 14,
+      borderWidth: 1.5, borderColor: colors.borderPrimary, backgroundColor: colors.bg,
+    },
+    exploreBtnText: { fontSize: 14, fontWeight: '600', color: '#7C3AED', letterSpacing: 0.2 },
+    exploreBtnArrow: { fontSize: 14, color: '#A78BFA' },
+    comingSoonWrap: { alignItems: 'center', paddingHorizontal: 36, paddingVertical: 72 },
+    comingSoonEmoji: { fontSize: 52, marginBottom: 16 },
+    comingSoonTitle: { fontSize: 18, fontWeight: '800', color: colors.text, textAlign: 'center', marginBottom: 10, lineHeight: 24 },
+    comingSoonText: { fontSize: 14, color: colors.textMuted, textAlign: 'center', lineHeight: 22, marginBottom: 28 },
+    comingSoonBtn: {
+      paddingHorizontal: 20, paddingVertical: 12, borderRadius: 14,
+      backgroundColor: colors.surfacePrimaryLight, borderWidth: 1.5, borderColor: colors.borderPrimary,
+    },
+    comingSoonBtnText: { fontSize: 14, fontWeight: '700', color: '#7C3AED' },
+  }), [colors]);
+
   return (
     <SafeAreaView style={styles.safe}>
       <Animated.View style={[styles.animatedWrapper, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
 
         {/* Header fijo */}
         <View style={styles.header}>
-          <View>
+          <View style={{ flex: 1 }}>
             <TouchableOpacity onPress={() => (municipalities ?? []).length > 0 && setMuniModalOpen(true)} activeOpacity={0.7} style={styles.eyebrowRow}>
               <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Agenda · ${selectedMunicipality.name}` : 'Agenda'}</Text>
               {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
@@ -204,26 +354,23 @@ export default function HomeScreen() {
             <Text style={styles.headerDate}>{dateStr}</Text>
           </View>
           <View style={styles.headerRight}>
-            <TouchableOpacity
-              style={styles.contactBtn}
-              onPress={handleContact}
-              activeOpacity={0.75}
-            >
-              <Text style={styles.contactBtnText}>Contacto</Text>
+            <TouchableOpacity style={styles.themeSwitch} onPress={toggleTheme} activeOpacity={0.85}>
+              <View style={[styles.themeSwitchTrack, isDark && styles.themeSwitchTrackOn]}>
+                <Animated.View style={[styles.themeSwitchThumb, { transform: [{ translateX: thumbAnim }] }]}>
+                  <Text style={{ fontSize: 10 }}>{isDark ? '🌙' : '☀️'}</Text>
+                </Animated.View>
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.headerAccent}
-              onPress={() => router.push('/(tabs)/profile')}
-              activeOpacity={0.75}
-            >
-              {user ? (
+            <View style={styles.headerRightRow}>
+              <TouchableOpacity style={styles.contactBtn} onPress={handleContact} activeOpacity={0.75}>
+                <Text style={styles.contactBtnText}>Contacto</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerIconBtn} onPress={() => router.push('/(tabs)/profile')} activeOpacity={0.75}>
                 <Text style={styles.headerAccentText}>
-                  {(user.full_name ?? user.email).charAt(0).toUpperCase()}
+                  {user ? (user.full_name ?? user.email).charAt(0).toUpperCase() : '👤'}
                 </Text>
-              ) : (
-                <Text style={styles.headerAccentText}>👤</Text>
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -242,7 +389,6 @@ export default function HomeScreen() {
           <View style={styles.categoriesFade} pointerEvents="none" />
         </View>
 
-        {/* Filtro parroquias: visible cuando religious está seleccionado (o Todos) */}
         <ParishFilter
           visible={hasReligious}
           selectedParish={selectedParish}
@@ -425,132 +571,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FAFAF8' },
-  animatedWrapper: { flex: 1 },
-  header: {
-    paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
-  },
-  headerEyebrow: { fontSize: 11, color: '#A78BFA', fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
-  headerTitle: { fontSize: 28, fontWeight: '800', color: '#0F0A2A', lineHeight: 34, letterSpacing: -0.5 },
-  headerDate: { fontSize: 13, color: '#94A3B8', marginTop: 3 },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
-  headerAccent: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#EDE9FE', alignItems: 'center', justifyContent: 'center' },
-  headerAccentText: { fontSize: 15, fontWeight: '800', color: '#7C3AED' },
-  contactBtn: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 19, backgroundColor: '#F5F3FF', borderWidth: 1.5, borderColor: '#DDD6FE' },
-  contactBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.2 },
-  contactSheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 36,
-  },
-  contactHandle: {
-    width: 36, height: 4, borderRadius: 2,
-    backgroundColor: '#E2E8F0',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  contactSheetTitle: { fontSize: 20, fontWeight: '800', color: '#0F0A2A', marginBottom: 4 },
-  contactSheetSubtitle: { fontSize: 13, color: '#94A3B8', marginBottom: 20 },
-  contactCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FAFAF8',
-    borderRadius: 16,
-    padding: 14,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
-    gap: 12,
-  },
-  contactCardIcon: {
-    width: 46, height: 46, borderRadius: 14,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  contactCardEmoji: { fontSize: 22 },
-  contactCardBody: { flex: 1 },
-  contactCardLabel: { fontSize: 11, fontWeight: '600', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
-  contactCardValue: { fontSize: 14, fontWeight: '700', color: '#0F0A2A' },
-  contactCardArrow: { fontSize: 22, color: '#C4B5FD', fontWeight: '300' },
-  contactCloseBtn: {
-    marginTop: 16,
-    paddingVertical: 14,
-    borderRadius: 14,
-    backgroundColor: '#F5F3FF',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#DDD6FE',
-  },
-  contactCloseBtnText: { fontSize: 15, fontWeight: '700', color: '#7C3AED' },
-  categoriesWrap: { position: 'relative', marginBottom: 4 },
-  categoriesFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 36, backgroundColor: '#FAFAF8' },
-  parishPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: '#D97706', backgroundColor: '#fff', marginRight: 8 },
-  parishPillActive: { backgroundColor: '#B45309', borderColor: '#B45309' },
-  parishPillText: { fontSize: 12, fontWeight: '600', color: '#B45309' },
-  parishPillTextActive: { color: '#fff' },
-  section: { marginBottom: 4 },
-  sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginBottom: 12, marginTop: 16 },
-  sectionAccent: { width: 3, height: 16, borderRadius: 2 },
-  liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
-  sectionTitle: { fontSize: 14, fontWeight: '700', color: '#374151', letterSpacing: 0.1 },
-  sectionTitleLive: { color: '#EF4444' },
-  sectionTitleEnded: { color: '#94A3B8' },
-  countBadge: { backgroundColor: '#EDE9FE', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
-  countBadgeText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
-  centered: { paddingVertical: 60, alignItems: 'center' },
-  empty: { alignItems: 'center', paddingVertical: 60, paddingHorizontal: 40 },
-  emptyEmoji: { fontSize: 48, marginBottom: 12 },
-  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#374151', marginBottom: 6 },
-  emptyText: { fontSize: 14, color: '#94A3B8', textAlign: 'center', lineHeight: 20 },
-  nextDaysSection: { marginTop: 12 },
-  nextDaysBanner: {
-    marginHorizontal: 16,
-    marginBottom: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: '#EDE9FE',
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  nextDaysBannerText: { fontSize: 13, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.3 },
-  eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 3 },
-  eyebrowChevron: { fontSize: 10, color: '#A78BFA', fontWeight: '700' },
-  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' },
-  modalSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 36 },
-  modalTitle: { fontSize: 13, fontWeight: '700', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12 },
-  modalOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  modalOptionText: { fontSize: 15, color: '#374151', fontWeight: '500' },
-  modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-  modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
-  exploreBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    marginHorizontal: 20,
-    marginTop: 24,
-    paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: '#DDD6FE',
-    backgroundColor: '#FAFAF8',
-  },
-  exploreBtnText: { fontSize: 14, fontWeight: '600', color: '#7C3AED', letterSpacing: 0.2 },
-  exploreBtnArrow: { fontSize: 14, color: '#A78BFA' },
-  comingSoonWrap: { alignItems: 'center', paddingHorizontal: 36, paddingVertical: 72 },
-  comingSoonEmoji: { fontSize: 52, marginBottom: 16 },
-  comingSoonTitle: { fontSize: 18, fontWeight: '800', color: '#0F0A2A', textAlign: 'center', marginBottom: 10, lineHeight: 24 },
-  comingSoonText: { fontSize: 14, color: '#64748B', textAlign: 'center', lineHeight: 22, marginBottom: 28 },
-  comingSoonBtn: {
-    paddingHorizontal: 20, paddingVertical: 12,
-    borderRadius: 14, backgroundColor: '#F5F3FF',
-    borderWidth: 1.5, borderColor: '#DDD6FE',
-  },
-  comingSoonBtnText: { fontSize: 14, fontWeight: '700', color: '#7C3AED' },
-});

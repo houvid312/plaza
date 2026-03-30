@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ export default function LoginScreen() {
   const submitting = useRef(false);
   const { login } = useAuth();
   const router = useRouter();
+  const { colors } = useTheme();
 
   async function handleLogin() {
     if (submitting.current) return;
@@ -45,9 +47,44 @@ export default function LoginScreen() {
     }
   }
 
+  const styles = useMemo(() => StyleSheet.create({
+    container: { flexGrow: 1, padding: 24, paddingTop: 40, backgroundColor: colors.bgAlt },
+    iconContainer: { alignItems: 'center', marginBottom: 20 },
+    icon: { fontSize: 48 },
+    title: { fontSize: 26, fontWeight: '800', color: colors.text, textAlign: 'center', marginBottom: 4 },
+    subtitle: { fontSize: 14, color: colors.textFaint, textAlign: 'center', marginBottom: 32 },
+    label: { fontSize: 13, fontWeight: '700', color: colors.textSub, marginBottom: 6, marginTop: 12 },
+    input: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
+    },
+    btn: {
+      backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15,
+      alignItems: 'center', marginTop: 24,
+    },
+    btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+    linkBtn: { alignItems: 'center', marginTop: 16 },
+    linkText: { fontSize: 14, color: colors.textMuted },
+    linkHighlight: { color: '#7C3AED', fontWeight: '700' },
+    errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
+    errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
+    forgotBtn: { alignSelf: 'flex-end', marginTop: 8 },
+    forgotText: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+    dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: colors.inputBorder },
+    dividerText: { marginHorizontal: 12, fontSize: 13, color: colors.textFaint, fontWeight: '600' },
+    googleBtn: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.inputBorder,
+      borderRadius: 14, paddingVertical: 14, marginTop: 12, gap: 10,
+    },
+    googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
+    googleBtnText: { fontSize: 15, fontWeight: '600', color: colors.textSub },
+  }), [colors]);
+
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: colors.bgAlt }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
@@ -111,37 +148,6 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         {/* GOOGLE AUTH — comentado hasta completar config en Supabase (ver CLAUDE.md) */}
-        {/* <View style={styles.dividerRow}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>o</Text>
-          <View style={styles.dividerLine} />
-        </View>
-        <TouchableOpacity
-          style={styles.googleBtn}
-          onPress={async () => {
-            setGoogleLoading(true);
-            setErrorMsg('');
-            const result = await loginWithGoogle();
-            setGoogleLoading(false);
-            if (result.success) {
-              if (router.canGoBack()) router.back();
-              else router.replace('/(tabs)');
-            } else if (result.error && result.error !== 'Inicio de sesión cancelado.') {
-              setErrorMsg(result.error);
-            }
-          }}
-          disabled={googleLoading || loading}
-          activeOpacity={0.85}
-        >
-          {googleLoading ? (
-            <ActivityIndicator color="#374151" />
-          ) : (
-            <>
-              <Text style={styles.googleIcon}>G</Text>
-              <Text style={styles.googleBtnText}>Continuar con Google</Text>
-            </>
-          )}
-        </TouchableOpacity> */}
 
         <TouchableOpacity
           onPress={() => router.replace('/auth/register')}
@@ -156,62 +162,3 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 24, paddingTop: 40, backgroundColor: '#FAFAFA' },
-  iconContainer: { alignItems: 'center', marginBottom: 20 },
-  icon: { fontSize: 48 },
-  title: { fontSize: 26, fontWeight: '800', color: '#111827', textAlign: 'center', marginBottom: 4 },
-  subtitle: { fontSize: 14, color: '#9CA3AF', textAlign: 'center', marginBottom: 32 },
-  label: { fontSize: 13, fontWeight: '700', color: '#374151', marginBottom: 6, marginTop: 12 },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    fontSize: 15,
-    color: '#111827',
-  },
-  hint: {
-    backgroundColor: '#EDE9FE',
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 12,
-    marginBottom: 4,
-  },
-  hintText: { fontSize: 11, color: '#7C3AED', textAlign: 'center' },
-  btn: {
-    backgroundColor: '#7C3AED',
-    borderRadius: 14,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-  linkBtn: { alignItems: 'center', marginTop: 16 },
-  linkText: { fontSize: 14, color: '#6B7280' },
-  linkHighlight: { color: '#7C3AED', fontWeight: '700' },
-  errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
-  errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
-  forgotBtn: { alignSelf: 'flex-end', marginTop: 8 },
-  forgotText: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
-  dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E7EB' },
-  dividerText: { marginHorizontal: 12, fontSize: 13, color: '#9CA3AF', fontWeight: '600' },
-  googleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    borderRadius: 14,
-    paddingVertical: 14,
-    marginTop: 12,
-    gap: 10,
-  },
-  googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
-  googleBtnText: { fontSize: 15, fontWeight: '600', color: '#374151' },
-});

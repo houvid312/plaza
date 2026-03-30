@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEvent, useUpdateEvent } from '../../../../hooks/useEvents';
 import { ALL_CATEGORIES, Category } from '../../../../constants/categories';
+import { useTheme } from '../../../../context/ThemeContext';
 
 const TITLE_MAX = 120;
 const DESC_MAX = 500;
@@ -76,6 +77,7 @@ function validateFields(params: {
 export default function AdminEventEdit() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
   const { data: event, isLoading } = useEvent(Number(id));
   const { mutateAsync: updateEvent, isPending } = useUpdateEvent();
 
@@ -100,6 +102,68 @@ export default function AdminEventEdit() {
   const yearRef = useRef<TextInput>(null);
   const timeMMRef = useRef<TextInput>(null);
   const timeEndMMRef = useRef<TextInput>(null);
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.bg },
+    centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    header: {
+      flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10,
+      backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.border,
+    },
+    backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12, width: 80 },
+    backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
+    backLabel: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+    headerCenter: { flex: 1, alignItems: 'center' },
+    headerTitle: { fontSize: 16, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
+    form: { paddingHorizontal: 20, paddingTop: 8 },
+    labelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7, marginTop: 16 },
+    label: { fontSize: 13, fontWeight: '600', color: colors.textMuted, marginBottom: 7, marginTop: 16 },
+    counter: { fontSize: 11, color: colors.textFaint, fontWeight: '500' },
+    counterOver: { color: '#EF4444', fontWeight: '700' },
+    input: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
+    },
+    inputError: { borderColor: '#FCA5A5' },
+    textarea: { minHeight: 100, paddingTop: 13 },
+    categoryRow: { marginBottom: 4 },
+    catOption: {
+      flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8,
+      borderRadius: 20, borderWidth: 1.5, borderColor: colors.borderPrimaryLight, backgroundColor: colors.surface, marginRight: 8,
+    },
+    catEmoji: { fontSize: 13 },
+    catLabel: { fontSize: 12, fontWeight: '600' },
+    dateRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    dateSegment: { alignItems: 'center', flex: 1 },
+    dateSegmentWide: { alignItems: 'center', flex: 1.6 },
+    dateInput: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingVertical: 13, paddingHorizontal: 8, fontSize: 17, fontWeight: '700', color: colors.text, width: '100%',
+    },
+    dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    dateSegLabel: { fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
+    dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    timesRow: { flexDirection: 'row', alignItems: 'flex-start', marginTop: 0 },
+    timeBlock: { flex: 1 },
+    timeDivider: { width: 16 },
+    timeSegRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    timeSegment: { alignItems: 'center', flex: 1 },
+    timeInput: {
+      backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
+      borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4, fontSize: 17, fontWeight: '700', color: colors.text, width: '100%', textAlign: 'center',
+    },
+    timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    timeSegLabel: { fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
+    timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
+    errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
+    saveBtn: {
+      backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 17, alignItems: 'center',
+      marginTop: 28, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
+    },
+    saveBtnDisabled: { opacity: 0.7 },
+    saveText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
+  }), [colors]);
 
   useEffect(() => {
     if (!event || initialized) return;
@@ -436,63 +500,3 @@ export default function AdminEventEdit() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FAFAF8' },
-  centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 10,
-    backgroundColor: '#FAFAF8',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0EDFD',
-  },
-  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12, width: 80 },
-  backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
-  backLabel: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
-  headerCenter: { flex: 1, alignItems: 'center' },
-  headerTitle: { fontSize: 16, fontWeight: '800', color: '#0F0A2A', letterSpacing: -0.3 },
-
-  form: { paddingHorizontal: 20, paddingTop: 8 },
-  labelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7, marginTop: 16 },
-  label: { fontSize: 13, fontWeight: '600', color: '#64748B', marginBottom: 7, marginTop: 16 },
-  counter: { fontSize: 11, color: '#94A3B8', fontWeight: '500' },
-  counterOver: { color: '#EF4444', fontWeight: '700' },
-
-  input: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: '#0F0A2A' },
-  inputError: { borderColor: '#FCA5A5' },
-  textarea: { minHeight: 100, paddingTop: 13 },
-
-  categoryRow: { marginBottom: 4 },
-  catOption: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: '#EEEBF8', backgroundColor: '#fff', marginRight: 8 },
-  catEmoji: { fontSize: 13 },
-  catLabel: { fontSize: 12, fontWeight: '600' },
-
-  // Date
-  dateRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  dateSegment: { alignItems: 'center', flex: 1 },
-  dateSegmentWide: { alignItems: 'center', flex: 1.6 },
-  dateInput: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingVertical: 13, paddingHorizontal: 8, fontSize: 17, fontWeight: '700', color: '#0F0A2A', width: '100%' },
-  dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
-  dateSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-  dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
-
-  // Times
-  timesRow: { flexDirection: 'row', alignItems: 'flex-start', marginTop: 0 },
-  timeBlock: { flex: 1 },
-  timeDivider: { width: 16 },
-  timeSegRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  timeSegment: { alignItems: 'center', flex: 1 },
-  timeInput: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EDE9FE', borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4, fontSize: 17, fontWeight: '700', color: '#0F0A2A', width: '100%', textAlign: 'center' },
-  timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
-  timeSegLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-  timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
-
-  errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
-  errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
-  saveBtn: { backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 17, alignItems: 'center', marginTop: 28, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6 },
-  saveBtnDisabled: { opacity: 0.7 },
-  saveText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
-});
