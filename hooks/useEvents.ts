@@ -23,9 +23,9 @@ export function useMunicipalities() {
   });
 }
 
-export function useTodayEvents(category?: string, municipalityId?: number, parish?: string) {
+export function useTodayEvents(categories?: string[], municipalityId?: number, parish?: string) {
   return useQuery({
-    queryKey: ['events', 'today', category, municipalityId, parish],
+    queryKey: ['events', 'today', categories, municipalityId, parish],
     queryFn: async () => {
       const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
@@ -34,7 +34,7 @@ export function useTodayEvents(category?: string, municipalityId?: number, paris
         .eq('status', 'approved')
         .eq('event_date', today)
         .order('event_time', { ascending: true });
-      if (category) query = query.eq('category', category);
+      if (categories && categories.length > 0) query = query.in('category', categories);
       if (municipalityId) query = query.eq('municipality_id', municipalityId);
       if (parish) query = query.eq('parish', parish);
       const { data, error } = await query;
@@ -44,9 +44,9 @@ export function useTodayEvents(category?: string, municipalityId?: number, paris
   });
 }
 
-export function useUpcomingEvents(category?: string, municipalityId?: number, parish?: string, date?: string) {
+export function useUpcomingEvents(categories?: string[], municipalityId?: number, parish?: string, dates?: string[]) {
   return useQuery({
-    queryKey: ['events', 'upcoming', category, municipalityId, parish, date],
+    queryKey: ['events', 'upcoming', categories, municipalityId, parish, dates],
     queryFn: async () => {
       const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
       let query = supabase
@@ -55,12 +55,14 @@ export function useUpcomingEvents(category?: string, municipalityId?: number, pa
         .eq('status', 'approved')
         .order('event_date', { ascending: true })
         .order('event_time', { ascending: true });
-      if (date) {
-        query = query.eq('event_date', date);
+      if (dates && dates.length === 1) {
+        query = query.eq('event_date', dates[0]);
+      } else if (dates && dates.length > 1) {
+        query = query.in('event_date', dates);
       } else {
         query = query.gte('event_date', today).limit(600);
       }
-      if (category) query = query.eq('category', category);
+      if (categories && categories.length > 0) query = query.in('category', categories);
       if (municipalityId) query = query.eq('municipality_id', municipalityId);
       if (parish) query = query.eq('parish', parish);
       const { data, error } = await query;
