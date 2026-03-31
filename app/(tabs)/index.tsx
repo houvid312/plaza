@@ -110,6 +110,7 @@ export default function HomeScreen() {
     setSelectedCategories(new Set());
     setSelectedParish('all');
   }
+  const [showEnded, setShowEnded] = useState(false);
   const [selectedMunicipality, setSelectedMunicipality] = useState<Municipality | null>(null);
   const [muniModalOpen, setMuniModalOpen] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
@@ -281,7 +282,8 @@ export default function HomeScreen() {
     },
     contactCloseBtnText: { fontSize: 15, fontWeight: '700', color: '#7C3AED' },
     categoriesWrap: { position: 'relative', marginBottom: 4 },
-    categoriesFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 36, backgroundColor: colors.bg },
+    categoriesFadeWrap: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, flexDirection: 'row' as const },
+    endedToggleText: { fontSize: 12, color: colors.textFaint, fontWeight: '600' as const },
     section: { marginBottom: 4 },
     sectionTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginBottom: 12, marginTop: 16 },
     sectionAccent: { width: 3, height: 16, borderRadius: 2 },
@@ -386,7 +388,13 @@ export default function HomeScreen() {
               <CategoryPill key={cat.id} category={cat.id} selected={selectedCategories.has(cat.id)} onPress={() => toggleCategory(cat.id)} />
             ))}
           </ScrollView>
-          <View style={styles.categoriesFade} pointerEvents="none" />
+          <View pointerEvents="none" style={styles.categoriesFadeWrap}>
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.35 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.65 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.85 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 1 }} />
+          </View>
         </View>
 
         <ParishFilter
@@ -471,11 +479,14 @@ export default function HomeScreen() {
 
               {endedEvents.length > 0 && (
                 <View style={styles.section}>
-                  <View style={styles.sectionTitleRow}>
+                  <TouchableOpacity style={styles.sectionTitleRow} onPress={() => setShowEnded(v => !v)} activeOpacity={0.7}>
                     <View style={[styles.sectionAccent, { backgroundColor: '#CBD5E1' }]} />
                     <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ya finalizaron</Text>
-                  </View>
-                  {endedEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
+                    <View style={styles.countBadge}><Text style={styles.countBadgeText}>{endedEvents.length}</Text></View>
+                    <View style={{ flex: 1 }} />
+                    <Text style={styles.endedToggleText}>{showEnded ? '▲ Ocultar' : '▼ Ver'}</Text>
+                  </TouchableOpacity>
+                  {showEnded && endedEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
                 </View>
               )}
 

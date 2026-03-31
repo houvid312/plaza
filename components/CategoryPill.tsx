@@ -15,7 +15,7 @@ export function CategoryPill({ category, selected, onPress }: Props) {
   const cat = isAll ? null : CATEGORIES[category];
   const color = cat?.color ?? '#7C3AED';
   const label = cat?.label ?? 'Todos';
-  const emoji = cat?.emoji ?? '·';
+  const emoji = cat?.emoji ?? null;
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -42,7 +42,7 @@ export function CategoryPill({ category, selected, onPress }: Props) {
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
-        <Text style={styles.emoji}>{emoji}</Text>
+        {emoji && <Text style={styles.emoji}>{emoji}</Text>}
         <Text style={[styles.label, { color: selected ? '#fff' : colors.textSub }]}>
           {label}
         </Text>
@@ -55,8 +55,9 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 13,
-    paddingVertical: 7,
+    height: 34,
     borderRadius: 20,
     borderWidth: 1.5,
     marginRight: 8,

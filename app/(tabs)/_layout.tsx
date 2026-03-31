@@ -64,14 +64,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Hoy',
-          tabBarIcon: ({ focused }) => <TabIcon name="calendar-outline" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'calendar' : 'calendar-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Próximos',
-          tabBarIcon: ({ focused }) => <TabIcon name="compass-outline" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'compass' : 'compass-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -85,14 +85,14 @@ export default function TabLayout() {
         name="submit"
         options={{
           title: 'Publicar',
-          tabBarIcon: ({ focused }) => <TabIcon name="add-circle-outline" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'add-circle' : 'add-circle-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ focused }) => <TabIcon name="person-outline" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'person' : 'person-outline'} focused={focused} />,
         }}
       />
     </Tabs>

@@ -5,7 +5,7 @@ export default function AdminLayout() {
     <Stack>
       <Stack.Screen
         name="dashboard"
-        options={{ headerTitle: 'Panel Admin', headerTintColor: '#7C3AED' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="event/[id]"

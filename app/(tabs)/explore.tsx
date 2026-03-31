@@ -191,7 +191,7 @@ export default function ExploreScreen() {
     headerSub: { fontSize: 13, color: colors.textFaint, marginTop: 2 },
     filterWrap: { position: 'relative', marginBottom: 2 },
     filterContent: { paddingHorizontal: 16, paddingVertical: 5 },
-    filterFade: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 32, backgroundColor: colors.bg },
+    filterFadeWrap: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, flexDirection: 'row' as const },
     datePill: {
       paddingHorizontal: 13, paddingVertical: 6, borderRadius: 20,
       borderWidth: 1.5, borderColor: colors.borderMedium, backgroundColor: colors.surface, marginRight: 8,
@@ -270,7 +270,13 @@ export default function ExploreScreen() {
               <CategoryPill key={cat.id} category={cat.id} selected={selectedCategories.has(cat.id)} onPress={() => toggleCategory(cat.id)} />
             ))}
           </ScrollView>
-          <View style={styles.filterFade} pointerEvents="none" />
+          <View pointerEvents="none" style={styles.filterFadeWrap}>
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.35 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.65 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.85 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 1 }} />
+          </View>
         </View>
 
         <ParishFilter
@@ -302,7 +308,13 @@ export default function ExploreScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <View style={styles.filterFade} pointerEvents="none" />
+          <View pointerEvents="none" style={styles.filterFadeWrap}>
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.35 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.65 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 0.85 }} />
+            <View style={{ flex: 1, backgroundColor: colors.bg, opacity: 1 }} />
+          </View>
         </View>
 
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
