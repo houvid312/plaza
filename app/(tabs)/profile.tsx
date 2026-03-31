@@ -41,6 +41,8 @@ export default function ProfileScreen() {
   );
   const [prefMuniModalOpen, setPrefMuniModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [savedOk, setSavedOk] = useState(false);
+  const toastAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.parallel([
@@ -80,7 +82,14 @@ export default function ProfileScreen() {
     if (!result.success) {
       Alert.alert('Error', 'No se pudieron guardar las preferencias.');
     } else {
-      Alert.alert('Listo', 'Tus preferencias fueron guardadas.');
+      setSavedOk(true);
+      toastAnim.setValue(0);
+      Animated.timing(toastAnim, { toValue: 1, duration: 220, useNativeDriver: true }).start();
+      setTimeout(() => {
+        Animated.timing(toastAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(
+          () => setSavedOk(false)
+        );
+      }, 2200);
     }
   }
 
@@ -152,6 +161,13 @@ export default function ProfileScreen() {
       borderRadius: 12, paddingVertical: 13, alignItems: 'center',
     },
     saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+    saveToast: {
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+      gap: 6, marginTop: 10, paddingVertical: 9, paddingHorizontal: 14,
+      backgroundColor: '#D1FAE5', borderRadius: 10,
+      borderWidth: 1, borderColor: '#6EE7B7',
+    },
+    saveToastText: { fontSize: 13, fontWeight: '700', color: '#065F46' },
     menu: { width: '100%', gap: 10 },
     menuItem: {
       flexDirection: 'row', alignItems: 'center',
@@ -407,6 +423,12 @@ export default function ProfileScreen() {
             >
               <Text style={styles.saveBtnText}>{isSaving ? 'Guardando…' : 'Guardar preferencias'}</Text>
             </TouchableOpacity>
+
+            {savedOk && (
+              <Animated.View style={[styles.saveToast, { opacity: toastAnim }]}>
+                <Text style={styles.saveToastText}>✓ Preferencias guardadas</Text>
+              </Animated.View>
+            )}
           </View>
 
           <View style={styles.menu}>

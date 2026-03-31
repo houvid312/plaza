@@ -116,7 +116,9 @@ function makeStyles(colors: ThemeColors) {
     catBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
     catText: { fontSize: 11, fontWeight: '700' },
     date: { fontSize: 11, color: colors.textFaint, fontWeight: '500' },
-    itemTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 8, lineHeight: 20 },
+    itemTitle: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 4, lineHeight: 20 },
+    itemDescription: { fontSize: 12, color: colors.textFaint, marginBottom: 8, lineHeight: 17 },
+    itemMeta: { fontSize: 11, color: colors.textFaint, marginBottom: 8 },
     itemFeatured: { borderColor: '#FDE68A', borderWidth: 1.5 },
     pendingFooter: { flexDirection: 'row', alignItems: 'center' },
     actionRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -164,6 +166,14 @@ function PendingEventItem({ event }: { event: Event }) {
           </Text>
         </View>
         <Text style={styles.itemTitle} numberOfLines={2}>{event.title}</Text>
+        {event.description ? (
+          <Text style={styles.itemDescription} numberOfLines={2}>{event.description}</Text>
+        ) : null}
+        {(event.location || event.event_time) ? (
+          <Text style={styles.itemMeta} numberOfLines={1}>
+            {[event.location, event.event_time ? event.event_time.slice(0, 5) : null].filter(Boolean).join(' · ')}
+          </Text>
+        ) : null}
         <View style={styles.pendingFooter}>
           <Text style={[{ fontSize: 13, fontWeight: '700' }, { color: cat.color }]}>Revisar →</Text>
         </View>

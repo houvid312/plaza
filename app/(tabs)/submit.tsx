@@ -49,7 +49,7 @@ export default function SubmitScreen() {
   const [selectedParish, setSelectedParish] = useState<string | null>(null);
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
-  const [year, setYear] = useState(String(now.getFullYear()));
+  const [year, setYear] = useState('');
   const [timeHH, setTimeHH] = useState('');
   const [timeMM, setTimeMM] = useState('');
   const [timeEndHH, setTimeEndHH] = useState('');
@@ -90,7 +90,7 @@ export default function SubmitScreen() {
 
   function resetForm() {
     setTitle(''); setDescription(''); setDay(''); setMonth('');
-    setYear(String(now.getFullYear())); setTimeHH(''); setTimeMM(''); setTimeEndHH(''); setTimeEndMM('');
+    setYear(''); setTimeHH(''); setTimeMM(''); setTimeEndHH(''); setTimeEndMM('');
     setMunicipalityId(null); setSelectedParish(null); setLocation(''); setAddress(''); setPrice(''); setErrorMsg('');
   }
 
