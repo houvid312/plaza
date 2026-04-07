@@ -1,13 +1,15 @@
 import '../global.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, usePathname } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity, Text } from 'react-native';
+import { Platform, TouchableOpacity, Text } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
+
+const INTRO_SEEN_KEY = 'intro_seen';
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,26 @@ function PasswordRecoveryHandler() {
   return null;
 }
 
+function IntroRedirector() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Intro uses GSAP + HTML elements, only available on web
+    if (Platform.OS !== 'web') return;
+    // Don't redirect if already on intro (avoids remount loop)
+    if (pathname === '/intro') return;
+
+    let seen = false;
+    try { seen = localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch {}
+    if (!seen) {
+      router.replace('/intro');
+    }
+  }, [pathname]);
+
+  return null;
+}
+
 function AppNavigator() {
   const { isDark, colors } = useTheme();
   const themedHeader = {
@@ -48,8 +70,16 @@ function AppNavigator() {
   return (
     <>
       <PasswordRecoveryHandler />
+      <IntroRedirector />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="intro"
+          options={{
+            headerShown: false,
+            animation: 'fade',
+          }}
+        />
         <Stack.Screen
           name="event/[id]"
           options={{
