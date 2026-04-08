@@ -63,16 +63,20 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: 'Inicio',
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'home' : 'home-outline'} focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="latido"
+        options={{
           title: 'El Latido',
           tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'pulse' : 'pulse-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="explore"
-        options={{
-          title: 'La Brújula',
-          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'compass' : 'compass-outline'} focused={focused} />,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="favorites"
