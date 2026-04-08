@@ -35,6 +35,8 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
   const { data: isFav } = useIsFavorite(event.id);
   const { mutate: toggleFav, isPending: isTogglingFav } = useToggleFavorite();
 
+  const narrativeLabel = (event.category === 'cultural' || event.category === 'religious') ? 'Raíces' : 'Ecos del presente';
+
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const status = isToday ? getTimeStatus(event.event_time, event.event_time_end) : null;
   const timeRange = formatTimeRange(event.event_time, event.event_time_end);
@@ -54,7 +56,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
       backgroundColor: colors.surface,
       borderRadius: 18,
       padding: 16,
-      shadowColor: '#6D28D9',
+      shadowColor: '#8B5E3C',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.07,
       shadowRadius: 14,
@@ -74,7 +76,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
     heartIcon: { fontSize: 18, color: '#F43F5E' },
     heartIconActive: { color: '#F43F5E' },
     heartIconGuest: { color: colors.borderMedium },
-    chevron: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', lineHeight: 22 },
+    chevron: { fontSize: 20, color: '#D4B483', fontWeight: '300', lineHeight: 22 },
     chevronEnded: { color: colors.borderLight },
     endedBadge: { fontSize: 11, fontWeight: '600', color: colors.textFaint },
     title: { fontSize: 15, fontWeight: '700', color: colors.text, marginBottom: 5, lineHeight: 21 },
@@ -83,7 +85,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
     textEnded: { color: colors.borderMedium },
     footer: { gap: 6, marginTop: 4 },
     timeRow: { flexDirection: 'row', alignItems: 'center' },
-    timeInline: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
+    timeInline: { fontSize: 12, fontWeight: '700', color: '#B87333' },
     timeInlineLive: { color: '#EF4444' },
     timeSep: { fontSize: 12, color: colors.borderMedium },
     locationRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -91,8 +93,14 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
     location: { fontSize: 12, color: colors.textFaint, flex: 1 },
     dateLabel: { fontSize: 11, color: colors.textFaint, fontWeight: '500', textTransform: 'capitalize' },
     priceText: { fontSize: 11, fontWeight: '600' },
-    priceTextFree: { color: '#7C3AED' },
+    priceTextFree: { color: '#B87333' },
     priceTextPaid: { color: '#D97706' },
+    narrativeTag: {
+      alignSelf: 'flex-start', marginBottom: 6,
+      paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6,
+      backgroundColor: colors.surfacePrimary,
+    },
+    narrativeTagText: { fontSize: 10, fontWeight: '700', color: '#B87333', fontStyle: 'italic', letterSpacing: 0.3 },
   }), [colors]);
 
   return (
@@ -113,7 +121,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
               {status === 'live' && (
                 <View style={styles.liveBadge}>
                   <View style={styles.liveDot} />
-                  <Text style={styles.liveText}>En curso</Text>
+                  <Text style={styles.liveText}>Resonando</Text>
                 </View>
               )}
               {status === 'ended' && (
@@ -152,6 +160,12 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
             </View>
           </View>
 
+          {!isEnded && (
+            <View style={styles.narrativeTag}>
+              <Text style={styles.narrativeTagText}>{narrativeLabel}</Text>
+            </View>
+          )}
+
           <Text style={[styles.title, isEnded && styles.titleEnded]} numberOfLines={2}>
             {event.title}
           </Text>
@@ -183,7 +197,7 @@ export function EventCard({ event, variant = 'default', isToday = false, showDat
                 return (
                   <View style={[styles.locationRow, { justifyContent: 'space-between' }]}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
-                      <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : '#A78BFA' }]} />
+                      <View style={[styles.locationDot, { backgroundColor: isEnded ? '#CBD5E1' : '#C9A96E' }]} />
                       <Text style={[styles.location, isEnded && styles.textEnded]} numberOfLines={1}>
                         {muniName}
                       </Text>

@@ -11,7 +11,7 @@ function TabIcon({ name, focused }: { name: React.ComponentProps<typeof Ionicons
       <Ionicons
         name={name}
         size={22}
-        color={focused ? '#7C3AED' : colors.textFaint}
+        color={focused ? '#B87333' : colors.textFaint}
       />
     </View>
   );
@@ -38,7 +38,7 @@ export default function TabLayout() {
           backgroundColor: colors.tabBar,
           borderTopWidth: 1,
           borderTopColor: colors.tabBarBorder,
-          shadowColor: '#6D28D9',
+          shadowColor: '#8B5E3C',
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.08,
           shadowRadius: 20,
@@ -51,7 +51,7 @@ export default function TabLayout() {
           left: 0,
           right: 0,
         },
-        tabBarActiveTintColor: '#7C3AED',
+        tabBarActiveTintColor: '#B87333',
         tabBarInactiveTintColor: colors.textFaint,
         tabBarLabelStyle: {
           fontSize: 11,
@@ -63,14 +63,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Hoy',
-          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'calendar' : 'calendar-outline'} focused={focused} />,
+          title: 'El Latido',
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'pulse' : 'pulse-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Próximos',
+          title: 'La Brújula',
           tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'compass' : 'compass-outline'} focused={focused} />,
         }}
       />
@@ -84,14 +84,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="submit"
         options={{
-          title: 'Publicar',
-          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'add-circle' : 'add-circle-outline'} focused={focused} />,
+          title: 'Resonar',
+          tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'megaphone' : 'megaphone-outline'} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Perfil',
+          title: 'Expedicionario',
           tabBarIcon: ({ focused }) => <TabIcon name={focused ? 'person' : 'person-outline'} focused={focused} />,
         }}
       />

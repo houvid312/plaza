@@ -87,7 +87,7 @@ export default function ResetPasswordScreen() {
     strengthBars: { flexDirection: 'row', gap: 4, flex: 1 },
     strengthBar: { flex: 1, height: 4, borderRadius: 4, backgroundColor: colors.inputBorder },
     strengthLabel: { fontSize: 12, fontWeight: '700', minWidth: 44, textAlign: 'right' },
-    btn: { backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+    btn: { backgroundColor: '#B87333', borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
     btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
     errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
     errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },

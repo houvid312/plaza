@@ -45,8 +45,8 @@ function makeStyles(colors: ThemeColors) {
     safe: { flex: 1, backgroundColor: colors.bg },
     header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10 },
     backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12 },
-    backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
-    backLabel: { fontSize: 14, color: '#7C3AED', fontWeight: '600' },
+    backArrow: { fontSize: 18, color: '#B87333', fontWeight: '600' },
+    backLabel: { fontSize: 14, color: '#B87333', fontWeight: '600' },
     headerCenter: { flex: 1, alignItems: 'center' },
     headerTitle: { fontSize: 17, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
     countBadge: {
@@ -62,10 +62,10 @@ function makeStyles(colors: ThemeColors) {
     tab: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 10, paddingHorizontal: 4 },
     tabActive: {
       backgroundColor: colors.surface,
-      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
+      shadowColor: '#8B5E3C', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
     },
     tabText: { fontSize: 11, fontWeight: '600', color: colors.textFaint },
-    tabTextActive: { color: '#7C3AED' },
+    tabTextActive: { color: '#B87333' },
     searchContainer: { paddingHorizontal: 16, marginBottom: 8 },
     searchBox: {
       flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
@@ -89,25 +89,25 @@ function makeStyles(colors: ThemeColors) {
       paddingHorizontal: 16, paddingTop: 6, paddingBottom: 2,
     },
     statsText: { fontSize: 12, color: colors.textFaint, fontWeight: '500' },
-    clearText: { fontSize: 12, color: '#7C3AED', fontWeight: '700' },
+    clearText: { fontSize: 12, color: '#B87333', fontWeight: '700' },
     sectionHeader: {
       flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
       paddingTop: 14, paddingBottom: 6, gap: 8,
     },
     sectionHeaderText: { fontSize: 13, fontWeight: '700', color: colors.textSub },
     sectionCount: { backgroundColor: colors.surfacePrimary, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2 },
-    sectionCountText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    sectionCountText: { fontSize: 11, fontWeight: '700', color: '#B87333' },
     centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
     emptyEmoji: { fontSize: 48, marginBottom: 12 },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: colors.textSub, marginBottom: 6 },
     emptyText: { fontSize: 14, color: colors.textFaint, textAlign: 'center', marginBottom: 16 },
-    clearFiltersBtn: { backgroundColor: '#7C3AED', borderRadius: 12, paddingVertical: 10, paddingHorizontal: 20 },
+    clearFiltersBtn: { backgroundColor: '#B87333', borderRadius: 12, paddingVertical: 10, paddingHorizontal: 20 },
     clearFiltersBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
     item: {
       flexDirection: 'row', backgroundColor: colors.surface, marginHorizontal: 16, marginBottom: 8,
       borderRadius: 16, overflow: 'hidden',
-      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2,
+      shadowColor: '#8B5E3C', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 2,
       borderWidth: 1, borderColor: colors.border,
     },
     itemContent: { flex: 1, padding: 14 },
@@ -122,8 +122,8 @@ function makeStyles(colors: ThemeColors) {
     itemFeatured: { borderColor: '#FDE68A', borderWidth: 1.5 },
     pendingFooter: { flexDirection: 'row', alignItems: 'center' },
     actionRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-    editBtn: { flex: 1, borderWidth: 1.5, borderColor: '#7C3AED', borderRadius: 10, paddingVertical: 7, alignItems: 'center' },
-    editBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED' },
+    editBtn: { flex: 1, borderWidth: 1.5, borderColor: '#B87333', borderRadius: 10, paddingVertical: 7, alignItems: 'center' },
+    editBtnText: { fontSize: 12, fontWeight: '700', color: '#B87333' },
     featuredBtn: { flex: 1.4, borderWidth: 1.5, borderColor: '#FCD34D', borderRadius: 10, paddingVertical: 7, alignItems: 'center', minWidth: 36 },
     featuredBtnActive: { backgroundColor: '#F59E0B', borderColor: '#F59E0B' },
     featuredBtnText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
@@ -285,7 +285,7 @@ function DateHeader({ date, count, today }: { date: string; count: number; today
 
 // ─── Filter Chip ──────────────────────────────────────────────────────────────
 type ChipProps = { label: string; active: boolean; onPress: () => void; activeColor?: string; };
-function FilterChip({ label, active, onPress, activeColor = '#7C3AED' }: ChipProps) {
+function FilterChip({ label, active, onPress, activeColor = '#B87333' }: ChipProps) {
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
               value={search}
               onChangeText={setSearch}
               placeholder="Buscar evento..."
-              placeholderTextColor="#C4B5FD"
+              placeholderTextColor="#D4B483"
               returnKeyType="search"
               clearButtonMode="while-editing"
             />
@@ -483,7 +483,7 @@ export default function AdminDashboard() {
       {/* Content */}
       {isLoading ? (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#7C3AED" />
+          <ActivityIndicator size="large" color="#B87333" />
         </View>
       ) : listData.length === 0 ? (
         <View style={styles.empty}>

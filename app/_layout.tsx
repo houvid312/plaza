@@ -21,7 +21,7 @@ function CloseAuthButton() {
       hitSlop={12}
       style={{ marginLeft: 8, paddingHorizontal: 4 }}
     >
-      <Text style={{ color: '#7C3AED', fontSize: 15, fontWeight: '600' }}>Cerrar</Text>
+      <Text style={{ color: '#B87333', fontSize: 15, fontWeight: '600' }}>Cerrar</Text>
     </TouchableOpacity>
   );
 }
@@ -63,7 +63,7 @@ function AppNavigator() {
   const { isDark, colors } = useTheme();
   const themedHeader = {
     headerStyle: { backgroundColor: colors.surface },
-    headerTintColor: '#7C3AED',
+    headerTintColor: '#B87333',
     headerTitleStyle: { color: colors.text },
   };
 

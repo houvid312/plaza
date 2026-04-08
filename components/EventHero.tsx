@@ -52,11 +52,11 @@ export function EventHero({ event, isToday = false }: Props) {
             {status === 'live' ? (
               <View style={styles.liveBadge}>
                 <View style={styles.liveDot} />
-                <Text style={styles.liveBadgeText}>EN CURSO AHORA</Text>
+                <Text style={styles.liveBadgeText}>RESONANDO AHORA</Text>
               </View>
             ) : (
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>✦ DESTACADO HOY</Text>
+                <Text style={styles.badgeText}>✦ RESONANCIA DESTACADA</Text>
               </View>
             )}
             <View style={styles.emojiBox}>

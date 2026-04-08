@@ -34,8 +34,8 @@ export default function AdminEventReview() {
       backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.border,
     },
     backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12, width: 80 },
-    backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
-    backLabel: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+    backArrow: { fontSize: 18, color: '#B87333', fontWeight: '600' },
+    backLabel: { fontSize: 13, color: '#B87333', fontWeight: '600' },
     headerCenter: { flex: 1, alignItems: 'center' },
     headerTitle: { fontSize: 16, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
     container: { flex: 1, backgroundColor: colors.bg },
@@ -81,7 +81,7 @@ export default function AdminEventReview() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#7C3AED" />
+        <ActivityIndicator size="large" color="#B87333" />
       </View>
     );
   }

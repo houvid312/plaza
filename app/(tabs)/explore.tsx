@@ -185,8 +185,8 @@ export default function ExploreScreen() {
     animatedWrapper: { flex: 1 },
     header: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 10 },
     appTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 6 },
-    appTitleText: { fontSize: 11, fontWeight: '700', color: '#7C3AED', letterSpacing: 1.4 },
-    appTitleChevron: { fontSize: 9, color: '#7C3AED', marginTop: 1 },
+    appTitleText: { fontSize: 11, fontWeight: '700', color: '#B87333', letterSpacing: 1.4 },
+    appTitleChevron: { fontSize: 9, color: '#B87333', marginTop: 1 },
     headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.5 },
     headerSub: { fontSize: 13, color: colors.textFaint, marginTop: 2 },
     filterWrap: { position: 'relative', marginBottom: 2 },
@@ -206,10 +206,10 @@ export default function ExploreScreen() {
     emptyText: { fontSize: 14, color: colors.textFaint, textAlign: 'center', lineHeight: 20 },
     dateGroup: { marginBottom: 6 },
     dateLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginTop: 18, marginBottom: 10 },
-    dateDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#C4B5FD' },
+    dateDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#D4B483' },
     dateLabel: { fontSize: 13, fontWeight: '700', color: colors.textMuted, textTransform: 'capitalize', letterSpacing: 0.3, flex: 1 },
     countBadge: { backgroundColor: colors.surfacePrimary, paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
-    countBadgeText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    countBadgeText: { fontSize: 11, fontWeight: '700', color: '#B87333' },
     modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
     modalSheet: {
       backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
@@ -224,8 +224,8 @@ export default function ExploreScreen() {
       paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
     },
     modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
-    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    modalOptionTextActive: { color: '#B87333', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#B87333', fontWeight: '700' },
   }), [colors]);
 
   return (
@@ -235,13 +235,13 @@ export default function ExploreScreen() {
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setMuniModalOpen(true)} activeOpacity={0.7} style={styles.appTitleRow}>
             <Text style={styles.appTitleText}>
-              AGENDA
+              FRECUENCIAS
               {selectedMunicipality ? ` · ${selectedMunicipality.name.toUpperCase()}` : ''}
             </Text>
             <Text style={styles.appTitleChevron}>▾</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Explorar</Text>
-          <Text style={styles.headerSub}>Próximos eventos</Text>
+          <Text style={styles.headerTitle}>La Brújula</Text>
+          <Text style={styles.headerSub}>Expediciones próximas</Text>
         </View>
 
         <Modal visible={muniModalOpen} transparent animationType="fade" onRequestClose={() => setMuniModalOpen(false)}>
@@ -320,7 +320,7 @@ export default function ExploreScreen() {
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading ? (
             <View style={styles.centered}>
-              <ActivityIndicator size="large" color="#7C3AED" />
+              <ActivityIndicator size="large" color="#B87333" />
             </View>
           ) : dates.length === 0 ? (
             <View style={styles.empty}>

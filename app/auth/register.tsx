@@ -138,12 +138,12 @@ export default function RegisterScreen() {
     strengthBar: { flex: 1, height: 4, borderRadius: 4, backgroundColor: colors.inputBorder },
     strengthLabel: { fontSize: 12, fontWeight: '700', minWidth: 44, textAlign: 'right' },
     passwordHint: { backgroundColor: colors.surfacePrimaryLight, borderRadius: 10, padding: 10, marginTop: 10 },
-    passwordHintText: { fontSize: 12, color: '#6D28D9', lineHeight: 18 },
-    btn: { backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+    passwordHintText: { fontSize: 12, color: '#8B5E3C', lineHeight: 18 },
+    btn: { backgroundColor: '#B87333', borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
     btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
     linkBtn: { alignItems: 'center', marginTop: 16 },
     linkText: { fontSize: 14, color: colors.textMuted },
-    linkHighlight: { color: '#7C3AED', fontWeight: '700' },
+    linkHighlight: { color: '#B87333', fontWeight: '700' },
     errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
     errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
@@ -161,7 +161,7 @@ export default function RegisterScreen() {
     countryItemFlag: { fontSize: 22 },
     countryItemName: { flex: 1, fontSize: 15, color: colors.text },
     countryItemCode: { fontSize: 14, color: colors.textMuted, fontWeight: '600' },
-    countryItemCheck: { fontSize: 15, color: '#7C3AED', fontWeight: '800' },
+    countryItemCheck: { fontSize: 15, color: '#B87333', fontWeight: '800' },
     dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
     dividerLine: { flex: 1, height: 1, backgroundColor: colors.inputBorder },
     dividerText: { marginHorizontal: 12, fontSize: 13, color: colors.textFaint, fontWeight: '600' },
@@ -216,8 +216,8 @@ export default function RegisterScreen() {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.title}>Crear cuenta</Text>
-        <Text style={styles.subtitle}>Registrate para publicar eventos</Text>
+        <Text style={styles.title}>Uníte a la expedición</Text>
+        <Text style={styles.subtitle}>Creá tu cuenta para resonar y descubrir el atlas vivo</Text>
 
         {/* ── Nombre ── */}
         <Text style={styles.label}>Nombre completo</Text>

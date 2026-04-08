@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   toast: {
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#6D28D9',
+    shadowColor: '#8B5E3C',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 20,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   accent: {
     height: 4,
-    backgroundColor: '#7C3AED',
+    backgroundColor: '#B87333',
   },
   body: {
     paddingHorizontal: 18,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   actionBtnPrimary: {
     flex: 1,
-    backgroundColor: '#7C3AED',
+    backgroundColor: '#B87333',
     paddingVertical: 10,
     borderRadius: 12,
     alignItems: 'center',
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   actionTextSecondary: {
-    color: '#7C3AED',
+    color: '#B87333',
     fontSize: 13,
     fontWeight: '700',
   },

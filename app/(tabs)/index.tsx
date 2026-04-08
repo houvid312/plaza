@@ -214,7 +214,7 @@ export default function HomeScreen() {
       paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16,
       flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
     },
-    headerEyebrow: { fontSize: 11, color: '#A78BFA', fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
+    headerEyebrow: { fontSize: 11, color: '#C9A96E', fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
     headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text, lineHeight: 34, letterSpacing: -0.5 },
     headerDate: { fontSize: 13, color: colors.textFaint, marginTop: 3 },
     headerRight: { alignItems: 'flex-end', gap: 7, paddingLeft: 10 },
@@ -224,12 +224,12 @@ export default function HomeScreen() {
       backgroundColor: colors.surfacePrimaryLight,
       borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
-    contactBtnText: { fontSize: 12, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.2 },
+    contactBtnText: { fontSize: 12, fontWeight: '700', color: '#B87333', letterSpacing: 0.2 },
     headerIconBtn: {
       width: 36, height: 36, borderRadius: 18,
       backgroundColor: colors.surfacePrimary, alignItems: 'center', justifyContent: 'center',
     },
-    headerAccentText: { fontSize: 14, fontWeight: '800', color: '#7C3AED' },
+    headerAccentText: { fontSize: 14, fontWeight: '800', color: '#B87333' },
     themeSwitch: {
       backgroundColor: colors.surfacePrimary,
       borderRadius: 18,
@@ -243,7 +243,7 @@ export default function HomeScreen() {
       justifyContent: 'center',
       paddingHorizontal: 2,
     },
-    themeSwitchTrackOn: { backgroundColor: '#7C3AED' },
+    themeSwitchTrackOn: { backgroundColor: '#B87333' },
     themeSwitchThumb: {
       width: 16, height: 16, borderRadius: 8,
       backgroundColor: '#fff',
@@ -274,13 +274,13 @@ export default function HomeScreen() {
     contactCardBody: { flex: 1 },
     contactCardLabel: { fontSize: 11, fontWeight: '600', color: colors.textFaint, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
     contactCardValue: { fontSize: 14, fontWeight: '700', color: colors.text },
-    contactCardArrow: { fontSize: 22, color: '#C4B5FD', fontWeight: '300' },
+    contactCardArrow: { fontSize: 22, color: '#D4B483', fontWeight: '300' },
     contactCloseBtn: {
       marginTop: 16, paddingVertical: 14, borderRadius: 14,
       backgroundColor: colors.surfacePrimaryLight, alignItems: 'center',
       borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
-    contactCloseBtnText: { fontSize: 15, fontWeight: '700', color: '#7C3AED' },
+    contactCloseBtnText: { fontSize: 15, fontWeight: '700', color: '#B87333' },
     categoriesWrap: { position: 'relative', marginBottom: 4 },
     categoriesFadeWrap: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, flexDirection: 'row' as const },
     endedToggleText: { fontSize: 12, color: colors.textFaint, fontWeight: '600' as const },
@@ -292,7 +292,7 @@ export default function HomeScreen() {
     sectionTitleLive: { color: '#EF4444' },
     sectionTitleEnded: { color: colors.textFaint },
     countBadge: { backgroundColor: colors.surfacePrimary, paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
-    countBadgeText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    countBadgeText: { fontSize: 11, fontWeight: '700', color: '#B87333' },
     centered: { paddingVertical: 60, alignItems: 'center' },
     empty: { alignItems: 'center', paddingVertical: 60, paddingHorizontal: 40 },
     emptyEmoji: { fontSize: 48, marginBottom: 12 },
@@ -304,9 +304,9 @@ export default function HomeScreen() {
       backgroundColor: colors.surfacePrimary, borderRadius: 12,
       flexDirection: 'row', alignItems: 'center',
     },
-    nextDaysBannerText: { fontSize: 13, fontWeight: '700', color: '#7C3AED', letterSpacing: 0.3 },
+    nextDaysBannerText: { fontSize: 13, fontWeight: '700', color: '#B87333', letterSpacing: 0.3 },
     eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 3 },
-    eyebrowChevron: { fontSize: 10, color: '#A78BFA', fontWeight: '700' },
+    eyebrowChevron: { fontSize: 10, color: '#C9A96E', fontWeight: '700' },
     modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
     modalSheet: {
       backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
@@ -321,15 +321,15 @@ export default function HomeScreen() {
       paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
     },
     modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
-    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    modalOptionTextActive: { color: '#B87333', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#B87333', fontWeight: '700' },
     exploreBtn: {
       flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
       marginHorizontal: 20, marginTop: 24, paddingVertical: 14, borderRadius: 14,
       borderWidth: 1.5, borderColor: colors.borderPrimary, backgroundColor: colors.bg,
     },
-    exploreBtnText: { fontSize: 14, fontWeight: '600', color: '#7C3AED', letterSpacing: 0.2 },
-    exploreBtnArrow: { fontSize: 14, color: '#A78BFA' },
+    exploreBtnText: { fontSize: 14, fontWeight: '600', color: '#B87333', letterSpacing: 0.2 },
+    exploreBtnArrow: { fontSize: 14, color: '#C9A96E' },
     comingSoonWrap: { alignItems: 'center', paddingHorizontal: 36, paddingVertical: 72 },
     comingSoonEmoji: { fontSize: 52, marginBottom: 16 },
     comingSoonTitle: { fontSize: 18, fontWeight: '800', color: colors.text, textAlign: 'center', marginBottom: 10, lineHeight: 24 },
@@ -338,7 +338,7 @@ export default function HomeScreen() {
       paddingHorizontal: 20, paddingVertical: 12, borderRadius: 14,
       backgroundColor: colors.surfacePrimaryLight, borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
-    comingSoonBtnText: { fontSize: 14, fontWeight: '700', color: '#7C3AED' },
+    comingSoonBtnText: { fontSize: 14, fontWeight: '700', color: '#B87333' },
   }), [colors]);
 
   return (
@@ -349,10 +349,10 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={{ flex: 1 }}>
             <TouchableOpacity onPress={() => (municipalities ?? []).length > 0 && setMuniModalOpen(true)} activeOpacity={0.7} style={styles.eyebrowRow}>
-              <Text style={styles.headerEyebrow}>{selectedMunicipality ? `Agenda · ${selectedMunicipality.name}` : 'Agenda'}</Text>
+              <Text style={styles.headerEyebrow}>{selectedMunicipality ? `El pulso · ${selectedMunicipality.name}` : 'El pulso del presente'}</Text>
               {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Qué hacer hoy</Text>
+            <Text style={styles.headerTitle}>El Latido</Text>
             <Text style={styles.headerDate}>{dateStr}</Text>
           </View>
           <View style={styles.headerRight}>
@@ -407,7 +407,7 @@ export default function HomeScreen() {
         <ScrollView
           style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#7C3AED" />}
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#B87333" />}
         >
           {isNonMarinilla ? (
             <View style={styles.comingSoonWrap}>
@@ -424,7 +424,7 @@ export default function HomeScreen() {
             </View>
           ) : isLoading ? (
             <View style={styles.centered}>
-              <ActivityIndicator size="large" color="#7C3AED" />
+              <ActivityIndicator size="large" color="#B87333" />
             </View>
           ) : events?.length === 0 ? (
             <>
@@ -436,7 +436,7 @@ export default function HomeScreen() {
               {nextDaysEvents.length > 0 && (
                 <View style={styles.nextDaysSection}>
                   <View style={styles.nextDaysBanner}>
-                    <Text style={styles.nextDaysBannerText}>✦ Lo que viene</Text>
+                    <Text style={styles.nextDaysBannerText}>✦ Próximas frecuencias</Text>
                   </View>
                   {nextDaysEvents.map(e => <EventCard key={e.id} event={e} showDate />)}
                 </View>
@@ -447,8 +447,8 @@ export default function HomeScreen() {
               {heroEvent && (
                 <View style={styles.section}>
                   <View style={styles.sectionTitleRow}>
-                    <View style={[styles.sectionAccent, { backgroundColor: '#7C3AED' }]} />
-                    <Text style={styles.sectionTitle}>Destacado</Text>
+                    <View style={[styles.sectionAccent, { backgroundColor: '#B87333' }]} />
+                    <Text style={styles.sectionTitle}>Resonancia destacada</Text>
                   </View>
                   <EventHero event={heroEvent} isToday />
                   {extraFeatured.map(e => <EventCard key={e.id} event={e} isToday />)}
@@ -459,7 +459,7 @@ export default function HomeScreen() {
                 <View style={styles.section}>
                   <View style={styles.sectionTitleRow}>
                     <View style={styles.liveDot} />
-                    <Text style={[styles.sectionTitle, styles.sectionTitleLive]}>En curso ahora</Text>
+                    <Text style={[styles.sectionTitle, styles.sectionTitleLive]}>Resonando ahora</Text>
                     <View style={styles.countBadge}><Text style={styles.countBadgeText}>{liveEvents.length}</Text></View>
                   </View>
                   {liveEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
@@ -469,8 +469,8 @@ export default function HomeScreen() {
               {upcomingEvents.length > 0 && (
                 <View style={styles.section}>
                   <View style={styles.sectionTitleRow}>
-                    <View style={[styles.sectionAccent, { backgroundColor: '#A78BFA' }]} />
-                    <Text style={styles.sectionTitle}>Próximamente</Text>
+                    <View style={[styles.sectionAccent, { backgroundColor: '#C9A96E' }]} />
+                    <Text style={styles.sectionTitle}>Próximas vibraciones</Text>
                     <View style={styles.countBadge}><Text style={styles.countBadgeText}>{upcomingEvents.length}</Text></View>
                   </View>
                   {upcomingEvents.map(e => <EventCard key={e.id} event={e} isToday />)}
@@ -481,7 +481,7 @@ export default function HomeScreen() {
                 <View style={styles.section}>
                   <TouchableOpacity style={styles.sectionTitleRow} onPress={() => setShowEnded(v => !v)} activeOpacity={0.7}>
                     <View style={[styles.sectionAccent, { backgroundColor: '#CBD5E1' }]} />
-                    <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ya finalizaron</Text>
+                    <Text style={[styles.sectionTitle, styles.sectionTitleEnded]}>Ecos del día</Text>
                     <View style={styles.countBadge}><Text style={styles.countBadgeText}>{endedEvents.length}</Text></View>
                     <View style={{ flex: 1 }} />
                     <Text style={styles.endedToggleText}>{showEnded ? '▲ Ocultar' : '▼ Ver'}</Text>
@@ -493,7 +493,7 @@ export default function HomeScreen() {
               {nextDaysEvents.length > 0 && (
                 <View style={styles.nextDaysSection}>
                   <View style={styles.nextDaysBanner}>
-                    <Text style={styles.nextDaysBannerText}>✦ Lo que viene</Text>
+                    <Text style={styles.nextDaysBannerText}>✦ Próximas frecuencias</Text>
                   </View>
                   {nextDaysEvents.map(e => <EventCard key={e.id} event={e} showDate />)}
                 </View>
@@ -530,7 +530,7 @@ export default function HomeScreen() {
               onPress={() => { setContactModalOpen(false); Linking.openURL('mailto:davidgg312@gmail.com'); }}
               activeOpacity={0.75}
             >
-              <View style={[styles.contactCardIcon, { backgroundColor: '#EDE9FE' }]}>
+              <View style={[styles.contactCardIcon, { backgroundColor: '#F5EDE0' }]}>
                 <Text style={styles.contactCardEmoji}>✉️</Text>
               </View>
               <View style={styles.contactCardBody}>

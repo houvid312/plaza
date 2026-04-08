@@ -111,8 +111,8 @@ export default function AdminEventEdit() {
       backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.border,
     },
     backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6, paddingRight: 12, width: 80 },
-    backArrow: { fontSize: 18, color: '#7C3AED', fontWeight: '600' },
-    backLabel: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+    backArrow: { fontSize: 18, color: '#B87333', fontWeight: '600' },
+    backLabel: { fontSize: 13, color: '#B87333', fontWeight: '600' },
     headerCenter: { flex: 1, alignItems: 'center' },
     headerTitle: { fontSize: 16, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
     form: { paddingHorizontal: 20, paddingTop: 8 },
@@ -140,9 +140,9 @@ export default function AdminEventEdit() {
       backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
       borderRadius: 14, paddingVertical: 13, paddingHorizontal: 8, fontSize: 17, fontWeight: '700', color: colors.text, width: '100%',
     },
-    dateInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    dateInputFilled: { borderColor: '#B87333', color: '#B87333' },
     dateSegLabel: { fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-    dateSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    dateSep: { fontSize: 20, color: '#D4B483', fontWeight: '300', marginBottom: 18 },
     timesRow: { flexDirection: 'row', alignItems: 'flex-start', marginTop: 0 },
     timeBlock: { flex: 1 },
     timeDivider: { width: 16 },
@@ -152,14 +152,14 @@ export default function AdminEventEdit() {
       backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderPrimary,
       borderRadius: 14, paddingVertical: 13, paddingHorizontal: 4, fontSize: 17, fontWeight: '700', color: colors.text, width: '100%', textAlign: 'center',
     },
-    timeInputFilled: { borderColor: '#7C3AED', color: '#7C3AED' },
+    timeInputFilled: { borderColor: '#B87333', color: '#B87333' },
     timeSegLabel: { fontSize: 10, color: colors.textFaint, fontWeight: '600', marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.4 },
-    timeSep: { fontSize: 20, color: '#C4B5FD', fontWeight: '300', marginBottom: 18 },
+    timeSep: { fontSize: 20, color: '#D4B483', fontWeight: '300', marginBottom: 18 },
     errorBox: { backgroundColor: '#FEF2F2', borderRadius: 12, padding: 12, marginTop: 16 },
     errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
     saveBtn: {
-      backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 17, alignItems: 'center',
-      marginTop: 28, shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
+      backgroundColor: '#B87333', borderRadius: 16, paddingVertical: 17, alignItems: 'center',
+      marginTop: 28, shadowColor: '#B87333', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
     },
     saveBtnDisabled: { opacity: 0.7 },
     saveText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
@@ -192,7 +192,7 @@ export default function AdminEventEdit() {
   if (isLoading || !initialized) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#7C3AED" />
+        <ActivityIndicator size="large" color="#B87333" />
       </View>
     );
   }
@@ -277,7 +277,7 @@ export default function AdminEventEdit() {
             value={title}
             onChangeText={setTitle}
             placeholder="Ej: Feria de Artesanías"
-            placeholderTextColor="#C4B5FD"
+            placeholderTextColor="#D4B483"
             maxLength={TITLE_MAX + 10}
           />
 
@@ -291,7 +291,7 @@ export default function AdminEventEdit() {
             value={description}
             onChangeText={setDescription}
             placeholder="Describe el evento..."
-            placeholderTextColor="#C4B5FD"
+            placeholderTextColor="#D4B483"
             multiline
             numberOfLines={4}
             textAlignVertical="top"
@@ -312,7 +312,7 @@ export default function AdminEventEdit() {
                 keyboardType="number-pad"
                 maxLength={2}
                 placeholder="DD"
-                placeholderTextColor="#C4B5FD"
+                placeholderTextColor="#D4B483"
                 textAlign="center"
               />
               <Text style={styles.dateSegLabel}>Día</Text>
@@ -331,7 +331,7 @@ export default function AdminEventEdit() {
                 keyboardType="number-pad"
                 maxLength={2}
                 placeholder="MM"
-                placeholderTextColor="#C4B5FD"
+                placeholderTextColor="#D4B483"
                 textAlign="center"
               />
               <Text style={styles.dateSegLabel}>Mes</Text>
@@ -346,7 +346,7 @@ export default function AdminEventEdit() {
                 keyboardType="number-pad"
                 maxLength={4}
                 placeholder="AAAA"
-                placeholderTextColor="#C4B5FD"
+                placeholderTextColor="#D4B483"
                 textAlign="center"
               />
               <Text style={styles.dateSegLabel}>Año</Text>
@@ -372,7 +372,7 @@ export default function AdminEventEdit() {
                     keyboardType="number-pad"
                     maxLength={2}
                     placeholder="HH"
-                    placeholderTextColor="#C4B5FD"
+                    placeholderTextColor="#D4B483"
                     textAlign="center"
                     autoCorrect={false}
                     autoComplete="off"
@@ -392,7 +392,7 @@ export default function AdminEventEdit() {
                     keyboardType="number-pad"
                     maxLength={2}
                     placeholder="MM"
-                    placeholderTextColor="#C4B5FD"
+                    placeholderTextColor="#D4B483"
                     textAlign="center"
                     autoCorrect={false}
                     autoComplete="off"
@@ -421,7 +421,7 @@ export default function AdminEventEdit() {
                     keyboardType="number-pad"
                     maxLength={2}
                     placeholder="HH"
-                    placeholderTextColor="#C4B5FD"
+                    placeholderTextColor="#D4B483"
                     textAlign="center"
                     autoCorrect={false}
                     autoComplete="off"
@@ -441,7 +441,7 @@ export default function AdminEventEdit() {
                     keyboardType="number-pad"
                     maxLength={2}
                     placeholder="MM"
-                    placeholderTextColor="#C4B5FD"
+                    placeholderTextColor="#D4B483"
                     textAlign="center"
                     autoCorrect={false}
                     autoComplete="off"
@@ -459,7 +459,7 @@ export default function AdminEventEdit() {
             value={location}
             onChangeText={setLocation}
             placeholder="Ej: Plaza Central"
-            placeholderTextColor="#C4B5FD"
+            placeholderTextColor="#D4B483"
             maxLength={FIELD_MAX}
           />
 
@@ -470,7 +470,7 @@ export default function AdminEventEdit() {
             value={address}
             onChangeText={setAddress}
             placeholder="Ej: Av. Principal 100"
-            placeholderTextColor="#C4B5FD"
+            placeholderTextColor="#D4B483"
             maxLength={FIELD_MAX}
           />
 

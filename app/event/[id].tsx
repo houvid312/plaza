@@ -9,7 +9,7 @@ import { useTheme } from '../../context/ThemeContext';
 
 const STATUS_CONFIG = {
   live:     { label: '● En curso',     bg: '#FEE2E2', color: '#DC2626' },
-  upcoming: { label: '◷ Por comenzar', bg: '#EDE9FE', color: '#7C3AED' },
+  upcoming: { label: '◷ Por comenzar', bg: '#F5EDE0', color: '#B87333' },
   ended:    { label: '✓ Finalizado',   bg: '#F3F4F6', color: '#6B7280' },
   unknown:  null,
 };
@@ -89,13 +89,25 @@ export default function EventDetailScreen() {
       alignItems: 'center', borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
     shareBtnCompact: { flex: 1 },
-    shareBtnText: { color: '#7C3AED', fontWeight: '700', fontSize: 15 },
+    shareBtnText: { color: '#B87333', fontWeight: '700', fontSize: 15 },
+    bridgeCard: {
+      marginHorizontal: 20, marginTop: 20,
+      backgroundColor: colors.surfacePrimary, borderRadius: 16, padding: 18,
+      borderWidth: 1, borderColor: colors.borderPrimary,
+    },
+    bridgeIcon: { fontSize: 28, marginBottom: 8 },
+    bridgeTitle: { fontSize: 15, fontWeight: '800', color: colors.text, marginBottom: 6 },
+    bridgeText: { fontSize: 13, color: colors.textMuted, lineHeight: 20 },
+    bridgeHint: {
+      marginTop: 10, fontSize: 12, fontWeight: '700', color: '#B87333',
+      fontStyle: 'italic',
+    },
   }), [colors]);
 
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#7C3AED" />
+        <ActivityIndicator size="large" color="#B87333" />
       </View>
     );
   }
@@ -204,6 +216,19 @@ export default function EventDetailScreen() {
             <Text style={styles.description}>{event.description}</Text>
           </View>
         )}
+      </View>
+
+      {/* Puente a la gamificación */}
+      <View style={styles.bridgeCard}>
+        <Text style={styles.bridgeIcon}>🔍</Text>
+        <Text style={styles.bridgeTitle}>¿Vas a este evento?</Text>
+        <Text style={styles.bridgeText}>
+          Abrí los ojos. Cerca de este lugar hay un fragmento de la memoria
+          oculto esperando ser descubierto por un expedicionario.
+        </Text>
+        <Text style={styles.bridgeHint}>
+          Pronto: La Lupa del Tiempo — el rompecabezas del patrimonio
+        </Text>
       </View>
 
       <View style={styles.actionRow}>

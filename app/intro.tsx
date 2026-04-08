@@ -278,14 +278,14 @@ export default function IntroScreen() {
       {/* ── Hero ── */}
       <section style={styles.heroSection}>
         {/* Floating decorative icons in hero */}
-        <NoteDouble className="hero-float float-icon" style={{ ...styles.floatIcon, top: '12%', right: '8%', width: 32, color: '#7C3AED' }} />
-        <NoteSingle className="hero-float float-icon" data-speed="0.2" style={{ ...styles.floatIcon, top: '22%', left: '6%', width: 22, color: '#A78BFA' }} />
-        <Guitar className="hero-float float-icon" data-speed="0.4" style={{ ...styles.floatIcon, bottom: '18%', right: '5%', width: 38, color: '#6D28D9', opacity: 0.2 }} />
-        <SoundWave className="hero-float float-icon" data-speed="0.15" style={{ ...styles.floatIcon, top: '60%', left: '3%', width: 50, color: '#8B5CF6', opacity: 0.15 }} />
+        <NoteDouble className="hero-float float-icon" style={{ ...styles.floatIcon, top: '12%', right: '8%', width: 32, color: '#B87333' }} />
+        <NoteSingle className="hero-float float-icon" data-speed="0.2" style={{ ...styles.floatIcon, top: '22%', left: '6%', width: 22, color: '#C9A96E' }} />
+        <Guitar className="hero-float float-icon" data-speed="0.4" style={{ ...styles.floatIcon, bottom: '18%', right: '5%', width: 38, color: '#8B5E3C', opacity: 0.2 }} />
+        <SoundWave className="hero-float float-icon" data-speed="0.15" style={{ ...styles.floatIcon, top: '60%', left: '3%', width: 50, color: '#A67C52', opacity: 0.15 }} />
 
         <p className="intro-welcome" style={styles.welcomeLabel}>Bienvenido a</p>
-        <h1 className="intro-title" style={styles.title}>Resonancias de Esparta</h1>
-        <p className="intro-subtitle" style={styles.subtitle}>El Atlas vivo de Marinilla</p>
+        <h1 className="intro-title" style={styles.title}>Resonancias de la Esparta</h1>
+        <p className="intro-subtitle" style={styles.subtitle}>El Atlas Vivo de Marinilla</p>
         <div className="intro-scroll-hint" style={styles.scrollHint}>
           <span style={styles.scrollHintArrow}>&#8595;</span>
           <span style={styles.scrollHintText}>Desliza para descubrir</span>
@@ -295,47 +295,51 @@ export default function IntroScreen() {
       {/* ── Narrative ── */}
       <section className="intro-narrative" style={styles.narrativeSection}>
         {/* Floating icons between paragraphs */}
-        <NoteSingle className="narrative-float" style={{ ...styles.floatIcon, top: -20, right: '2%', width: 34, color: '#7C3AED' }} />
+        <NoteSingle className="narrative-float" style={{ ...styles.floatIcon, top: -20, right: '2%', width: 34, color: '#B87333' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Marinilla no es solo un punto en el mapa; es una partitura viva.
+          Marinilla no es un simple accidente en la cartografía antioqueña; es una
+          voluntad de afirmación que resuena a través del tiempo.
         </p>
 
-        <SoundWave className="narrative-float" style={{ ...styles.floatIcon, left: '-4%', top: 160, width: 70, color: '#A78BFA' }} />
+        <SoundWave className="narrative-float" style={{ ...styles.floatIcon, left: '-4%', top: 160, width: 70, color: '#C9A96E' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Eres habitante de la Esparta colombiana, una tierra declarada Patrimonio
-          Inmaterial de la Nación, donde el espíritu de la libertad se forjó a golpe
-          de tiple, guitarra y resistencia.
+          Eres habitante de la Esparta colombiana, un territorio erigido como
+          Patrimonio Inmaterial de la Nación, donde el espíritu de la libertad y la
+          resistencia no se firmó en papel, sino que se forjó a golpe de tiple,
+          guitarra y madera.
         </p>
 
-        <Tiple className="narrative-float" style={{ ...styles.floatIcon, right: '-2%', top: 280, width: 46, color: '#8B5CF6' }} />
+        <Tiple className="narrative-float" style={{ ...styles.floatIcon, right: '-2%', top: 280, width: 46, color: '#A67C52' }} />
 
         <p className="intro-accent" style={styles.accent}>
-          Hoy, la ciudad sigue vibrando, pero su memoria está fragmentada.
+          Hoy, la ciudad sigue vibrando bajo el peso de su propia historia, pero su
+          memoria se encuentra fragmentada, dispersa en el ruido de la hiperconexión.
         </p>
 
-        <NoteDouble className="narrative-float" style={{ ...styles.floatIcon, left: '0%', top: 420, width: 36, color: '#7C3AED' }} />
+        <NoteDouble className="narrative-float" style={{ ...styles.floatIcon, left: '0%', top: 420, width: 36, color: '#B87333' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Te invitamos a convertirte en un Expedicionario. En tus manos tienes el
-          artefacto para descifrarla.
+          Te invitamos a iniciar un viaje para escapar a la amnesia colectiva. En tus
+          manos sostienes el artefacto para descifrar nuestra identidad.
         </p>
 
-        <Compass className="narrative-float" style={{ ...styles.floatIcon, right: '0%', top: 540, width: 52, color: '#A78BFA' }} />
+        <Compass className="narrative-float" style={{ ...styles.floatIcon, right: '0%', top: 540, width: 52, color: '#C9A96E' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Escucha lo que está ocurriendo hoy en nuestras calles y busca las huellas
-          ocultas de nuestro pasado.
+          Escucha el latido de lo que ocurre hoy en nuestras calles y acompáñanos a
+          desenterrar las huellas del pasado, los vestigios más lejanos de nuestra
+          cultura.
         </p>
 
-        <Guitar className="narrative-float" style={{ ...styles.floatIcon, left: '-3%', top: 650, width: 50, color: '#6D28D9' }} />
+        <Guitar className="narrative-float" style={{ ...styles.floatIcon, left: '-3%', top: 650, width: 50, color: '#8B5E3C' }} />
       </section>
 
       {/* ── CTA ── */}
       <section style={styles.ctaSection}>
         <p className="intro-question" style={styles.question}>
-          ¿Por dónde quieres empezar a explorar?
+          ¿Por dónde decides comenzar la exploración?
         </p>
 
         <div className="intro-buttons" style={styles.buttonsWrap}>
@@ -348,8 +352,8 @@ export default function IntroScreen() {
           >
             <span style={styles.btnIcon}>📡</span>
             <span style={styles.btnTextWrap}>
-              <span style={styles.btnPrimaryText}>Escuchar el presente</span>
-              <span style={styles.btnPrimaryHint}>Eventos de hoy</span>
+              <span style={styles.btnPrimaryText}>El Latido</span>
+              <span style={styles.btnPrimaryHint}>El pulso del presente</span>
             </span>
           </button>
 
@@ -360,10 +364,10 @@ export default function IntroScreen() {
             onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2 })}
             onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.2 })}
           >
-            <span style={styles.btnIcon}>🗺️</span>
+            <span style={styles.btnIcon}>🔍</span>
             <span style={styles.btnTextWrap}>
-              <span style={styles.btnSecondaryText}>Explorar el atlas</span>
-              <span style={styles.btnSecondaryHint}>Próximos eventos</span>
+              <span style={styles.btnSecondaryText}>La Lupa del Tiempo</span>
+              <span style={styles.btnSecondaryHint}>El rompecabezas de la memoria</span>
             </span>
           </button>
         </div>
@@ -375,7 +379,7 @@ export default function IntroScreen() {
 const styles: Record<string, React.CSSProperties> = {
   container: {
     height: '100vh',
-    backgroundColor: '#0D0B1A',
+    backgroundColor: '#1A1710',
     position: 'relative',
     overflowX: 'hidden',
     overflowY: 'auto',
@@ -396,7 +400,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: 450,
     height: 450,
     borderRadius: '50%',
-    background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)',
+    background: 'radial-gradient(circle, #B87333 0%, transparent 70%)',
     opacity: 0,
   },
 
@@ -423,7 +427,7 @@ const styles: Record<string, React.CSSProperties> = {
   welcomeLabel: {
     fontSize: 14,
     fontWeight: 600,
-    color: '#A78BFA',
+    color: '#C9A96E',
     letterSpacing: 2,
     textTransform: 'uppercase' as const,
     margin: '0 0 12px',
@@ -443,7 +447,7 @@ const styles: Record<string, React.CSSProperties> = {
   subtitle: {
     fontSize: 20,
     fontWeight: 600,
-    color: '#C4B5FD',
+    color: '#D4B483',
     lineHeight: 1.35,
     fontStyle: 'italic',
     margin: '0 0 0',
@@ -462,12 +466,12 @@ const styles: Record<string, React.CSSProperties> = {
   },
   scrollHintArrow: {
     fontSize: 22,
-    color: '#7C3AED',
+    color: '#B87333',
   },
   scrollHintText: {
     fontSize: 12,
     fontWeight: 500,
-    color: '#64748B',
+    color: '#8A8070',
     letterSpacing: 1,
     textTransform: 'uppercase' as const,
   },
@@ -495,11 +499,11 @@ const styles: Record<string, React.CSSProperties> = {
   accent: {
     fontSize: 20,
     fontWeight: 700,
-    color: '#E9D5FF',
+    color: '#F0DFC0',
     lineHeight: 1.5,
     margin: 0,
     paddingLeft: 20,
-    borderLeft: '3px solid #7C3AED',
+    borderLeft: '3px solid #B87333',
     position: 'relative',
     zIndex: 1,
   },
@@ -530,7 +534,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: '#7C3AED',
+    backgroundColor: '#B87333',
     padding: '18px 22px',
     borderRadius: 16,
     border: 'none',
@@ -545,7 +549,7 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: 'transparent',
     padding: '18px 22px',
     borderRadius: 16,
-    border: '1.5px solid #7C3AED',
+    border: '1.5px solid #B87333',
     cursor: 'pointer',
     textAlign: 'left',
   },
@@ -566,18 +570,18 @@ const styles: Record<string, React.CSSProperties> = {
   btnPrimaryHint: {
     fontSize: 12,
     fontWeight: 500,
-    color: '#DDD6FE',
+    color: '#E8D5B7',
     marginTop: 3,
   },
   btnSecondaryText: {
     fontSize: 17,
     fontWeight: 700,
-    color: '#C4B5FD',
+    color: '#D4B483',
   },
   btnSecondaryHint: {
     fontSize: 12,
     fontWeight: 500,
-    color: '#8B5CF6',
+    color: '#A67C52',
     marginTop: 3,
   },
 };

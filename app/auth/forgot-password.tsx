@@ -53,7 +53,7 @@ export default function ForgotPasswordScreen() {
       borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
     },
     btn: {
-      backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15,
+      backgroundColor: '#B87333', borderRadius: 14, paddingVertical: 15,
       alignItems: 'center', marginTop: 24,
     },
     btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
@@ -70,7 +70,7 @@ export default function ForgotPasswordScreen() {
     confirmIcon: { fontSize: 36 },
     confirmTitle: { fontSize: 24, fontWeight: '800', color: colors.text, textAlign: 'center' },
     confirmText: { fontSize: 14, color: colors.textMuted, textAlign: 'center', lineHeight: 22, marginBottom: 8 },
-    confirmEmail: { fontWeight: '700', color: '#7C3AED' },
+    confirmEmail: { fontWeight: '700', color: '#B87333' },
   }), [colors]);
 
   if (sent) {

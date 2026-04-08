@@ -104,9 +104,9 @@ export default function ProfileScreen() {
     avatarWrap: { position: 'relative', marginBottom: 14 },
     avatar: {
       width: 80, height: 80, borderRadius: 40,
-      backgroundColor: '#7C3AED',
+      backgroundColor: '#B87333',
       alignItems: 'center', justifyContent: 'center',
-      shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 },
+      shadowColor: '#B87333', shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
     },
     avatarImage: { width: 80, height: 80, borderRadius: 40 },
@@ -124,17 +124,17 @@ export default function ProfileScreen() {
       paddingHorizontal: 14, paddingVertical: 6,
       borderRadius: 20, marginBottom: 20,
     },
-    adminBadgeText: { color: '#7C3AED', fontWeight: '700', fontSize: 13 },
+    adminBadgeText: { color: '#B87333', fontWeight: '700', fontSize: 13 },
     prefsCard: {
       width: '100%',
       backgroundColor: colors.surface,
       borderRadius: 16, padding: 16, marginBottom: 16,
       borderWidth: 1, borderColor: colors.border,
-      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 2 },
+      shadowColor: '#8B5E3C', shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
     },
     prefsTitle: {
-      fontSize: 13, fontWeight: '700', color: '#7C3AED',
+      fontSize: 13, fontWeight: '700', color: '#B87333',
       textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12,
     },
     prefsLabel: {
@@ -155,9 +155,9 @@ export default function ProfileScreen() {
       paddingHorizontal: 12, paddingVertical: 10, marginTop: 2,
     },
     prefsMuniText: { fontSize: 14, fontWeight: '600', color: colors.textSub },
-    prefsMuniChevron: { fontSize: 11, color: '#A78BFA' },
+    prefsMuniChevron: { fontSize: 11, color: '#C9A96E' },
     saveBtn: {
-      marginTop: 16, backgroundColor: '#7C3AED',
+      marginTop: 16, backgroundColor: '#B87333',
       borderRadius: 12, paddingVertical: 13, alignItems: 'center',
     },
     saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
@@ -173,13 +173,13 @@ export default function ProfileScreen() {
       flexDirection: 'row', alignItems: 'center',
       backgroundColor: colors.surface, borderRadius: 16,
       paddingHorizontal: 16, paddingVertical: 16, width: '100%', gap: 12,
-      shadowColor: '#6D28D9', shadowOffset: { width: 0, height: 2 },
+      shadowColor: '#8B5E3C', shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
       borderWidth: 1, borderColor: colors.border,
     },
     menuItemEmoji: { fontSize: 19 },
     menuItemText: { flex: 1, fontSize: 15, fontWeight: '600', color: colors.textSub },
-    menuItemArrow: { fontSize: 20, color: '#C4B5FD', fontWeight: '300' },
+    menuItemArrow: { fontSize: 20, color: '#D4B483', fontWeight: '300' },
     guestContainer: {
       flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40,
     },
@@ -189,12 +189,12 @@ export default function ProfileScreen() {
     },
     guestEmoji: { fontSize: 40 },
     guestEmojiAccent: { fontSize: 20, position: 'absolute', bottom: 6, right: 6 },
-    guestTitle: { fontSize: 26, fontWeight: '800', color: colors.text, marginBottom: 8, letterSpacing: -0.3 },
+    guestTitle: { fontSize: 26, fontWeight: '800', color: colors.text, marginBottom: 8, letterSpacing: -0.3, textAlign: 'center' },
     guestText: { fontSize: 15, color: colors.textMuted, textAlign: 'center', lineHeight: 22, marginBottom: 36 },
     loginBtn: {
-      backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40,
+      backgroundColor: '#B87333', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40,
       width: '100%', alignItems: 'center', marginBottom: 10,
-      shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 },
+      shadowColor: '#B87333', shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.28, shadowRadius: 12, elevation: 5,
     },
     loginBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
@@ -203,7 +203,7 @@ export default function ProfileScreen() {
       paddingHorizontal: 40, width: '100%', alignItems: 'center',
       borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
-    registerBtnText: { color: '#7C3AED', fontWeight: '700', fontSize: 16 },
+    registerBtnText: { color: '#B87333', fontWeight: '700', fontSize: 16 },
     modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
     modalSheet: {
       backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
@@ -218,8 +218,8 @@ export default function ProfileScreen() {
       paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
     },
     modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
-    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    modalOptionTextActive: { color: '#B87333', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#B87333', fontWeight: '700' },
     themeToggle: {
       flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
       backgroundColor: colors.surface, borderRadius: 14,
@@ -236,9 +236,9 @@ export default function ProfileScreen() {
       borderWidth: 1, borderColor: colors.borderPrimary,
     },
     themeTogglePillOn: {
-      backgroundColor: '#7C3AED', borderColor: '#7C3AED',
+      backgroundColor: '#B87333', borderColor: '#B87333',
     },
-    themeTogglePillText: { fontSize: 11, fontWeight: '700', color: '#7C3AED' },
+    themeTogglePillText: { fontSize: 11, fontWeight: '700', color: '#B87333' },
     themeTogglePillTextOn: { color: '#fff' },
   }), [colors]);
 
@@ -246,7 +246,7 @@ export default function ProfileScreen() {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.guestContainer}>
-          <ActivityIndicator size="large" color="#7C3AED" />
+          <ActivityIndicator size="large" color="#B87333" />
         </View>
       </SafeAreaView>
     );
@@ -262,12 +262,12 @@ export default function ProfileScreen() {
           ]}
         >
           <View style={styles.guestIconWrap}>
-            <Text style={styles.guestEmoji}>🤝</Text>
+            <Text style={styles.guestEmoji}>🧭</Text>
             <Text style={styles.guestEmojiAccent}>✨</Text>
           </View>
-          <Text style={styles.guestTitle}>¡Bienvenido!</Text>
+          <Text style={styles.guestTitle}>¡Bienvenido, expedicionario!</Text>
           <Text style={styles.guestText}>
-            Uníte a la comunidad y estate al tanto de todo lo que mueve el pueblo. ¡Acá te esperamos!
+            Uníte a la expedición y descubrí las resonancias que vibran en el territorio. ¡Te esperamos!
           </Text>
           <TouchableOpacity
             style={styles.loginBtn}

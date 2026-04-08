@@ -89,29 +89,29 @@ export default function FavoritesScreen() {
     emptyText: { fontSize: 14, color: colors.textFaint, textAlign: 'center', lineHeight: 20 },
     dateGroup: { marginBottom: 6 },
     dateLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 20, marginTop: 18, marginBottom: 10 },
-    dateDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#FDA4AF' },
+    dateDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#D4B483' },
     dateLabel: { fontSize: 13, fontWeight: '700', color: colors.textMuted, textTransform: 'capitalize', letterSpacing: 0.3, flex: 1 },
-    countBadge: { backgroundColor: '#FFF1F2', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
+    countBadge: { backgroundColor: '#F5EDE0', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
     countBadgeText: { fontSize: 11, fontWeight: '700', color: '#F43F5E' },
     guestContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
     guestIconWrap: {
-      width: 90, height: 90, borderRadius: 28, backgroundColor: '#FFF1F2',
+      width: 90, height: 90, borderRadius: 28, backgroundColor: '#F5EDE0',
       alignItems: 'center', justifyContent: 'center', marginBottom: 20,
     },
     guestEmoji: { fontSize: 44, color: '#F43F5E' },
-    guestTitle: { fontSize: 24, fontWeight: '800', color: colors.text, marginBottom: 8, letterSpacing: -0.3 },
+    guestTitle: { fontSize: 24, fontWeight: '800', color: colors.text, marginBottom: 8, letterSpacing: -0.3, textAlign: 'center' },
     guestText: { fontSize: 15, color: colors.textMuted, textAlign: 'center', lineHeight: 22, marginBottom: 36 },
     loginBtn: {
-      backgroundColor: '#7C3AED', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40,
+      backgroundColor: '#B87333', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40,
       width: '100%', alignItems: 'center', marginBottom: 10,
-      shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.28, shadowRadius: 12, elevation: 5,
+      shadowColor: '#B87333', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.28, shadowRadius: 12, elevation: 5,
     },
     loginBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
     registerBtn: {
       backgroundColor: colors.surfacePrimaryLight, borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40,
       width: '100%', alignItems: 'center', borderWidth: 1.5, borderColor: colors.borderPrimary,
     },
-    registerBtnText: { color: '#7C3AED', fontWeight: '700', fontSize: 16 },
+    registerBtnText: { color: '#B87333', fontWeight: '700', fontSize: 16 },
     modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
     modalSheet: {
       backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20,
@@ -126,15 +126,15 @@ export default function FavoritesScreen() {
       paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
     },
     modalOptionText: { fontSize: 15, color: colors.textSub, fontWeight: '500' },
-    modalOptionTextActive: { color: '#7C3AED', fontWeight: '700' },
-    modalCheckmark: { fontSize: 16, color: '#7C3AED', fontWeight: '700' },
+    modalOptionTextActive: { color: '#B87333', fontWeight: '700' },
+    modalCheckmark: { fontSize: 16, color: '#B87333', fontWeight: '700' },
   }), [colors]);
 
   if (authLoading) {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#7C3AED" />
+          <ActivityIndicator size="large" color="#B87333" />
         </View>
       </SafeAreaView>
     );
@@ -149,9 +149,9 @@ export default function FavoritesScreen() {
           <View style={styles.guestIconWrap}>
             <Text style={styles.guestEmoji}>♡</Text>
           </View>
-          <Text style={styles.guestTitle}>Guardá tus favoritos</Text>
+          <Text style={styles.guestTitle}>Tu bitácora de expedicionario</Text>
           <Text style={styles.guestText}>
-            Iniciá sesión para guardar los eventos que te interesan y hacerles seguimiento fácilmente.
+            Iniciá sesión para guardar las resonancias que te conmueven y no perderte ninguna vibración.
           </Text>
           <TouchableOpacity
             style={styles.loginBtn}
@@ -176,11 +176,11 @@ export default function FavoritesScreen() {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.header}>
-          <Text style={styles.headerEyebrow}>MIS GUARDADOS</Text>
-          <Text style={styles.headerTitle}>Favoritos</Text>
+          <Text style={styles.headerEyebrow}>MI BITÁCORA</Text>
+          <Text style={styles.headerTitle}>Resonancias guardadas</Text>
         </View>
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#7C3AED" />
+          <ActivityIndicator size="large" color="#B87333" />
         </View>
       </SafeAreaView>
     );
@@ -210,11 +210,11 @@ export default function FavoritesScreen() {
             style={styles.eyebrowRow}
           >
             <Text style={styles.headerEyebrow}>
-              {selectedMunicipality ? `FAVORITOS · ${selectedMunicipality.name.toUpperCase()}` : 'MIS GUARDADOS'}
+              {selectedMunicipality ? `BITÁCORA · ${selectedMunicipality.name.toUpperCase()}` : 'MI BITÁCORA'}
             </Text>
             {(municipalities ?? []).length > 0 && <Text style={styles.eyebrowChevron}>▾</Text>}
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Favoritos</Text>
+          <Text style={styles.headerTitle}>Resonancias guardadas</Text>
           {allEvents.length > 0 && (
             <Text style={styles.headerSub}>
               {isFiltered
@@ -278,9 +278,9 @@ export default function FavoritesScreen() {
           {allEvents.length === 0 ? (
             <View style={styles.empty}>
               <Text style={styles.emptyEmoji}>♡</Text>
-              <Text style={styles.emptyTitle}>Aún no guardaste eventos</Text>
+              <Text style={styles.emptyTitle}>Tu bitácora está vacía</Text>
               <Text style={styles.emptyText}>
-                Explorá la agenda y tocá ♡ en los eventos que te interesen para verlos acá.
+                Explorá El Latido y tocá ♡ en las resonancias que te conmuevan para guardarlas acá.
               </Text>
             </View>
           ) : dates.length === 0 ? (

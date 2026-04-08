@@ -13,8 +13,8 @@ export function CategoryPill({ category, selected, onPress }: Props) {
   const { colors } = useTheme();
   const isAll = category === 'all';
   const cat = isAll ? null : CATEGORIES[category];
-  const color = cat?.color ?? '#7C3AED';
-  const label = cat?.label ?? 'Todos';
+  const color = cat?.color ?? '#B87333';
+  const label = cat?.label ?? 'Todas las frecuencias';
   const emoji = cat?.emoji ?? null;
 
   const scaleAnim = useRef(new Animated.Value(1)).current;

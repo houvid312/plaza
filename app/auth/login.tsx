@@ -59,17 +59,17 @@ export default function LoginScreen() {
       borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, fontSize: 15, color: colors.text,
     },
     btn: {
-      backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 15,
+      backgroundColor: '#B87333', borderRadius: 14, paddingVertical: 15,
       alignItems: 'center', marginTop: 24,
     },
     btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
     linkBtn: { alignItems: 'center', marginTop: 16 },
     linkText: { fontSize: 14, color: colors.textMuted },
-    linkHighlight: { color: '#7C3AED', fontWeight: '700' },
+    linkHighlight: { color: '#B87333', fontWeight: '700' },
     errorBox: { backgroundColor: '#FEF2F2', borderRadius: 10, padding: 12, marginTop: 12 },
     errorText: { color: '#DC2626', fontSize: 13, fontWeight: '600' },
     forgotBtn: { alignSelf: 'flex-end', marginTop: 8 },
-    forgotText: { fontSize: 13, color: '#7C3AED', fontWeight: '600' },
+    forgotText: { fontSize: 13, color: '#B87333', fontWeight: '600' },
     dividerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4 },
     dividerLine: { flex: 1, height: 1, backgroundColor: colors.inputBorder },
     dividerText: { marginHorizontal: 12, fontSize: 13, color: colors.textFaint, fontWeight: '600' },
@@ -92,10 +92,10 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.iconContainer}>
-          <Text style={styles.icon}>👋</Text>
+          <Text style={styles.icon}>🧭</Text>
         </View>
-        <Text style={styles.title}>¡Qué bueno verte!</Text>
-        <Text style={styles.subtitle}>Ingresá y seguí disfrutando lo que hay en el pueblo</Text>
+        <Text style={styles.title}>¡Bienvenido de vuelta, expedicionario!</Text>
+        <Text style={styles.subtitle}>Ingresá y seguí explorando las resonancias del territorio</Text>
 
         <Text style={styles.label}>Email</Text>
         <TextInput
