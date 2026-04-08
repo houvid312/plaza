@@ -214,7 +214,7 @@ export default function HomeHub() {
           >
             <TouchableOpacity
               style={[s.cardInner, s.cardLupa]}
-              onPress={() => {}}
+              onPress={() => router.push('/lupa')}
               activeOpacity={0.85}
             >
               <View style={[s.cardIconWrap, s.cardLupaIcon]}>
@@ -226,7 +226,7 @@ export default function HomeHub() {
                   El rompecabezas de la memoria — desenterrá las huellas del pasado
                 </Text>
                 <View style={s.lupaTag}>
-                  <Text style={s.lupaTagText}>Próximamente</Text>
+                  <Text style={s.lupaTagText}>6 retos · 1 activo</Text>
                 </View>
               </View>
               <Text style={[s.cardArrow, s.cardArrowLupa]}>›</Text>

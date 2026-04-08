@@ -81,6 +81,16 @@ function AppNavigator() {
           }}
         />
         <Stack.Screen
+          name="lupa"
+          options={{
+            ...themedHeader,
+            presentation: 'card',
+            headerShown: true,
+            headerTitle: 'La Lupa del Tiempo',
+            headerBackTitle: 'Inicio',
+          }}
+        />
+        <Stack.Screen
           name="event/[id]"
           options={{
             ...themedHeader,
