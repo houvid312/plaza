@@ -30,10 +30,10 @@ interface Reto {
 const RETOS: Reto[] = [
   {
     id: 1,
-    title: 'La Flor Fálica del Obelisco',
+    title: 'La Columna de Cascajo',
     acertijo:
-      'Fui esculpida por manos que conocieron la pólvora y la piedra. Corona un obelisco que mira al cielo desde la plaza donde el pueblo se reúne. Mi geometría esconde la sangre de Cascajo.',
-    locationHint: 'Parque Principal — Obelisco',
+      'Me alzo quince metros sobre la tierra que vio correr sangre conservadora y liberal. Mi columna de trece metros honra a los marinillos que el 4 de enero de 1864 decidieron el destino de Antioquia. Buscá mi sombra donde la memoria de la batalla aún resuena.',
+    locationHint: 'Monumento a la Batalla de Cascajo',
     category: 'Monumento',
     categoryEmoji: '🗿',
     status: 'unlocked',
@@ -42,10 +42,10 @@ const RETOS: Reto[] = [
   },
   {
     id: 2,
-    title: 'El Tiple del Maestro',
+    title: 'El Tiple de los Arbeláez',
     acertijo:
-      'Fui tallada en las montañas con cedro negro y nogal. Mis cuerdas cantaron antes que la pólvora. Búscame donde descansan los instrumentos que dieron alma a la Esparta colombiana.',
-    locationHint: 'Casa de la Cultura Valerio Antonio Jiménez',
+      'Desde 1860, cinco generaciones de una misma familia acarician cedro para darme voz. Nací en un taller que lleva nombre de ensueño y he cantado trovas por toda la Esparta colombiana. Buscá mis cuerdas donde la lutería se hizo tradición.',
+    locationHint: 'Guitarras Ensueño — Taller Arbeláez',
     category: 'Instrumento',
     categoryEmoji: '🎸',
     status: 'locked',
@@ -54,10 +54,10 @@ const RETOS: Reto[] = [
   },
   {
     id: 3,
-    title: 'La Memoria de Ramón Emilio',
+    title: 'La Memoria de Arcila Hurtado',
     acertijo:
-      'Mi nombre vive en el lugar donde hoy se corre y se salta. Fui voz del pueblo cuando el silencio era ley. Los paros cívicos del 80 resonaron con mi grito. Buscá mi rostro donde el deporte honra la resistencia.',
-    locationHint: 'Unidad Deportiva',
+      'Me llamé Ramón Emilio Arcila Hurtado. Fui abogado y voz del Movimiento Cívico del Oriente. Los paros de 1982 y 1984 resonaron con mi grito contra las represas y el olvido. Me silenciaron el 30 de diciembre de 1989, pero mi nombre sigue pidiendo justicia.',
+    locationHint: 'Parque de los Mártires — Marinilla',
     category: 'Personaje',
     categoryEmoji: '✊',
     status: 'locked',
@@ -68,7 +68,7 @@ const RETOS: Reto[] = [
     id: 4,
     title: 'Las Campanas de la Asunción',
     acertijo:
-      'Resueno cada hora desde hace más de dos siglos. Mi voz convocó ejércitos y procesiones. Fui forjada en bronce cuando la Esparta aún era un sueño de independencia. Levantá la mirada donde la fe se hizo piedra.',
+      'Resueno desde una iglesia que nació como ermita de bahareque hacia 1650. Charles Carré, el mismo francés que diseñó la Catedral de Medellín, reformó mi fachada. Soy monumento nacional desde 1963. Levantá la mirada donde la fe se hizo piedra y bronce.',
     locationHint: 'Iglesia Nuestra Señora de la Asunción',
     category: 'Patrimonio',
     categoryEmoji: '🔔',
@@ -80,8 +80,8 @@ const RETOS: Reto[] = [
     id: 5,
     title: 'El Teatro de Simona',
     acertijo:
-      'Llevo el nombre de una mujer que tejió cultura entre montañas. Mis paredes han escuchado tiples, poesía y aplausos durante generaciones. Soy el corazón escénico de la Esparta. Entrá donde el arte cobra vida.',
-    locationHint: 'Teatro Simona Duque',
+      'Llevo el nombre de una madre que en 1819 entregó cinco de sus hijos al ejército de Córdova para liberar Antioquia en la Batalla de Chorros Blancos. Santander le ofreció pensión; ella la rechazó. Soy el corazón escénico de la Esparta. Entrá donde el arte honra su sacrificio.',
+    locationHint: 'Teatro Municipal Simona Duque',
     category: 'Lugar',
     categoryEmoji: '🎭',
     status: 'locked',
@@ -90,10 +90,10 @@ const RETOS: Reto[] = [
   },
   {
     id: 6,
-    title: 'El Cedro Negro del Bosque Montano',
+    title: 'El Nogal del Bosque Montano',
     acertijo:
-      'Mi madera dio cuerpo a guitarras y tiples que cantaron la libertad. Crezco en el bosque montano bajo del Oriente antioqueño, donde la niebla abraza las raíces. Buscá mi semilla donde lo verde se encuentra con la memoria.',
-    locationHint: 'Sendero ecológico — Vereda',
+      'Me llaman cedro negro o nogal. Crezco entre los 1.500 y 3.200 metros en los bosques de niebla del Oriente antioqueño. Estoy en peligro de extinción, pero mi madera noble aún guarda la memoria de los muebles y vigas que sostuvieron la Esparta. Buscá mi semilla donde lo verde se encuentra con la memoria.',
+    locationHint: 'Sendero ecológico — Bosque montano bajo',
     category: 'Naturaleza',
     categoryEmoji: '🌳',
     status: 'locked',

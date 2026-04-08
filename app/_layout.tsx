@@ -1,5 +1,5 @@
 import '../global.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { Stack, useRouter, usePathname } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -9,7 +9,6 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 
-const INTRO_SEEN_KEY = 'intro_seen';
 
 const queryClient = new QueryClient();
 
@@ -46,15 +45,13 @@ function IntroRedirector() {
   useEffect(() => {
     // Intro uses GSAP + HTML elements, only available on web
     if (Platform.OS !== 'web') return;
-    // Don't redirect if already on intro (avoids remount loop)
+    // Don't redirect if already on intro or a deep link
     if (pathname === '/intro') return;
+    if (pathname !== '/' && pathname !== '') return;
 
-    let seen = false;
-    try { seen = localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch {}
-    if (!seen) {
-      router.replace('/intro');
-    }
-  }, [pathname]);
+    // Always show intro as the home/landing
+    router.replace('/intro');
+  }, []);
 
   return null;
 }

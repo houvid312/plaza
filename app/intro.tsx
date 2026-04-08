@@ -7,7 +7,6 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const INTRO_SEEN_KEY = 'intro_seen';
 
 /* ─── Inline SVG components ─── */
 
@@ -261,11 +260,8 @@ export default function IntroScreen() {
     });
   }, { scope: containerRef });
 
-  function handleNavigate(route: '/(tabs)' | '/(tabs)/explore') {
-    if (Platform.OS === 'web') {
-      try { localStorage.setItem(INTRO_SEEN_KEY, '1'); } catch {}
-    }
-    router.replace(route);
+  function handleNavigate(route: '/(tabs)' | '/lupa') {
+    router.push(route);
   }
 
   return (
@@ -360,7 +356,7 @@ export default function IntroScreen() {
           <button
             className="intro-btn"
             style={styles.btnSecondary}
-            onClick={() => handleNavigate('/(tabs)/explore')}
+            onClick={() => handleNavigate('/lupa')}
             onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2 })}
             onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.2 })}
           >
