@@ -90,10 +90,10 @@ const RETOS: Reto[] = [
   },
   {
     id: 6,
-    title: 'El Nogal del Bosque Montano',
+    title: 'El Nogal de Cuchilla Los Cedros',
     acertijo:
-      'Me llaman cedro negro o nogal. Crezco entre los 1.500 y 3.200 metros en los bosques de niebla del Oriente antioqueño. Estoy en peligro de extinción, pero mi madera noble aún guarda la memoria de los muebles y vigas que sostuvieron la Esparta. Buscá mi semilla donde lo verde se encuentra con la memoria.',
-    locationHint: 'Sendero ecológico — Bosque montano bajo',
+      'Me llaman cedro negro o nogal. Crezco entre los 2.000 y 2.500 metros en el área protegida que CORNARE declaró en 2015 entre Marinilla, El Santuario y El Peñol. Estoy en peligro de extinción, pero mis 2.062 hectáreas de bosque húmedo montano bajo aún guardan la memoria verde de la Esparta. Buscá mi semilla donde la niebla abraza las cuchillas.',
+    locationHint: 'DRMI Cuchilla Los Cedros — Vereda',
     category: 'Naturaleza',
     categoryEmoji: '🌳',
     status: 'locked',
