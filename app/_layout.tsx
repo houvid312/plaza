@@ -8,6 +8,7 @@ import { Platform, TouchableOpacity, Text } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
+import { AudioProvider } from '../context/AudioContext';
 
 
 const queryClient = new QueryClient();
@@ -153,9 +154,11 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <ToastProvider>
-            <AppNavigator />
-          </ToastProvider>
+          <AudioProvider>
+            <ToastProvider>
+              <AppNavigator />
+            </ToastProvider>
+          </AudioProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

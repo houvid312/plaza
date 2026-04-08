@@ -23,6 +23,7 @@ import { useTodayEvents, useUpcomingEvents, useMunicipalities, Municipality } fr
 import { useAuth } from '../../context/AuthContext';
 import { getTimeStatus } from '../../types/event';
 import { useTheme } from '../../context/ThemeContext';
+import { useAudio } from '../../context/AudioContext';
 
 function ParishFilter({ visible, selectedParish, onSelect }: {
   visible: boolean;
@@ -90,6 +91,7 @@ function ParishFilter({ visible, selectedParish, onSelect }: {
 export default function HomeScreen() {
   const { user } = useAuth();
   const { colors, isDark, toggleTheme } = useTheme();
+  const { isPlaying, toggle: toggleAudio } = useAudio();
   const [selectedCategories, setSelectedCategories] = useState<Set<Category>>(
     user?.preferences?.category ? new Set([user.preferences.category as Category]) : new Set()
   );
@@ -364,6 +366,14 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
             <View style={styles.headerRightRow}>
+              <TouchableOpacity style={styles.headerIconBtn} onPress={toggleAudio} activeOpacity={0.75}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1.5 }}>
+                  <View style={{ width: 2.5, height: isPlaying ? 12 : 4, borderRadius: 1, backgroundColor: '#B87333' }} />
+                  <View style={{ width: 2.5, height: isPlaying ? 7 : 4, borderRadius: 1, backgroundColor: '#B87333' }} />
+                  <View style={{ width: 2.5, height: isPlaying ? 16 : 4, borderRadius: 1, backgroundColor: '#B87333' }} />
+                  <View style={{ width: 2.5, height: isPlaying ? 9 : 4, borderRadius: 1, backgroundColor: '#B87333' }} />
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.headerIconBtn} onPress={() => router.push('/intro')} activeOpacity={0.75}>
                 <Text style={{ fontSize: 18 }}>🧭</Text>
               </TouchableOpacity>

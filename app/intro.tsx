@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useAudio } from '../context/AudioContext';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -108,6 +109,7 @@ function Compass({ className, style }: { className?: string; style?: React.CSSPr
 export default function IntroScreen() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { isPlaying, toggle: toggleAudio } = useAudio();
 
   useGSAP(() => {
     const scroller = containerRef.current!;
@@ -266,6 +268,28 @@ export default function IntroScreen() {
 
   return (
     <div ref={containerRef} style={styles.container}>
+      {/* Audio toggle */}
+      <button
+        onClick={toggleAudio}
+        style={styles.audioBtn}
+        aria-label={isPlaying ? 'Silenciar' : 'Reproducir'}
+      >
+        <span style={styles.audioBtnBars}>
+          <span style={{ ...styles.audioBar, height: isPlaying ? 14 : 4, animationDelay: '0s' }} />
+          <span style={{ ...styles.audioBar, height: isPlaying ? 8 : 4, animationDelay: '0.15s' }} />
+          <span style={{ ...styles.audioBar, height: isPlaying ? 18 : 4, animationDelay: '0.3s' }} />
+          <span style={{ ...styles.audioBar, height: isPlaying ? 10 : 4, animationDelay: '0.1s' }} />
+        </span>
+      </button>
+      {isPlaying && (
+        <style>{`
+          @keyframes audioPulse {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+          }
+        `}</style>
+      )}
+
       {/* Glow orb */}
       <div style={styles.glowWrap}>
         <div className="intro-glow" style={styles.glowOrb} />
@@ -379,6 +403,37 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'relative',
     overflowX: 'hidden',
     overflowY: 'auto',
+  },
+  audioBtn: {
+    position: 'fixed',
+    top: 16,
+    right: 16,
+    zIndex: 100,
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    backgroundColor: 'rgba(26, 23, 16, 0.6)',
+    border: '1px solid rgba(184, 115, 51, 0.25)',
+    backdropFilter: 'blur(10px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    padding: 0,
+  },
+  audioBtnBars: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 2,
+    height: 18,
+  },
+  audioBar: {
+    width: 3,
+    borderRadius: 2,
+    backgroundColor: '#C9A96E',
+    transition: 'height 0.3s ease',
+    animation: 'audioPulse 0.8s ease-in-out infinite',
+    transformOrigin: 'center',
   },
   glowWrap: {
     position: 'sticky',
