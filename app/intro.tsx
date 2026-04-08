@@ -318,39 +318,41 @@ export default function IntroScreen() {
         <NoteSingle className="narrative-float" style={{ ...styles.floatIcon, top: -20, right: '2%', width: 34, color: '#B87333' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Marinilla no es un simple accidente en la cartografía antioqueña; es una
-          voluntad de afirmación que resuena a través del tiempo.
+          Marinilla es mucho más que un punto en la cartografía antioqueña; es una
+          partitura viva que se sigue escribiendo. Caminar por estas calles, ya seas
+          habitante de siempre o viajero de paso, es adentrarse en un territorio vivo,
+          reconocido como Patrimonio Inmaterial de la Nación.
         </p>
 
         <SoundWave className="narrative-float" style={{ ...styles.floatIcon, left: '-4%', top: 160, width: 70, color: '#C9A96E' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Eres habitante de la Esparta colombiana, un territorio erigido como
-          Patrimonio Inmaterial de la Nación, donde el espíritu de la libertad y la
-          resistencia no se firmó en papel, sino que se forjó a golpe de tiple,
-          guitarra y madera.
+          Aquí, la historia no es un relato estático guardado en los museos, sino un
+          tejido cultural que se ha moldeado a golpe de tiple, gubia, madera y
+          pluralidad de voces.
         </p>
 
         <Tiple className="narrative-float" style={{ ...styles.floatIcon, right: '-2%', top: 280, width: 46, color: '#A67C52' }} />
 
         <p className="intro-accent" style={styles.accent}>
-          Hoy, la ciudad sigue vibrando bajo el peso de su propia historia, pero su
-          memoria se encuentra fragmentada, dispersa en el ruido de la hiperconexión.
+          Hoy, la ciudad vibra con la energía de nuevos creadores. Sin embargo, en
+          medio del ruido y la hiperconexión, la memoria de los lugares que habitamos
+          corre el riesgo de diluirse.
         </p>
 
         <NoteDouble className="narrative-float" style={{ ...styles.floatIcon, left: '0%', top: 420, width: 36, color: '#B87333' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Te invitamos a iniciar un viaje para escapar a la amnesia colectiva. En tus
-          manos sostienes el artefacto para descifrar nuestra identidad.
+          Te invitamos a iniciar un viaje interactivo para desafiar la amnesia
+          colectiva. En tus manos sostienes una brújula para descifrar este entramado.
         </p>
 
         <Compass className="narrative-float" style={{ ...styles.floatIcon, right: '0%', top: 540, width: 52, color: '#C9A96E' }} />
 
         <p className="intro-reveal" style={styles.body}>
-          Escucha el latido de lo que ocurre hoy en nuestras calles y acompáñanos a
-          desenterrar las huellas del pasado, los vestigios más lejanos de nuestra
-          cultura.
+          Escucha el latido de quienes hoy le dan vida a nuestras calles, y
+          acompáñanos a redescubrir las huellas, las texturas y los relatos que
+          cimentaron este lugar.
         </p>
 
         <Guitar className="narrative-float" style={{ ...styles.floatIcon, left: '-3%', top: 650, width: 50, color: '#8B5E3C' }} />
