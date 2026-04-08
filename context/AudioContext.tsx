@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef, useState, useEffect, useCallback } from 'react';
-import { Audio } from 'expo-av';
+import { useAudioPlayer, AudioModule } from 'expo-audio';
 import { Platform } from 'react-native';
 
 interface AudioContextValue {
@@ -12,99 +12,66 @@ const AudioCtx = createContext<AudioContextValue>({
   toggle: () => {},
 });
 
+const audioSource = Platform.OS === 'web'
+  ? { uri: '/ambient.mp3' }
+  : require('../assets/audio/ambient.mp3');
+
 export function AudioProvider({ children }: { children: React.ReactNode }) {
-  const soundRef = useRef<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true); // default ON visually
-  const loadedRef = useRef(false);
-  const autoplayAttempted = useRef(false);
+  const player = useAudioPlayer(audioSource);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const startedRef = useRef(false);
 
+  // Configure and auto-play
   useEffect(() => {
-    let mounted = true;
+    if (!player) return;
 
-    async function load() {
+    player.loop = true;
+    player.volume = 0.25;
+
+    function tryPlay() {
+      if (startedRef.current) return;
       try {
-        await Audio.setAudioModeAsync({
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
-          shouldDuckAndroid: true,
-        });
-
-        const source = Platform.OS === 'web'
-          ? { uri: '/ambient.mp3' }
-          : require('../assets/audio/ambient.mp3');
-
-        const { sound } = await Audio.Sound.createAsync(
-          source,
-          {
-            isLooping: true,
-            volume: 0.25,
-            shouldPlay: true,
-          }
-        );
-
-        if (!mounted) {
-          await sound.unloadAsync();
-          return;
-        }
-
-        soundRef.current = sound;
-        loadedRef.current = true;
-
-        // Check if autoplay actually worked (browsers may block it)
-        const status = await sound.getStatusAsync();
-        if (status.isLoaded && status.isPlaying) {
-          if (mounted) setIsPlaying(true);
-          autoplayAttempted.current = true;
-        } else {
-          // Autoplay blocked — retry on first user interaction
-          if (mounted) setIsPlaying(true); // show as "on" so bars animate
-          if (Platform.OS === 'web') {
-            const startOnInteraction = async () => {
-              if (autoplayAttempted.current) return;
-              autoplayAttempted.current = true;
-              try {
-                await sound.playAsync();
-              } catch {}
-              document.removeEventListener('click', startOnInteraction);
-              document.removeEventListener('scroll', startOnInteraction, true);
-              document.removeEventListener('touchstart', startOnInteraction);
-            };
-            document.addEventListener('click', startOnInteraction, { once: false });
-            document.addEventListener('scroll', startOnInteraction, { once: false, capture: true });
-            document.addEventListener('touchstart', startOnInteraction, { once: false });
-          }
-        }
-      } catch (e) {
-        // Audio not available (e.g. SSR or unsupported platform)
-      }
+        player.play();
+        startedRef.current = true;
+        setIsPlaying(true);
+      } catch {}
     }
 
-    load();
+    // Try immediate autoplay
+    tryPlay();
 
-    return () => {
-      mounted = false;
-      soundRef.current?.unloadAsync();
-    };
-  }, []);
+    // If browser blocks autoplay, start on first interaction
+    if (Platform.OS === 'web' && !startedRef.current) {
+      const onInteraction = () => {
+        tryPlay();
+        document.removeEventListener('click', onInteraction);
+        document.removeEventListener('scroll', onInteraction, true);
+        document.removeEventListener('touchstart', onInteraction);
+      };
+      document.addEventListener('click', onInteraction);
+      document.addEventListener('scroll', onInteraction, { capture: true });
+      document.addEventListener('touchstart', onInteraction);
 
-  const toggle = useCallback(async () => {
-    const sound = soundRef.current;
-    if (!sound || !loadedRef.current) return;
-    autoplayAttempted.current = true;
+      return () => {
+        document.removeEventListener('click', onInteraction);
+        document.removeEventListener('scroll', onInteraction, true);
+        document.removeEventListener('touchstart', onInteraction);
+      };
+    }
+  }, [player]);
 
-    try {
-      const status = await sound.getStatusAsync();
-      if (!status.isLoaded) return;
+  const toggle = useCallback(() => {
+    if (!player) return;
 
-      if (status.isPlaying) {
-        await sound.pauseAsync();
-        setIsPlaying(false);
-      } else {
-        await sound.playAsync();
-        setIsPlaying(true);
-      }
-    } catch {}
-  }, []);
+    if (player.playing) {
+      player.pause();
+      setIsPlaying(false);
+    } else {
+      player.play();
+      startedRef.current = true;
+      setIsPlaying(true);
+    }
+  }, [player]);
 
   return (
     <AudioCtx.Provider value={{ isPlaying, toggle }}>
