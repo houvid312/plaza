@@ -29,8 +29,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           shouldDuckAndroid: true,
         });
 
+        const source = Platform.OS === 'web'
+          ? { uri: '/ambient.mp3' }
+          : require('../assets/audio/ambient.mp3');
+
         const { sound } = await Audio.Sound.createAsync(
-          require('../assets/audio/ambient.mp3'),
+          source,
           {
             isLooping: true,
             volume: 0.25,
